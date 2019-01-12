@@ -20,7 +20,9 @@ func (f *Filter) Handle(e logger.Entry) error {
 // exclude logs that have a higher level than a given level
 func NewMinLevelFilter(h logger.HandlerInterface, lvl logger.Level) *Filter {
 	return &Filter{h, func(e logger.Entry) bool {
-		return e.Level < lvl
+		toto := e.Level < lvl
+
+		return toto
 	}}
 }
 
