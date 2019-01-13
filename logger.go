@@ -35,7 +35,7 @@ func (l Level) String() string {
 }
 
 type LoggerInterface interface {
-	Log(msg string, lvl Level, ctx map[string]interface{})
+	Log(msg string, lvl Level, ctx *map[string]interface{})
 }
 
 type Logger struct {
