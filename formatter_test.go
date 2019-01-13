@@ -3,9 +3,9 @@ package logger_test
 import (
 	"testing"
 
-	"github.com/instabledesign/logger"
-
 	"github.com/stretchr/testify/assert"
+
+	"github.com/instabledesign/logger"
 )
 
 func TestNilFormatter_Format(t *testing.T) {
@@ -13,14 +13,8 @@ func TestNilFormatter_Format(t *testing.T) {
 		name      string
 		formatter *logger.NilFormatter
 	}{
-		{
-			name:      "test nil formatter struc",
-			formatter: &logger.NilFormatter{},
-		},
-		{
-			name:      "test NewNilFormatter()",
-			formatter: logger.NewNilFormatter(),
-		},
+		{name: "test nil formatter struct", formatter: &logger.NilFormatter{}},
+		{name: "test NewNilFormatter()", formatter: logger.NewNilFormatter()},
 	}
 
 	for _, tt := range tests {

@@ -3,10 +3,10 @@ package formatter_test
 import (
 	"testing"
 
-	"github.com/instabledesign/logger/formatter"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/instabledesign/logger"
+	"github.com/instabledesign/logger/formatter"
 )
 
 func TestLine_Format(t *testing.T) {
