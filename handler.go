@@ -9,3 +9,7 @@ type NilHandler struct{}
 func (n *NilHandler) Handle(e Entry) error {
 	return nil
 }
+
+func NewNilHandler() *NilHandler {
+	return &NilHandler{}
+}
