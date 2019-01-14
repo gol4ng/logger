@@ -3,6 +3,8 @@ package logger_test
 import (
 	"testing"
 
+	"github.com/pkg/errors"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
@@ -58,6 +60,7 @@ func TestLogger_Log(t *testing.T) {
 			})
 
 			log := logger.NewLogger(&mockHandler)
+
 			var err error
 			switch tt.lvl {
 			case logger.DebugLevel:
@@ -88,8 +91,26 @@ func TestLogger_Log(t *testing.T) {
 	}
 }
 
+func TestNewLogger_LogWithError(t *testing.T) {
+	mockHandler := mocks.HandlerInterface{}
+	err := errors.New("my error")
+
+	mockHandler.On("Handle", mock.AnythingOfType("logger.Entry")).Return(err)
+
+	log := logger.NewLogger(&mockHandler)
+
+	assert.Equal(t, err, log.Debug("log message", nil))
+	assert.Equal(t, err, log.Info("log message", nil))
+	assert.Equal(t, err, log.Warn("log message", nil))
+	assert.Equal(t, err, log.Error("log message", nil))
+	assert.Equal(t, err, log.Panic("log message", nil))
+	assert.Equal(t, err, log.Fatal("log message", nil))
+	assert.Equal(t, err, log.Log("log message", logger.Level(127), nil))
+}
+
 func TestNewNilLogger_Log(t *testing.T) {
 	log := logger.NewNilLogger()
+
 	assert.Nil(t, log.Debug("log message", nil))
 	assert.Nil(t, log.Info("log message", nil))
 	assert.Nil(t, log.Warn("log message", nil))
