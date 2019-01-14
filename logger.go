@@ -42,27 +42,27 @@ type Logger struct {
 	HandlerInterface
 }
 
-func (l *Logger) Debug(msg string, ctx *map[string]interface{}) {
-	l.Log(msg, DebugLevel, ctx)
+func (l *Logger) Debug(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, DebugLevel, ctx)
 }
-func (l *Logger) Info(msg string, ctx *map[string]interface{}) {
-	l.Log(msg, InfoLevel, ctx)
+func (l *Logger) Info(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, InfoLevel, ctx)
 }
-func (l *Logger) Warn(msg string, ctx *map[string]interface{}) {
-	l.Log(msg, WarnLevel, ctx)
+func (l *Logger) Warn(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, WarnLevel, ctx)
 }
-func (l *Logger) Error(msg string, ctx *map[string]interface{}) {
-	l.Log(msg, ErrorLevel, ctx)
+func (l *Logger) Error(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, ErrorLevel, ctx)
 }
-func (l *Logger) Panic(msg string, ctx *map[string]interface{}) {
-	l.Log(msg, PanicLevel, ctx)
+func (l *Logger) Panic(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, PanicLevel, ctx)
 }
-func (l *Logger) Fatal(msg string, ctx *map[string]interface{}) {
-	l.Log(msg, FatalLevel, ctx)
+func (l *Logger) Fatal(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, FatalLevel, ctx)
 }
 
-func (l *Logger) Log(msg string, lvl Level, ctx *map[string]interface{}) {
-	l.Handle(Entry{msg, lvl, ctx})
+func (l *Logger) Log(msg string, lvl Level, ctx *map[string]interface{}) error {
+	return l.Handle(Entry{msg, lvl, ctx})
 }
 
 func NewNilLogger() *Logger {
