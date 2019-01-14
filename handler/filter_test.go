@@ -12,30 +12,30 @@ import (
 )
 
 func TestFilter_HandleWithoutExclusion(t *testing.T) {
-	logEntry := logger.Entry{Message: "test message", Level: logger.WarnLevel, Context: nil}
+	logEntry := logger.Entry{}
 
 	mockHandler := mocks.HandlerInterface{}
 
-	f := handler.NewFilter(&mockHandler, func(e logger.Entry) bool {
+	h := handler.NewFilter(&mockHandler, func(e logger.Entry) bool {
 		return true
 	})
 
-	_ = f.Handle(logEntry)
+	assert.Nil(t, h.Handle(logEntry))
 
 	mockHandler.AssertNotCalled(t, "Handle", logEntry)
 }
 
 func TestFilter_HandleWithExclusion(t *testing.T) {
-	logEntry := logger.Entry{Message: "test message", Level: logger.WarnLevel, Context: nil}
+	logEntry := logger.Entry{}
 
 	mockHandler := mocks.HandlerInterface{}
 	mockHandler.On("Handle", logEntry).Return(nil)
 
-	f := handler.NewFilter(&mockHandler, func(e logger.Entry) bool {
+	h := handler.NewFilter(&mockHandler, func(e logger.Entry) bool {
 		return false
 	})
 
-	_ = f.Handle(logEntry)
+	assert.Nil(t, h.Handle(logEntry))
 
 	mockHandler.AssertCalled(t, "Handle", logEntry)
 }
@@ -69,9 +69,9 @@ func TestNewMinLevelFilter(t *testing.T) {
 				mockHandler := mocks.HandlerInterface{}
 				mockHandler.On("Handle", e).Return(nil)
 
-				f := handler.NewMinLevelFilter(&mockHandler, tt.lvl)
+				h := handler.NewMinLevelFilter(&mockHandler, tt.lvl)
 
-				_ = f.Handle(e)
+				assert.Nil(t, h.Handle(e))
 
 				if tt.logLevelsHandled[i] {
 					mockHandler.AssertCalled(t, "Handle", e)
@@ -110,9 +110,9 @@ func TestNewRangeLevelFilter(t *testing.T) {
 				mockHandler := mocks.HandlerInterface{}
 				mockHandler.On("Handle", e).Return(nil)
 
-				f := handler.NewRangeLevelFilter(&mockHandler, tt.minLvl, tt.maxLvl)
+				h := handler.NewRangeLevelFilter(&mockHandler, tt.minLvl, tt.maxLvl)
 
-				_ = f.Handle(e)
+				assert.Nil(t, h.Handle(e))
 
 				if tt.logLevelsHandled[i] {
 					mockHandler.AssertCalled(t, "Handle", e)
