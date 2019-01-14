@@ -1,3 +1,5 @@
+// +build example
+
 package example_handler_test
 
 import (
