@@ -1,5 +1,3 @@
-// +build benchmark
-
 package benchmark_handler_test
 
 import (

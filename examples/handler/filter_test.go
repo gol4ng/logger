@@ -1,5 +1,3 @@
-// +build example
-
 package example_handler_test
 
 import (
@@ -14,7 +12,7 @@ func ExampleMinLevelFilterHandler() {
 
 	minLvlFilterHandler := handler.NewMinLevelFilter(streamHandler, logger.WarnLevel)
 
-	myLogger := logger.Logger{HandlerInterface: minLvlFilterHandler}
+	myLogger := logger.NewLogger(minLvlFilterHandler)
 
 	myLogger.Debug("will be excluded", nil)
 	myLogger.Info("will be excluded", nil)
@@ -35,7 +33,7 @@ func ExampleRangeLevelFilterHandler() {
 
 	rangeLvlFilterHandler := handler.NewRangeLevelFilter(streamHandler, logger.InfoLevel, logger.WarnLevel)
 
-	myLogger := logger.Logger{HandlerInterface: rangeLvlFilterHandler}
+	myLogger := logger.NewLogger(rangeLvlFilterHandler)
 
 	myLogger.Debug("will be excluded", nil)
 	myLogger.Info("will be printed", nil)
@@ -56,7 +54,7 @@ func ExampleCustomFilterHandler() {
 		return e.Level == logger.InfoLevel || e.Level == logger.PanicLevel
 	})
 
-	myLogger := logger.Logger{HandlerInterface: rangeLvlFilterHandler}
+	myLogger := logger.NewLogger(rangeLvlFilterHandler)
 
 	myLogger.Debug("will be printed", nil)
 	myLogger.Info("will be excluded", nil)

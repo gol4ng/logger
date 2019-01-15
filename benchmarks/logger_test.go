@@ -1,5 +1,3 @@
-// +build benchmark
-
 package benchmarks_test
 
 import (
