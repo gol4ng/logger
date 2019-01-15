@@ -20,7 +20,7 @@ func TestGroup_Handle(t *testing.T) {
 	mockHandlerB := mocks.HandlerInterface{}
 	mockHandlerB.On("Handle", logEntry).Return(nil)
 
-	h := handler.NewGroup([]logger.HandlerInterface{&mockHandlerA, &mockHandlerB})
+	h := handler.NewGroup(&mockHandlerA, &mockHandlerB)
 
 	assert.Nil(t, h.Handle(logEntry))
 

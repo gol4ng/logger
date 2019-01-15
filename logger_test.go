@@ -119,3 +119,30 @@ func TestNewNilLogger_Log(t *testing.T) {
 	assert.Nil(t, log.Fatal("log message", nil))
 	assert.Nil(t, log.Log("log message", logger.Level(127), nil))
 }
+
+func TestNewLogger_Wrap(t *testing.T) {
+	mockHandler := mocks.HandlerInterface{}
+	mockHandler.On("Handle", mock.AnythingOfType("logger.Entry")).Return(func(e logger.Entry) error {
+		assert.Equal(t, "log message", e.Message)
+		assert.Equal(t, logger.DebugLevel, e.Level)
+		assert.Nil(t, e.Context)
+
+		return nil
+	})
+
+	log := logger.NewLogger(&mockHandler)
+
+	mockHandlerWrapper := mocks.HandlerInterface{}
+	mockHandlerWrapper.On("Handle", mock.AnythingOfType("logger.Entry")).Return(func(e logger.Entry) error {
+		return mockHandler.Handle(e)
+	})
+
+	log.Wrap(func(h logger.HandlerInterface) logger.HandlerInterface {
+		return &mockHandlerWrapper
+	})
+
+	assert.Nil(t, log.Debug("log message", nil))
+
+	mockHandler.AssertCalled(t, "Handle", mock.AnythingOfType("logger.Entry"))
+	mockHandlerWrapper.AssertCalled(t, "Handle", mock.AnythingOfType("logger.Entry"))
+}
