@@ -1,5 +1,3 @@
-// +build example
-
 package example_handler_test
 
 import (
@@ -19,9 +17,9 @@ func ExampleGroupHandler() {
 	jsonFormatter := formatter.NewJson()
 	jsonLogHandler := handler.NewStream(os.Stdout, jsonFormatter)
 
-	groupHandler := handler.NewGroup([]logger.HandlerInterface{lineLogHandler, jsonLogHandler})
+	groupHandler := handler.NewGroup(lineLogHandler, jsonLogHandler)
 
-	myLogger := logger.Logger{HandlerInterface: groupHandler}
+	myLogger := logger.NewLogger(groupHandler)
 
 	myLogger.Info(myString, nil)
 

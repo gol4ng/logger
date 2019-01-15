@@ -29,6 +29,6 @@ func NewGroupBlocking(h []logger.HandlerInterface) *Group {
 	return &Group{handlers: h, stopOnError: true}
 }
 
-func NewGroup(h []logger.HandlerInterface) *Group {
+func NewGroup(h ...logger.HandlerInterface) *Group {
 	return &Group{handlers: h}
 }

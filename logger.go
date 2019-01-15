@@ -39,7 +39,7 @@ type LoggerInterface interface {
 }
 
 type Logger struct {
-	HandlerInterface
+	handler HandlerInterface
 }
 
 func (l *Logger) Debug(msg string, ctx *map[string]interface{}) error {
@@ -62,13 +62,21 @@ func (l *Logger) Fatal(msg string, ctx *map[string]interface{}) error {
 }
 
 func (l *Logger) Log(msg string, lvl Level, ctx *map[string]interface{}) error {
-	return l.Handle(Entry{msg, lvl, ctx})
+	return l.handler.Handle(Entry{msg, lvl, ctx})
+}
+
+func (l *Logger) Wrap(w func(h HandlerInterface) HandlerInterface) {
+	l.handler = w(l.handler)
+}
+
+func (l *Logger) WrapNew(w func(h HandlerInterface) HandlerInterface) *Logger {
+	return &Logger{handler: w(l.handler)}
 }
 
 func NewNilLogger() *Logger {
-	return &Logger{HandlerInterface: &NilHandler{}}
+	return &Logger{handler: &NilHandler{}}
 }
 
 func NewLogger(h HandlerInterface) *Logger {
-	return &Logger{HandlerInterface: h}
+	return &Logger{handler: h}
 }

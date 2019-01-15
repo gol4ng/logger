@@ -24,6 +24,12 @@ func NewMinLevelFilter(h logger.HandlerInterface, lvl logger.Level) *Filter {
 	}}
 }
 
+func NewMinLevelWrapper(lvl logger.Level) func(h logger.HandlerInterface) logger.HandlerInterface {
+	return func(h logger.HandlerInterface) logger.HandlerInterface {
+		return NewMinLevelFilter(h, lvl)
+	}
+}
+
 // exclude logs that have a level that are not between two given levels
 func NewRangeLevelFilter(h logger.HandlerInterface, minLvl logger.Level, maxLvl logger.Level) *Filter {
 	if minLvl >= maxLvl {
@@ -35,6 +41,18 @@ func NewRangeLevelFilter(h logger.HandlerInterface, minLvl logger.Level, maxLvl 
 	}}
 }
 
+func NewRangeLevelWrapper(minLvl logger.Level, maxLvl logger.Level) func(h logger.HandlerInterface) logger.HandlerInterface {
+	return func(h logger.HandlerInterface) logger.HandlerInterface {
+		return NewRangeLevelFilter(h, minLvl, maxLvl)
+	}
+}
+
 func NewFilter(h logger.HandlerInterface, f func(e logger.Entry) bool) *Filter {
 	return &Filter{handler: h, filterFn: f}
+}
+
+func NewFilterWrapper(filterFn func(e logger.Entry) bool) func(h logger.HandlerInterface) logger.HandlerInterface {
+	return func(h logger.HandlerInterface) logger.HandlerInterface {
+		return NewFilter(h, filterFn)
+	}
 }
