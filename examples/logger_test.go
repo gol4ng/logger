@@ -2,10 +2,14 @@ package example_handler_test
 
 import (
 	"os"
+	"time"
+
+	"bou.ke/monkey"
 
 	"github.com/instabledesign/logger"
 	"github.com/instabledesign/logger/formatter"
 	"github.com/instabledesign/logger/handler"
+	"github.com/pkg/profile"
 )
 
 func ExampleLoggerLineFormatter() {
@@ -92,4 +96,32 @@ func ExampleLoggerWrapHandler() {
 	// Log example error &map[ctx_key:ctx_value]
 	// Log example panic &map[ctx_key:ctx_value]
 	// Log example fatal &map[ctx_key:ctx_value]
+}
+
+func ExampleLoggerRotateHandler() {
+	profile.Start()
+	monkey.Patch(time.Now, func() time.Time { return time.Unix(513216000, 0) })
+	defer monkey.UnpatchAll()
+
+	rotateLogHandler := handler.NewRotateFile(&logger.NilFormatter{}, "./dev.log", time.Second)
+	myLogger := logger.NewLogger(rotateLogHandler)
+
+	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Info("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Warn("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	time.Sleep(1 * time.Second)
+	myLogger.Error("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Panic("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Fatal("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+
+	//Output:
+	// it gonna create dev.log with
+	// {Log example debug <nil>}
+	// {Log example info <nil>}
+	// {Log example warn <nil>}
+
+	// it gonne create dev.log.1986-04-07T02:00:00+02:00 with
+	// {Log example error <nil>}
+	// {Log example panic <nil>}
+	// {Log example fatal <nil>}
 }
