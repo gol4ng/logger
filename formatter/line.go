@@ -11,7 +11,7 @@ type Line struct {
 }
 
 func (l *Line) Format(e logger.Entry) interface{} {
-	return fmt.Sprintf(l.format, e.Message, e.Level)
+	return fmt.Sprintf(l.format, e.Message, e.Level, e.Context)
 }
 
 func NewLine(format string) *Line {
