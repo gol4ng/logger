@@ -11,15 +11,12 @@ func ExampleMinLevelFilterHandler() {
 	streamHandler := handler.NewStream(os.Stdout, logger.NewNilFormatter())
 
 	minLvlFilterHandler := handler.NewMinLevelFilter(streamHandler, logger.WarnLevel)
-
-	myLogger := logger.NewLogger(minLvlFilterHandler)
-
-	myLogger.Debug("will be excluded", nil)
-	myLogger.Info("will be excluded", nil)
-	myLogger.Warn("will be printed", nil)
-	myLogger.Error("will be printed", nil)
-	myLogger.Panic("will be printed", nil)
-	myLogger.Fatal("will be printed", nil)
+	minLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.DebugLevel})
+	minLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.InfoLevel})
+	minLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.WarnLevel})
+	minLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.ErrorLevel})
+	minLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.PanicLevel})
+	minLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.FatalLevel})
 
 	//Output:
 	// {will be printed warn <nil>}
@@ -33,14 +30,12 @@ func ExampleRangeLevelFilterHandler() {
 
 	rangeLvlFilterHandler := handler.NewRangeLevelFilter(streamHandler, logger.InfoLevel, logger.WarnLevel)
 
-	myLogger := logger.NewLogger(rangeLvlFilterHandler)
-
-	myLogger.Debug("will be excluded", nil)
-	myLogger.Info("will be printed", nil)
-	myLogger.Warn("will be printed", nil)
-	myLogger.Error("will be excluded", nil)
-	myLogger.Panic("will be excluded", nil)
-	myLogger.Fatal("will be excluded", nil)
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.DebugLevel})
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.InfoLevel})
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.WarnLevel})
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.ErrorLevel})
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.PanicLevel})
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.FatalLevel})
 
 	//Output:
 	// {will be printed info <nil>}
@@ -54,14 +49,12 @@ func ExampleCustomFilterHandler() {
 		return e.Level == logger.InfoLevel || e.Level == logger.PanicLevel
 	})
 
-	myLogger := logger.NewLogger(rangeLvlFilterHandler)
-
-	myLogger.Debug("will be printed", nil)
-	myLogger.Info("will be excluded", nil)
-	myLogger.Warn("will be printed", nil)
-	myLogger.Error("will be printed", nil)
-	myLogger.Panic("will be excluded", nil)
-	myLogger.Fatal("will be printed", nil)
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.DebugLevel})
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.InfoLevel})
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.WarnLevel})
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.ErrorLevel})
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.PanicLevel})
+	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.FatalLevel})
 
 	//Output:
 	// {will be printed debug <nil>}

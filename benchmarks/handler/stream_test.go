@@ -11,20 +11,19 @@ import (
 func BenchmarkNilStreamHandler(b *testing.B) {
 	b.ReportAllocs()
 
-	myLogger := logger.NewLogger(handler.NewNilStream())
+	nilStreamHandler := handler.NewNilStream()
 
 	for n := 0; n < b.N; n++ {
-		myLogger.Info("This log message go anywhere.", nil)
+		nilStreamHandler.Handle(logger.Entry{Message: "This log message go anywhere.", Level: logger.InfoLevel})
 	}
 }
 
 func BenchmarkStdoutStreamHandler(b *testing.B) {
 	b.ReportAllocs()
 
-	myHandler := handler.NewStream(os.Stdout, logger.NewNilFormatter())
-	myLogger := logger.NewLogger(myHandler)
+	streamHandler := handler.NewStream(os.Stdout, logger.NewNilFormatter())
 
 	for n := 0; n < b.N; n++ {
-		myLogger.Info("This log message go anywhere.", nil)
+		streamHandler.Handle(logger.Entry{Message: "This log message go anywhere.", Level: logger.InfoLevel})
 	}
 }

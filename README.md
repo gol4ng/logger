@@ -6,7 +6,6 @@ Logger
 - benchmark
 - improve err handling
 - Implement all the handler
-    - Strategy
     - rotating file
     - fingercross
     - syslog

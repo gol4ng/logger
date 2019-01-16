@@ -9,8 +9,6 @@ import (
 )
 
 func ExampleGroupHandler() {
-	myString := "Log example"
-
 	lineFormatter := formatter.NewLine("%[2]s | %[1]s")
 	lineLogHandler := handler.NewStream(os.Stdout, lineFormatter)
 
@@ -19,9 +17,7 @@ func ExampleGroupHandler() {
 
 	groupHandler := handler.NewGroup(lineLogHandler, jsonLogHandler)
 
-	myLogger := logger.NewLogger(groupHandler)
-
-	myLogger.Info(myString, nil)
+	groupHandler.Handle(logger.Entry{Message: "Log example"})
 
 	//Output:
 	// info | Log example

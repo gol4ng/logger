@@ -11,10 +11,7 @@ import (
 func ExampleStreamHandler() {
 	lineFormatter := formatter.NewLine("%[2]s | %[1]s")
 	lineLogHandler := handler.NewStream(os.Stdout, lineFormatter)
-
-	myLogger := logger.NewLogger(lineLogHandler)
-
-	myLogger.Info("Log example", nil)
+	lineLogHandler.Handle(logger.Entry{Message: "Log example"})
 
 	//Output:
 	// info | Log example
