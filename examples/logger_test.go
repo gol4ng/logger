@@ -3,6 +3,7 @@ package example_handler_test
 import (
 	"log/syslog"
 	"os"
+	"time"
 
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
@@ -133,6 +134,42 @@ func ExampleLoggerWrapHandler() {
 	//critical Log example
 	//alert Log example
 	//emergency Log example
+}
+
+func ExampleLoggerTimeRotateHandler() {
+	lineFormatter := formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")
+
+	rotateLogHandler, _ := handler.NewTimeRotateFileStream("./%s.log", time.Stamp, lineFormatter, 1*time.Second)
+	myLogger := logger.NewLogger(rotateLogHandler)
+
+	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Info("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Warning("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	time.Sleep(1 * time.Second)
+	myLogger.Error("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Alert("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Critical("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+
+	//Output:
+	//
+}
+
+func ExampleLoggerLogRotateHandler() {
+	lineFormatter := formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")
+
+	rotateLogHandler, _ := handler.NewLogRotateFileStream("test", "./%s.log", time.Stamp, lineFormatter, 1*time.Second)
+	myLogger := logger.NewLogger(rotateLogHandler)
+
+	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Info("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Warning("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	time.Sleep(1 * time.Second)
+	myLogger.Error("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Alert("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Critical("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+
+	//Output:
+	//
 }
 
 // You can run the command below to show syslog messages
