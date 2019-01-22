@@ -1,6 +1,7 @@
 package example_handler_test
 
 import (
+	"log/syslog"
 	"os"
 
 	"github.com/gol4ng/logger"
@@ -132,4 +133,33 @@ func ExampleLoggerWrapHandler() {
 	//critical Log example
 	//alert Log example
 	//emergency Log example
+}
+
+// You can run the command below to show syslog messages
+// syslog -F '$Time $Host $(Sender)[$(PID)] <$((Level)(str))>: $Message'
+//Jan 22 22:42:14 hades my_go_logger[113] <Notice>: notice Log example2 &map[ctx_key:ctx_value]
+//Jan 22 22:42:14 hades my_go_logger[113] <Warning>: warning Log example3 &map[ctx_key:ctx_value]
+//Jan 22 22:42:14 hades my_go_logger[113] <Error>: error Log example4 &map[ctx_key:ctx_value]
+//Jan 22 22:42:14 hades my_go_logger[113] <Critical>: critical Log example5 &map[ctx_key:ctx_value]
+//Jan 22 22:42:14 hades my_go_logger[113] <Alert>: alert Log example6 &map[ctx_key:ctx_value]
+//Jan 22 22:42:14 hades my_go_logger[113] <Emergency>: emergency Log example7 &map[ctx_key:ctx_value]
+func ExampleLoggerSyslogHandler() {
+	syslogHandler, _ := handler.NewSyslog(
+		formatter.NewDefaultFormatter(),
+		"",
+		"",
+		syslog.LOG_DEBUG,
+		"my_go_logger")
+	myLogger := logger.NewLogger(syslogHandler)
+
+	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Info("Log example1", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Notice("Log example2", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Warning("Log example3", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Error("Log example4", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Critical("Log example5", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Alert("Log example6", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Emergency("Log example7", &map[string]interface{}{"ctx_key": "ctx_value"})
+
+	//Output:
 }
