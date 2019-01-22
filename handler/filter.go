@@ -20,7 +20,7 @@ func (f *Filter) Handle(e logger.Entry) error {
 // exclude logs that have a higher level than a given level
 func NewMinLevelFilter(h logger.HandlerInterface, lvl logger.Level) *Filter {
 	return &Filter{h, func(e logger.Entry) bool {
-		return e.Level < lvl
+		return e.Level > lvl
 	}}
 }
 
@@ -32,12 +32,12 @@ func NewMinLevelWrapper(lvl logger.Level) func(h logger.HandlerInterface) logger
 
 // exclude logs that have a level that are not between two given levels
 func NewRangeLevelFilter(h logger.HandlerInterface, minLvl logger.Level, maxLvl logger.Level) *Filter {
-	if minLvl >= maxLvl {
+	if minLvl <= maxLvl {
 		panic("invalid logger range level : Min level must be lower than max level")
 	}
 
 	return &Filter{h, func(e logger.Entry) bool {
-		return e.Level < minLvl || e.Level > maxLvl
+		return e.Level > minLvl || e.Level < maxLvl
 	}}
 }
 

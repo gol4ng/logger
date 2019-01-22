@@ -26,20 +26,28 @@ func TestLogger_Log(t *testing.T) {
 			lvl:  logger.InfoLevel,
 		},
 		{
-			name: "test Warn(...)",
-			lvl:  logger.WarnLevel,
+			name: "test Notice(...)",
+			lvl:  logger.NoticeLevel,
+		},
+		{
+			name: "test Warning(...)",
+			lvl:  logger.WarningLevel,
 		},
 		{
 			name: "test Error(...)",
 			lvl:  logger.ErrorLevel,
 		},
 		{
-			name: "test Panic(...)",
-			lvl:  logger.PanicLevel,
+			name: "test Critical(...)",
+			lvl:  logger.CriticalLevel,
 		},
 		{
-			name: "test Fatal(...)",
-			lvl:  logger.FatalLevel,
+			name: "test Alert(...)",
+			lvl:  logger.AlertLevel,
+		},
+		{
+			name: "test Emergency(...)",
+			lvl:  logger.EmergencyLevel,
 		},
 		{
 			name: "test Log(custom level)",
@@ -69,17 +77,23 @@ func TestLogger_Log(t *testing.T) {
 			case logger.InfoLevel:
 				err = log.Info("log message", nil)
 				break
-			case logger.WarnLevel:
-				err = log.Warn("log message", nil)
+			case logger.NoticeLevel:
+				err = log.Notice("log message", nil)
+				break
+			case logger.WarningLevel:
+				err = log.Warning("log message", nil)
 				break
 			case logger.ErrorLevel:
 				err = log.Error("log message", nil)
 				break
-			case logger.PanicLevel:
-				err = log.Panic("log message", nil)
+			case logger.CriticalLevel:
+				err = log.Critical("log message", nil)
 				break
-			case logger.FatalLevel:
-				err = log.Fatal("log message", nil)
+			case logger.AlertLevel:
+				err = log.Alert("log message", nil)
+				break
+			case logger.EmergencyLevel:
+				err = log.Emergency("log message", nil)
 				break
 			default:
 				err = log.Log("log message", tt.lvl, nil)
@@ -101,10 +115,12 @@ func TestNewLogger_LogWithError(t *testing.T) {
 
 	assert.Equal(t, err, log.Debug("log message", nil))
 	assert.Equal(t, err, log.Info("log message", nil))
-	assert.Equal(t, err, log.Warn("log message", nil))
+	assert.Equal(t, err, log.Notice("log message", nil))
+	assert.Equal(t, err, log.Warning("log message", nil))
 	assert.Equal(t, err, log.Error("log message", nil))
-	assert.Equal(t, err, log.Panic("log message", nil))
-	assert.Equal(t, err, log.Fatal("log message", nil))
+	assert.Equal(t, err, log.Critical("log message", nil))
+	assert.Equal(t, err, log.Alert("log message", nil))
+	assert.Equal(t, err, log.Emergency("log message", nil))
 	assert.Equal(t, err, log.Log("log message", logger.Level(127), nil))
 }
 
@@ -113,10 +129,12 @@ func TestNewNilLogger_Log(t *testing.T) {
 
 	assert.Nil(t, log.Debug("log message", nil))
 	assert.Nil(t, log.Info("log message", nil))
-	assert.Nil(t, log.Warn("log message", nil))
+	assert.Nil(t, log.Notice("log message", nil))
+	assert.Nil(t, log.Warning("log message", nil))
 	assert.Nil(t, log.Error("log message", nil))
-	assert.Nil(t, log.Panic("log message", nil))
-	assert.Nil(t, log.Fatal("log message", nil))
+	assert.Nil(t, log.Critical("log message", nil))
+	assert.Nil(t, log.Alert("log message", nil))
+	assert.Nil(t, log.Emergency("log message", nil))
 	assert.Nil(t, log.Log("log message", logger.Level(127), nil))
 }
 

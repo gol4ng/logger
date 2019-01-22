@@ -21,11 +21,11 @@ func BenchmarkMinLevelFilterHandler(b *testing.B) {
 func BenchmarkRangeLevelFilterHandler(b *testing.B) {
 	b.ReportAllocs()
 
-	rangeLevelHandler := handler.NewRangeLevelFilter(&logger.NilHandler{}, logger.InfoLevel, logger.WarnLevel)
+	rangeLevelHandler := handler.NewRangeLevelFilter(&logger.NilHandler{}, logger.InfoLevel, logger.WarningLevel)
 
 	for n := 0; n < b.N; n++ {
 		rangeLevelHandler.Handle(logger.Entry{Message: "This log message is really logged.", Level: logger.InfoLevel})
-		rangeLevelHandler.Handle(logger.Entry{Message: "This log message is really logged.", Level: logger.WarnLevel})
+		rangeLevelHandler.Handle(logger.Entry{Message: "This log message is really logged.", Level: logger.WarningLevel})
 		rangeLevelHandler.Handle(logger.Entry{Message: "This log message will be excluded.", Level: logger.DebugLevel})
 		rangeLevelHandler.Handle(logger.Entry{Message: "This log message will be excluded.", Level: logger.ErrorLevel})
 	}

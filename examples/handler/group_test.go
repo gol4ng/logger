@@ -20,6 +20,6 @@ func ExampleGroupHandler() {
 	groupHandler.Handle(logger.Entry{Message: "Log example"})
 
 	//Output:
-	// info | Log example
+	// emergency | Log example
 	// {"Message":"Log example","Level":0,"Context":null}
 }
