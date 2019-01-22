@@ -24,7 +24,7 @@ func TestStream_Handle(t *testing.T) {
 
 	h := handler.NewStream(&b, &mockFormatter)
 
-	assert.Nil(t, h.Handle(logger.Entry{Message: "test message", Level: logger.WarnLevel, Context: nil}))
+	assert.Nil(t, h.Handle(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
 	assert.Equal(t, "my formatter return\n", b.String())
 }
 

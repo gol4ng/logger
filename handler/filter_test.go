@@ -41,26 +41,30 @@ func TestFilter_HandleWithExclusion(t *testing.T) {
 }
 
 func TestNewMinLevelFilter(t *testing.T) {
-	logLevels := [6]logger.Level{
+	logLevels := [8]logger.Level{
 		logger.DebugLevel,
 		logger.InfoLevel,
-		logger.WarnLevel,
+		logger.NoticeLevel,
+		logger.WarningLevel,
 		logger.ErrorLevel,
-		logger.PanicLevel,
-		logger.FatalLevel,
+		logger.CriticalLevel,
+		logger.AlertLevel,
+		logger.EmergencyLevel,
 	}
 
 	tests := []struct {
 		name             string
 		lvl              logger.Level
-		logLevelsHandled [6]bool
+		logLevelsHandled [8]bool
 	}{
-		{name: "test min lvl DEBUG", lvl: logger.DebugLevel, logLevelsHandled: [6]bool{true, true, true, true, true, true}},
-		{name: "test min lvl INFO", lvl: logger.InfoLevel, logLevelsHandled: [6]bool{false, true, true, true, true, true}},
-		{name: "test min lvl WARN", lvl: logger.WarnLevel, logLevelsHandled: [6]bool{false, false, true, true, true, true}},
-		{name: "test min lvl ERROR", lvl: logger.ErrorLevel, logLevelsHandled: [6]bool{false, false, false, true, true, true}},
-		{name: "test min lvl PANIC", lvl: logger.PanicLevel, logLevelsHandled: [6]bool{false, false, false, false, true, true}},
-		{name: "test min lvl FATAL", lvl: logger.FatalLevel, logLevelsHandled: [6]bool{false, false, false, false, false, true}},
+		{name: "test min lvl DEBUG", lvl: logger.DebugLevel, logLevelsHandled: [8]bool{true, true, true, true, true, true, true, true}},
+		{name: "test min lvl INFO", lvl: logger.InfoLevel, logLevelsHandled: [8]bool{false, true, true, true, true, true, true, true}},
+		{name: "test min lvl NOTICE", lvl: logger.NoticeLevel, logLevelsHandled: [8]bool{false, false, true, true, true, true, true, true}},
+		{name: "test min lvl WARNING", lvl: logger.WarningLevel, logLevelsHandled: [8]bool{false, false, false, true, true, true, true, true}},
+		{name: "test min lvl ERROR", lvl: logger.ErrorLevel, logLevelsHandled: [8]bool{false, false, false, false, true, true, true, true}},
+		{name: "test min lvl CRITICAL", lvl: logger.CriticalLevel, logLevelsHandled: [8]bool{false, false, false, false, false, true, true, true}},
+		{name: "test min lvl ALERT", lvl: logger.AlertLevel, logLevelsHandled: [8]bool{false, false, false, false, false, false, true, true}},
+		{name: "test min lvl EMERGENCY", lvl: logger.EmergencyLevel, logLevelsHandled: [8]bool{false, false, false, false, false, false, false, true}},
 	}
 	for _, tt := range tests {
 		for i, logLevel := range logLevels {
@@ -101,23 +105,25 @@ func TestNewMinLevelFilter(t *testing.T) {
 }
 
 func TestNewRangeLevelFilter(t *testing.T) {
-	logLevels := [6]logger.Level{
+	logLevels := [8]logger.Level{
 		logger.DebugLevel,
 		logger.InfoLevel,
-		logger.WarnLevel,
+		logger.NoticeLevel,
+		logger.WarningLevel,
 		logger.ErrorLevel,
-		logger.PanicLevel,
-		logger.FatalLevel,
+		logger.CriticalLevel,
+		logger.AlertLevel,
+		logger.EmergencyLevel,
 	}
 
 	tests := []struct {
 		name             string
 		minLvl           logger.Level
 		maxLvl           logger.Level
-		logLevelsHandled [6]bool
+		logLevelsHandled [8]bool
 	}{
-		{name: "test between DEBUG/FATAL with log level %s", minLvl: logger.DebugLevel, maxLvl: logger.FatalLevel, logLevelsHandled: [6]bool{true, true, true, true, true, true}},
-		{name: "test between INFO/PANIC with log level %s", minLvl: logger.InfoLevel, maxLvl: logger.PanicLevel, logLevelsHandled: [6]bool{false, true, true, true, true, false}},
+		{name: "test between DEBUG/EMERGENCY with log level %s", minLvl: logger.DebugLevel, maxLvl: logger.EmergencyLevel, logLevelsHandled: [8]bool{true, true, true, true, true, true, true, true}},
+		{name: "test between INFO/ALERT with log level %s", minLvl: logger.InfoLevel, maxLvl: logger.AlertLevel, logLevelsHandled: [8]bool{false, true, true, true, true, true, true, false}},
 	}
 	for _, tt := range tests {
 		for i, logLevel := range logLevels {
@@ -162,33 +168,35 @@ func TestNewRangeLevelFilterWithPanic(t *testing.T) {
 	assert.PanicsWithValue(
 		t,
 		"invalid logger range level : Min level must be lower than max level",
-		func() { handler.NewRangeLevelFilter(&mockHandler, logger.FatalLevel, logger.DebugLevel) })
+		func() { handler.NewRangeLevelFilter(&mockHandler, logger.ErrorLevel, logger.DebugLevel) })
 }
 
 func TestNewFilterWrapped(t *testing.T) {
-	logLevels := [6]logger.Level{
+	logLevels := [8]logger.Level{
 		logger.DebugLevel,
 		logger.InfoLevel,
-		logger.WarnLevel,
+		logger.NoticeLevel,
+		logger.WarningLevel,
 		logger.ErrorLevel,
-		logger.PanicLevel,
-		logger.FatalLevel,
+		logger.CriticalLevel,
+		logger.AlertLevel,
+		logger.EmergencyLevel,
 	}
 
 	tests := []struct {
 		name             string
 		filterFn         func(e logger.Entry) bool
-		logLevelsHandled [6]bool
+		logLevelsHandled [8]bool
 	}{
 		{
-			name:             "test filter DEBUG/FATAL with log level %s",
-			filterFn:         func(e logger.Entry) bool { return e.Level != logger.DebugLevel && e.Level != logger.FatalLevel },
-			logLevelsHandled: [6]bool{true, false, false, false, false, true},
+			name:             "test filter DEBUG/ERROR with log level %s",
+			filterFn:         func(e logger.Entry) bool { return e.Level != logger.DebugLevel && e.Level != logger.ErrorLevel },
+			logLevelsHandled: [8]bool{true, false, false, false, true, false, false, false},
 		},
 		{
-			name:             "test filter INFO/PANIC with log level %s",
-			filterFn:         func(e logger.Entry) bool { return e.Level != logger.InfoLevel && e.Level != logger.PanicLevel },
-			logLevelsHandled: [6]bool{false, true, false, false, true, false},
+			name:             "test filter INFO/ALERT with log level %s",
+			filterFn:         func(e logger.Entry) bool { return e.Level != logger.InfoLevel && e.Level != logger.AlertLevel },
+			logLevelsHandled: [8]bool{false, true, false, false, false, false, true, false},
 		},
 	}
 	for _, tt := range tests {

@@ -18,12 +18,12 @@ func TestJson_Format(t *testing.T) {
 		{
 			name:     "test simple message without context",
 			entry:    logger.Entry{Message: "test message", Level: logger.DebugLevel, Context: nil},
-			expected: "{\"Message\":\"test message\",\"Level\":-1,\"Context\":null}",
+			expected: "{\"Message\":\"test message\",\"Level\":7,\"Context\":null}",
 		},
 		{
 			name:     "test simple message with context",
-			entry:    logger.Entry{Message: "test message", Level: logger.WarnLevel, Context: &map[string]interface{}{"ctx-field": "ctx-value"}},
-			expected: "{\"Message\":\"test message\",\"Level\":1,\"Context\":{\"ctx-field\":\"ctx-value\"}}",
+			entry:    logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: &map[string]interface{}{"ctx-field": "ctx-value"}},
+			expected: "{\"Message\":\"test message\",\"Level\":4,\"Context\":{\"ctx-field\":\"ctx-value\"}}",
 		},
 	}
 

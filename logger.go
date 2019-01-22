@@ -5,12 +5,18 @@ import (
 )
 
 const (
-	DebugLevel Level = iota - 1
-	InfoLevel
-	WarnLevel
+	// Severity.
+
+	// From /usr/include/sys/syslog.h.
+	// These are the same on Linux, BSD, and OS X.
+	EmergencyLevel Level = iota
+	AlertLevel
+	CriticalLevel
 	ErrorLevel
-	PanicLevel
-	FatalLevel
+	WarningLevel
+	NoticeLevel
+	InfoLevel
+	DebugLevel
 )
 
 type Level int8
@@ -21,14 +27,18 @@ func (l Level) String() string {
 		return "debug"
 	case InfoLevel:
 		return "info"
-	case WarnLevel:
-		return "warn"
+	case NoticeLevel:
+		return "notice"
+	case WarningLevel:
+		return "warning"
 	case ErrorLevel:
 		return "error"
-	case PanicLevel:
-		return "panic"
-	case FatalLevel:
-		return "fatal"
+	case CriticalLevel:
+		return "critical"
+	case AlertLevel:
+		return "alert"
+	case EmergencyLevel:
+		return "emergency"
 	default:
 		return fmt.Sprintf("Level(%d)", l)
 	}
@@ -48,17 +58,23 @@ func (l *Logger) Debug(msg string, ctx *map[string]interface{}) error {
 func (l *Logger) Info(msg string, ctx *map[string]interface{}) error {
 	return l.Log(msg, InfoLevel, ctx)
 }
-func (l *Logger) Warn(msg string, ctx *map[string]interface{}) error {
-	return l.Log(msg, WarnLevel, ctx)
+func (l *Logger) Notice(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, NoticeLevel, ctx)
+}
+func (l *Logger) Warning(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, WarningLevel, ctx)
 }
 func (l *Logger) Error(msg string, ctx *map[string]interface{}) error {
 	return l.Log(msg, ErrorLevel, ctx)
 }
-func (l *Logger) Panic(msg string, ctx *map[string]interface{}) error {
-	return l.Log(msg, PanicLevel, ctx)
+func (l *Logger) Critical(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, CriticalLevel, ctx)
 }
-func (l *Logger) Fatal(msg string, ctx *map[string]interface{}) error {
-	return l.Log(msg, FatalLevel, ctx)
+func (l *Logger) Alert(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, AlertLevel, ctx)
+}
+func (l *Logger) Emergency(msg string, ctx *map[string]interface{}) error {
+	return l.Log(msg, EmergencyLevel, ctx)
 }
 
 func (l *Logger) Log(msg string, lvl Level, ctx *map[string]interface{}) error {
