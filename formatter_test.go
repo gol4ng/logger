@@ -20,7 +20,7 @@ func TestNilFormatter_Format(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			e := logger.Entry{}
-			assert.Equal(t, e, tt.formatter.Format(e))
+			assert.Equal(t, "", tt.formatter.Format(e))
 		})
 	}
 }

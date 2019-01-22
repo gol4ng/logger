@@ -9,10 +9,10 @@ import (
 )
 
 func ExampleStreamHandler() {
-	lineFormatter := formatter.NewLine("%[2]s | %[1]s")
+	lineFormatter := formatter.NewDefaultFormatter()
 	lineLogHandler := handler.NewStream(os.Stdout, lineFormatter)
 	lineLogHandler.Handle(logger.Entry{Message: "Log example"})
 
 	//Output:
-	// emergency | Log example
+	// emergency Log example
 }
