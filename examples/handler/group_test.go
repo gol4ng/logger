@@ -9,7 +9,7 @@ import (
 )
 
 func ExampleGroupHandler() {
-	lineFormatter := formatter.NewLine("%[2]s | %[1]s")
+	lineFormatter := formatter.NewDefaultFormatter()
 	lineLogHandler := handler.NewStream(os.Stdout, lineFormatter)
 
 	jsonFormatter := formatter.NewJson()
@@ -20,6 +20,6 @@ func ExampleGroupHandler() {
 	groupHandler.Handle(logger.Entry{Message: "Log example"})
 
 	//Output:
-	// emergency | Log example
+	// emergency Log example
 	// {"Message":"Log example","Level":0,"Context":null}
 }

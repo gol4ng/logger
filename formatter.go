@@ -1,13 +1,13 @@
 package logger
 
 type FormatterInterface interface {
-	Format(entry Entry) interface{}
+	Format(entry Entry) string
 }
 
 type NilFormatter struct{}
 
-func (n *NilFormatter) Format(e Entry) interface{} {
-	return e
+func (n *NilFormatter) Format(e Entry) string {
+	return ""
 }
 
 func NewNilFormatter() *NilFormatter {

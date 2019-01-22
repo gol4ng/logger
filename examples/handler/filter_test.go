@@ -10,7 +10,7 @@ import (
 )
 
 func ExampleMinLevelFilterHandler() {
-	streamHandler := handler.NewStream(os.Stdout, formatter.NewLine("%[2]s"))
+	streamHandler := handler.NewStream(os.Stdout, formatter.NewDefaultFormatter())
 
 	minLvlFilterHandler := handler.NewMinLevelFilter(streamHandler, logger.WarningLevel)
 	minLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.DebugLevel})
@@ -23,15 +23,15 @@ func ExampleMinLevelFilterHandler() {
 	minLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.EmergencyLevel})
 
 	//Output:
-	//warning
-	//error
-	//critical
-	//alert
-	//emergency
+	//warning will be printed
+	//error will be printed
+	//critical will be printed
+	//alert will be printed
+	//emergency will be printed
 }
 
 func ExampleRangeLevelFilterHandler() {
-	streamHandler := handler.NewStream(os.Stdout, formatter.NewLine("%[2]s"))
+	streamHandler := handler.NewStream(os.Stdout, formatter.NewDefaultFormatter())
 
 	rangeLvlFilterHandler := handler.NewRangeLevelFilter(streamHandler, logger.InfoLevel, logger.WarningLevel)
 
@@ -45,13 +45,13 @@ func ExampleRangeLevelFilterHandler() {
 	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.EmergencyLevel})
 
 	//Output:
-	//info
-	//notice
-	//warning
+	//info will be printed
+	//notice will be printed
+	//warning will be printed
 }
 
 func ExampleCustomFilterHandler() {
-	streamHandler := handler.NewStream(os.Stdout, formatter.NewLine("%[2]s"))
+	streamHandler := handler.NewStream(os.Stdout, formatter.NewDefaultFormatter())
 
 	rangeLvlFilterHandler := handler.NewFilter(streamHandler, func(e logger.Entry) bool {
 		return e.Level == logger.InfoLevel || e.Level == logger.AlertLevel
@@ -67,10 +67,10 @@ func ExampleCustomFilterHandler() {
 	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.EmergencyLevel})
 
 	//Output:
-	//debug
-	//notice
-	//warning
-	//error
-	//critical
-	//emergency
+	//debug will be printed
+	//notice will be printed
+	//warning will be printed
+	//error will be printed
+	//critical will be printed
+	//emergency will be printed
 }

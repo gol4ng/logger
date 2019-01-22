@@ -10,7 +10,7 @@ type Line struct {
 	format string
 }
 
-func (l *Line) Format(e logger.Entry) interface{} {
+func (l *Line) Format(e logger.Entry) string {
 	return fmt.Sprintf(l.format, e.Message, e.Level, e.Context)
 }
 
