@@ -11,16 +11,14 @@ type FormatterInterface struct {
 }
 
 // Format provides a mock function with given fields: entry
-func (_m *FormatterInterface) Format(entry logger.Entry) interface{} {
+func (_m *FormatterInterface) Format(entry logger.Entry) string {
 	ret := _m.Called(entry)
 
-	var r0 interface{}
-	if rf, ok := ret.Get(0).(func(logger.Entry) interface{}); ok {
+	var r0 string
+	if rf, ok := ret.Get(0).(func(logger.Entry) string); ok {
 		r0 = rf(entry)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(interface{})
-		}
+		r0 = ret.Get(0).(string)
 	}
 
 	return r0
