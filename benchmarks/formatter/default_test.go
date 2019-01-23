@@ -3,9 +3,8 @@ package benchmark_formatter_test
 import (
 	"testing"
 
-	"github.com/instabledesign/logger/formatter"
-
 	"github.com/instabledesign/logger"
+	"github.com/instabledesign/logger/formatter"
 )
 
 func BenchmarkDefaultFormatter(b *testing.B) {

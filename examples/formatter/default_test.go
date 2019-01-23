@@ -3,9 +3,8 @@ package example_formatter_test
 import (
 	"fmt"
 
-	"github.com/instabledesign/logger/formatter"
-
 	"github.com/instabledesign/logger"
+	"github.com/instabledesign/logger/formatter"
 )
 
 func ExampleDefaultFormatter() {
