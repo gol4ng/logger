@@ -10,9 +10,9 @@ import (
 func BenchmarkGroupHandler(b *testing.B) {
 	b.ReportAllocs()
 
-	nopStreamHandler := logger.NewNopHandler()
+	nopHandler := logger.NewNopHandler()
 
-	groupHandler := handler.NewGroup(nopStreamHandler, nopStreamHandler)
+	groupHandler := handler.NewGroup(nopHandler, nopHandler)
 
 	for n := 0; n < b.N; n++ {
 		groupHandler.Handle(logger.Entry{Message: "This log message go anywhere.", Level: logger.InfoLevel})

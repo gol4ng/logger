@@ -6,7 +6,7 @@ type FormatterInterface interface {
 
 type NopFormatter struct{}
 
-func (n *NopFormatter) Format(e Entry) interface{} {
+func (n *NopFormatter) Format(e Entry) string {
 	return ""
 }
 

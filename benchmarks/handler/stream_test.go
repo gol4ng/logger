@@ -8,7 +8,7 @@ import (
 	"github.com/instabledesign/logger/handler"
 )
 
-func BenchmarkNilStreamHandler(b *testing.B) {
+func BenchmarkNopStreamHandler(b *testing.B) {
 	b.ReportAllocs()
 
 	nopStreamHandler := handler.NewNopStream()

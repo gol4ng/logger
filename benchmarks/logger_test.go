@@ -9,7 +9,7 @@ import (
 	"github.com/instabledesign/logger/handler"
 )
 
-func BenchmarkNilLogger(b *testing.B) {
+func BenchmarkNopLogger(b *testing.B) {
 	b.ReportAllocs()
 
 	myLogger := logger.NewNopLogger()

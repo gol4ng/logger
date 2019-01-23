@@ -13,7 +13,7 @@ func TestNopHandler_Handle(t *testing.T) {
 		name    string
 		handler *logger.NopHandler
 	}{
-		{name: "test nil handler struct", handler: &logger.NopHandler{}},
+		{name: "test nop handler struct", handler: &logger.NopHandler{}},
 		{name: "test NewNopHandler()", handler: logger.NewNopHandler()},
 	}
 

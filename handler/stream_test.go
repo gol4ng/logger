@@ -13,7 +13,7 @@ import (
 	"github.com/instabledesign/logger/mocks"
 )
 
-func TestNilStream_Handle(t *testing.T) {
+func TestNopStream_Handle(t *testing.T) {
 	assert.Nil(t, handler.NewNopStream().Handle(logger.Entry{}))
 }
 

@@ -13,7 +13,7 @@ func TestNopFormatter_Format(t *testing.T) {
 		name      string
 		formatter *logger.NopFormatter
 	}{
-		{name: "test nil formatter struct", formatter: &logger.NopFormatter{}},
+		{name: "test nop formatter struct", formatter: &logger.NopFormatter{}},
 		{name: "test NewNopFormatter()", formatter: logger.NewNopFormatter()},
 	}
 
