@@ -90,8 +90,8 @@ func (l *Logger) WrapNew(w func(h HandlerInterface) HandlerInterface) *Logger {
 	return &Logger{handler: w(l.handler)}
 }
 
-func NewNilLogger() *Logger {
-	return &Logger{handler: &NilHandler{}}
+func NewNopLogger() *Logger {
+	return &Logger{handler: &NopHandler{}}
 }
 
 func NewLogger(h HandlerInterface) *Logger {
