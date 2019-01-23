@@ -4,12 +4,12 @@ type FormatterInterface interface {
 	Format(entry Entry) string
 }
 
-type NilFormatter struct{}
+type NopFormatter struct{}
 
-func (n *NilFormatter) Format(e Entry) string {
+func (n *NopFormatter) Format(e Entry) interface{} {
 	return ""
 }
 
-func NewNilFormatter() *NilFormatter {
-	return &NilFormatter{}
+func NewNopFormatter() *NopFormatter {
+	return &NopFormatter{}
 }

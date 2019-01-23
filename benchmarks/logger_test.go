@@ -12,7 +12,7 @@ import (
 func BenchmarkNilLogger(b *testing.B) {
 	b.ReportAllocs()
 
-	myLogger := logger.NewNilLogger()
+	myLogger := logger.NewNopLogger()
 
 	for n := 0; n < b.N; n++ {
 		myLogger.Info("This log message go anywhere.", nil)
@@ -44,7 +44,7 @@ func BenchmarkLoggerJsonFormatter(b *testing.B) {
 func BenchmarkLoggerMinLevelFilterHandler(b *testing.B) {
 	b.ReportAllocs()
 
-	lineLogHandler := handler.NewStream(os.Stdout, &logger.NilFormatter{})
+	lineLogHandler := handler.NewStream(os.Stdout, &logger.NopFormatter{})
 	filterLogHandler := handler.NewMinLevelFilter(lineLogHandler, logger.InfoLevel)
 	myLogger := logger.NewLogger(filterLogHandler)
 
@@ -58,7 +58,7 @@ func BenchmarkLoggerGroupHandler(b *testing.B) {
 	b.ReportAllocs()
 
 	jsonLogHandler := handler.NewStream(os.Stdout, &formatter.Json{})
-	lineLogHandler := handler.NewStream(os.Stdout, &logger.NilFormatter{})
+	lineLogHandler := handler.NewStream(os.Stdout, &logger.NopFormatter{})
 	groupLogHandler := handler.NewGroup(jsonLogHandler, lineLogHandler)
 	myLogger := logger.NewLogger(groupLogHandler)
 

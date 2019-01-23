@@ -125,7 +125,7 @@ func TestNewLogger_LogWithError(t *testing.T) {
 }
 
 func TestNewNilLogger_Log(t *testing.T) {
-	log := logger.NewNilLogger()
+	log := logger.NewNopLogger()
 
 	assert.Nil(t, log.Debug("log message", nil))
 	assert.Nil(t, log.Info("log message", nil))

@@ -14,7 +14,7 @@ import (
 )
 
 func TestNilStream_Handle(t *testing.T) {
-	assert.Nil(t, handler.NewNilStream().Handle(logger.Entry{}))
+	assert.Nil(t, handler.NewNopStream().Handle(logger.Entry{}))
 }
 
 func TestStream_Handle(t *testing.T) {

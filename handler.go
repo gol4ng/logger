@@ -4,12 +4,12 @@ type HandlerInterface interface {
 	Handle(e Entry) error
 }
 
-type NilHandler struct{}
+type NopHandler struct{}
 
-func (n *NilHandler) Handle(e Entry) error {
+func (n *NopHandler) Handle(e Entry) error {
 	return nil
 }
 
-func NewNilHandler() *NilHandler {
-	return &NilHandler{}
+func NewNopHandler() *NopHandler {
+	return &NopHandler{}
 }
