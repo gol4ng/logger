@@ -7,7 +7,7 @@ type FormatterInterface interface {
 type NilFormatter struct{}
 
 func (n *NilFormatter) Format(e Entry) string {
-	return "[" + string(e.Level) + "]" + e.Message
+	return ""
 }
 
 func NewNilFormatter() *NilFormatter {
