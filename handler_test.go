@@ -8,13 +8,13 @@ import (
 	"github.com/instabledesign/logger"
 )
 
-func TestNilHandler_Handle(t *testing.T) {
+func TestNopHandler_Handle(t *testing.T) {
 	tests := []struct {
 		name    string
-		handler *logger.NilHandler
+		handler *logger.NopHandler
 	}{
-		{name: "test nil handler struct", handler: &logger.NilHandler{}},
-		{name: "test NewNilHandler()", handler: logger.NewNilHandler()},
+		{name: "test nop handler struct", handler: &logger.NopHandler{}},
+		{name: "test NewNopHandler()", handler: logger.NewNopHandler()},
 	}
 
 	for _, tt := range tests {

@@ -8,13 +8,13 @@ import (
 	"github.com/instabledesign/logger"
 )
 
-func TestNilFormatter_Format(t *testing.T) {
+func TestNopFormatter_Format(t *testing.T) {
 	tests := []struct {
 		name      string
-		formatter *logger.NilFormatter
+		formatter *logger.NopFormatter
 	}{
-		{name: "test nil formatter struct", formatter: &logger.NilFormatter{}},
-		{name: "test NewNilFormatter()", formatter: logger.NewNilFormatter()},
+		{name: "test nop formatter struct", formatter: &logger.NopFormatter{}},
+		{name: "test NewNopFormatter()", formatter: logger.NewNopFormatter()},
 	}
 
 	for _, tt := range tests {

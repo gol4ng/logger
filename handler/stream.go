@@ -20,8 +20,8 @@ func (s *Stream) Handle(e logger.Entry) error {
 	return err
 }
 
-func NewNilStream() *Stream {
-	return &Stream{writer: os.NewFile(uintptr(syscall.Stderr), "/dev/null"), formatter: &logger.NilFormatter{}}
+func NewNopStream() *Stream {
+	return &Stream{writer: os.NewFile(uintptr(syscall.Stderr), "/dev/null"), formatter: &logger.NopFormatter{}}
 }
 
 func NewStream(w io.Writer, f logger.FormatterInterface) *Stream {
