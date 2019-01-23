@@ -7,6 +7,7 @@ import (
 const (
 	// Severity.
 
+	// https://github.com/freebsd/freebsd/blob/master/sys/sys/syslog.h#L51
 	// From /usr/include/sys/syslog.h.
 	// These are the same on Linux, BSD, and OS X.
 	EmergencyLevel Level = iota
