@@ -163,7 +163,7 @@ func TestNewRangeLevelFilter(t *testing.T) {
 	}
 }
 
-func TestNewRangeLevelFilterWithPanic(t *testing.T) {
+func TestNewRangeLevelFilterWillPanic(t *testing.T) {
 	mockHandler := mocks.HandlerInterface{}
 	assert.PanicsWithValue(
 		t,
