@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/instabledesign/logger"
-	"github.com/instabledesign/logger/handler"
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/handler"
 )
 
 func BenchmarkNopStreamHandler(b *testing.B) {

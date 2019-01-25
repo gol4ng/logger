@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/instabledesign/logger"
+	"github.com/gol4ng/logger"
 )
 
 func TestNopFormatter_Format(t *testing.T) {

@@ -1,6 +1,6 @@
 package formatter
 
-import "github.com/instabledesign/logger"
+import "github.com/gol4ng/logger"
 
 type DefaultFormatter struct{}
 

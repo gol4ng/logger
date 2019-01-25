@@ -3,9 +3,9 @@ package benchmark_formatter_test
 import (
 	"testing"
 
-	"github.com/instabledesign/logger/formatter"
+	"github.com/gol4ng/logger/formatter"
 
-	"github.com/instabledesign/logger"
+	"github.com/gol4ng/logger"
 )
 
 func BenchmarkJsonFormatter(b *testing.B) {

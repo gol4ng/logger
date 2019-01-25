@@ -3,10 +3,10 @@ package example_handler_test
 import (
 	"os"
 
-	"github.com/instabledesign/logger/formatter"
+	"github.com/gol4ng/logger/formatter"
 
-	"github.com/instabledesign/logger"
-	"github.com/instabledesign/logger/handler"
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/handler"
 )
 
 func ExampleMinLevelFilterHandler() {

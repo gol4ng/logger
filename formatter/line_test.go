@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/instabledesign/logger"
-	"github.com/instabledesign/logger/formatter"
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
 )
 
 func TestLine_Format(t *testing.T) {
