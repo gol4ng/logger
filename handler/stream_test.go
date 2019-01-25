@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/instabledesign/logger"
-	"github.com/instabledesign/logger/handler"
-	"github.com/instabledesign/logger/mocks"
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/handler"
+	"github.com/gol4ng/logger/mocks"
 )
 
 func TestNopStream_Handle(t *testing.T) {

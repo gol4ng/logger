@@ -3,7 +3,7 @@ package formatter
 import (
 	"encoding/json"
 
-	"github.com/instabledesign/logger"
+	"github.com/gol4ng/logger"
 )
 
 type Json struct {

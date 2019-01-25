@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/instabledesign/logger"
-	"github.com/instabledesign/logger/handler"
-	"github.com/instabledesign/logger/mocks"
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/handler"
+	"github.com/gol4ng/logger/mocks"
 )
 
 func TestGroup_Handle(t *testing.T) {

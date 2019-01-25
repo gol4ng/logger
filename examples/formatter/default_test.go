@@ -3,8 +3,8 @@ package example_formatter_test
 import (
 	"fmt"
 
-	"github.com/instabledesign/logger"
-	"github.com/instabledesign/logger/formatter"
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
 )
 
 func ExampleDefaultFormatter() {

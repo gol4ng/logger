@@ -6,7 +6,7 @@ import (
 	"os"
 	"syscall"
 
-	"github.com/instabledesign/logger"
+	"github.com/gol4ng/logger"
 )
 
 type Stream struct {

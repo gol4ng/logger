@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/instabledesign/logger"
-	"github.com/instabledesign/logger/mocks"
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/mocks"
 )
 
 func TestLogger_Log(t *testing.T) {

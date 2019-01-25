@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/instabledesign/logger"
+	"github.com/gol4ng/logger"
 )
 
 type Filter struct {

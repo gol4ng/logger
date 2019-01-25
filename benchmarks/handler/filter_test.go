@@ -3,8 +3,8 @@ package benchmark_handler_test
 import (
 	"testing"
 
-	"github.com/instabledesign/logger"
-	"github.com/instabledesign/logger/handler"
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/handler"
 )
 
 func BenchmarkMinLevelFilterHandler(b *testing.B) {

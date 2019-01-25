@@ -3,7 +3,7 @@ package formatter
 import (
 	"fmt"
 
-	"github.com/instabledesign/logger"
+	"github.com/gol4ng/logger"
 )
 
 type Line struct {
