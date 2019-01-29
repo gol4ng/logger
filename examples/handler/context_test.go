@@ -3,13 +3,13 @@ package example_handler_test
 import (
 	"os"
 
-	"github.com/instabledesign/logger"
-	"github.com/instabledesign/logger/formatter"
-	"github.com/instabledesign/logger/handler"
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
+	"github.com/gol4ng/logger/handler"
 )
 
 func ExampleContextHandler() {
-	streamHandler := handler.NewStream(os.Stdout, formatter.NewLine("%s %s %s"))
+	streamHandler := handler.NewStream(os.Stdout, formatter.NewDefaultFormatter())
 
 	contextHandler := handler.NewContext(streamHandler, map[string]interface{}{"a": "1", "b": "2"})
 
@@ -18,6 +18,6 @@ func ExampleContextHandler() {
 	myLogger.Debug("will be printed", &map[string]interface{}{"b": "3", "c": "4"})
 
 	//Output:
-	// will be printed debug &map[c:4 a:1 b:2]
-	// will be printed debug &map[b:3 c:4]
+	// debug will be printed
+	// debug will be printed
 }
