@@ -13,10 +13,6 @@ import (
 	"github.com/gol4ng/logger/mocks"
 )
 
-func TestNopStream_Handle(t *testing.T) {
-	assert.Nil(t, handler.NewNopStream().Handle(logger.Entry{}))
-}
-
 func TestStream_Handle(t *testing.T) {
 	var b bytes.Buffer
 	mockFormatter := mocks.FormatterInterface{}
