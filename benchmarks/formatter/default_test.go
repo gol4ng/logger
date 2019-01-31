@@ -12,6 +12,7 @@ func BenchmarkDefaultFormatter(b *testing.B) {
 
 	jsonFormatter := formatter.NewJson()
 
+	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
 		jsonFormatter.Format(logger.Entry{Message: "This log message is really logged.", Level: logger.InfoLevel})
 	}

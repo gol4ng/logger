@@ -13,6 +13,7 @@ func BenchmarkLineFormatter(b *testing.B) {
 
 	lineFormatter := formatter.NewLine("%s %s %s")
 
+	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
 		lineFormatter.Format(logger.Entry{Message: "This log message is really logged.", Level: logger.InfoLevel})
 	}
