@@ -13,6 +13,7 @@ func BenchmarkNopStreamHandler(b *testing.B) {
 
 	nopStreamHandler := handler.NewNopStream()
 
+	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
 		nopStreamHandler.Handle(logger.Entry{Message: "This log message go anywhere.", Level: logger.InfoLevel})
 	}
@@ -23,6 +24,7 @@ func BenchmarkStdoutStreamHandler(b *testing.B) {
 
 	streamHandler := handler.NewStream(os.Stdout, logger.NewNopFormatter())
 
+	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
 		streamHandler.Handle(logger.Entry{Message: "This log message go anywhere.", Level: logger.InfoLevel})
 	}
