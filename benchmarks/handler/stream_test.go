@@ -8,17 +8,6 @@ import (
 	"github.com/gol4ng/logger/handler"
 )
 
-func BenchmarkNopStreamHandler(b *testing.B) {
-	b.ReportAllocs()
-
-	nopStreamHandler := handler.NewNopStream()
-
-	b.ResetTimer()
-	for n := 0; n < b.N; n++ {
-		nopStreamHandler.Handle(logger.Entry{Message: "This log message go anywhere.", Level: logger.InfoLevel})
-	}
-}
-
 func BenchmarkStdoutStreamHandler(b *testing.B) {
 	b.ReportAllocs()
 
