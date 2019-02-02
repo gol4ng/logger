@@ -1,14 +1,14 @@
 package example_formatter_test
 
 import (
-	"bou.ke/monkey"
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/gol4ng/logger/formatter"
+	"bou.ke/monkey"
 
 	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
 )
 
 func ExampleGelfFormatter() {

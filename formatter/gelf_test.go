@@ -1,15 +1,15 @@
 package formatter_test
 
 import (
-	"bou.ke/monkey"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/gol4ng/logger/formatter"
+	"bou.ke/monkey"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
 )
 
 func TestGelfFormatter(t *testing.T) {
