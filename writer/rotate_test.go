@@ -53,6 +53,8 @@ func TestNewRotateFileWriter_Rotate(t *testing.T) {
 	assert.Equal(t, 4, n)
 	_, err = os.Stat(os.TempDir() + "Apr  7 02:16:40.log")
 	assert.Nil(t, err)
+
+	//TODO test file content
 }
 
 func TestNewRotateFileWriter_LogFileProvider_Rotate(t *testing.T) {
@@ -88,4 +90,6 @@ func TestNewRotateFileWriter_LogFileProvider_Rotate(t *testing.T) {
 	n, err = w.Write([]byte("second"))
 	assert.Nil(t, err)
 	assert.Equal(t, 6, n)
+
+	//TODO test file content
 }
