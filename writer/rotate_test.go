@@ -15,13 +15,13 @@ func TestNewTimeRotateFileWriter_Write(t *testing.T) {
 	monkey.Patch(time.Now, func() time.Time { return time.Unix(513216000, 0) })
 	defer monkey.UnpatchAll()
 
-	w, err := writer.NewRotateFileWriter(writer.TimeFileProvider("/tmp/%s.log", time.Stamp))
+	w, err := writer.NewRotateFileWriter(writer.TimeFileProvider(os.TempDir()+"%s.log", time.Stamp))
 	assert.Nil(t, err)
 
 	n, err := w.Write([]byte("test"))
 	assert.Nil(t, err)
 	assert.Equal(t, 4, n)
-	_, err = os.Stat("/tmp/Apr  7 02:00:00.log")
+	_, err = os.Stat(os.TempDir() + "Apr  7 02:00:00.log")
 	assert.Nil(t, err)
 }
 
@@ -37,13 +37,13 @@ func TestNewRotateFileWriter_Rotate(t *testing.T) {
 	})
 	defer monkey.UnpatchAll()
 
-	w, err := writer.NewRotateFileWriter(writer.TimeFileProvider("/tmp/%s.log", time.Stamp))
+	w, err := writer.NewRotateFileWriter(writer.TimeFileProvider(os.TempDir()+"%s.log", time.Stamp))
 	assert.Nil(t, err)
 
 	n, err := w.Write([]byte("test"))
 	assert.Nil(t, err)
 	assert.Equal(t, 4, n)
-	_, err = os.Stat("/tmp/Apr  7 02:00:00.log")
+	_, err = os.Stat(os.TempDir() + "Apr  7 02:00:00.log")
 	assert.Nil(t, err)
 
 	assert.Nil(t, w.Rotate())
@@ -51,7 +51,7 @@ func TestNewRotateFileWriter_Rotate(t *testing.T) {
 	n, err = w.Write([]byte("test"))
 	assert.Nil(t, err)
 	assert.Equal(t, 4, n)
-	_, err = os.Stat("/tmp/Apr  7 02:16:40.log")
+	_, err = os.Stat(os.TempDir() + "Apr  7 02:16:40.log")
 	assert.Nil(t, err)
 }
 
@@ -67,21 +67,21 @@ func TestNewRotateFileWriter_LogFileProvider_Rotate(t *testing.T) {
 	})
 	defer monkey.UnpatchAll()
 
-	w, err := writer.NewRotateFileWriter(writer.LogFileProvider("test", "/tmp/%s.log", time.Stamp))
+	w, err := writer.NewRotateFileWriter(writer.LogFileProvider("test", os.TempDir()+"%s.log", time.Stamp))
 	assert.Nil(t, err)
 
 	n, err := w.Write([]byte("first"))
 	assert.Nil(t, err)
 	assert.Equal(t, 5, n)
-	if _, err := os.Stat("/tmp/test.log"); os.IsNotExist(err) {
+	if _, err := os.Stat(os.TempDir() + "test.log"); os.IsNotExist(err) {
 		t.Error("file \"/tmp/test.log\" must exist")
 	}
 
 	assert.Nil(t, w.Rotate())
-	if _, err := os.Stat("/tmp/Apr  7 02:00:00.log"); os.IsNotExist(err) {
+	if _, err := os.Stat(os.TempDir() + "Apr  7 02:00:00.log"); os.IsNotExist(err) {
 		t.Error("file \"/tmp/test.log\" must exist")
 	}
-	if _, err := os.Stat("/tmp/test.log"); os.IsNotExist(err) {
+	if _, err := os.Stat(os.TempDir() + "test.log"); os.IsNotExist(err) {
 		t.Error("file \"/tmp/test.log\" must exist")
 	}
 

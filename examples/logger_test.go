@@ -139,7 +139,7 @@ func ExampleLoggerWrapHandler() {
 func ExampleLoggerTimeRotateHandler() {
 	lineFormatter := formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")
 
-	rotateLogHandler, _ := handler.NewTimeRotateFileStream("./%s.log", time.Stamp, lineFormatter, 1*time.Second)
+	rotateLogHandler, _ := handler.NewTimeRotateFileStream(os.TempDir()+"%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
 	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
@@ -157,7 +157,7 @@ func ExampleLoggerTimeRotateHandler() {
 func ExampleLoggerLogRotateHandler() {
 	lineFormatter := formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")
 
-	rotateLogHandler, _ := handler.NewLogRotateFileStream("test", "./%s.log", time.Stamp, lineFormatter, 1*time.Second)
+	rotateLogHandler, _ := handler.NewLogRotateFileStream("test", os.TempDir()+"%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
 	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
