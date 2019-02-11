@@ -7,26 +7,12 @@ import (
 	"github.com/gol4ng/logger/writer"
 )
 
-func NewRotateStream(writer writer.RotateWriter, formatter logger.FormatterInterface, interval time.Duration) *Stream {
-	ticker := time.NewTicker(interval)
-	go func() {
-		for range ticker.C {
-			if err := writer.Rotate(); err != nil {
-				panic(err)
-			}
-		}
-	}()
-	return &Stream{writer: writer, formatter: formatter}
-}
-
 func NewTimeRotateFileStream(format string, timeFormat string, formatter logger.FormatterInterface, interval time.Duration) (*Stream, error) {
-	w, err := writer.NewRotateFileWriter(writer.TimeFileProvider(format, timeFormat))
-
-	return NewRotateStream(w, formatter, interval), err
+	w, err := writer.NewTimeRotateFileWriter(writer.TimeFileProvider(format, timeFormat), interval)
+	return &Stream{writer: w, formatter: formatter}, err
 }
 
 func NewLogRotateFileStream(name string, format string, timeFormat string, formatter logger.FormatterInterface, interval time.Duration) (*Stream, error) {
-	w, err := writer.NewRotateFileWriter(writer.LogFileProvider(name, format, timeFormat))
-
-	return NewRotateStream(w, formatter, interval), err
+	w, err := writer.NewTimeRotateFileWriter(writer.LogFileProvider(name, format, timeFormat), interval)
+	return &Stream{writer: w, formatter: formatter}, err
 }

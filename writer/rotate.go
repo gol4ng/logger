@@ -16,7 +16,6 @@ func TimeFileProvider(format string, timeFormat string) func(f *os.File) (*os.Fi
 				return nil, err
 			}
 		}
-
 		return os.Create(fmt.Sprintf(format, time.Now().Format(timeFormat)))
 	}
 }
@@ -34,9 +33,27 @@ func LogFileProvider(name string, format string, timeFormat string) func(f *os.F
 				return nil, err
 			}
 		}
-
 		return os.Create(basePath)
 	}
+}
+
+type TimeRotateWriter struct {
+	RotateWriter
+	Interval     time.Duration
+	PanicHandler func(error)
+}
+
+func (t *TimeRotateWriter) Start() {
+	ticker := time.NewTicker(t.Interval)
+	go func() {
+		for range ticker.C {
+			if err := t.Rotate(); err != nil {
+				if t.PanicHandler != nil {
+					t.PanicHandler(err)
+				}
+			}
+		}
+	}()
 }
 
 type RotateWriter interface {
@@ -71,4 +88,15 @@ func NewRotateFileWriter(fileProvider func(*os.File) (*os.File, error)) (*Rotate
 	fw := &RotateFileWriter{file: file, fileProvider: fileProvider}
 
 	return fw, err
+}
+
+func NewTimeRotateWriter(writer RotateWriter, interval time.Duration) *TimeRotateWriter {
+	w := &TimeRotateWriter{RotateWriter: writer, Interval: interval}
+	w.Start()
+	return w
+}
+
+func NewTimeRotateFileWriter(fileProvider func(*os.File) (*os.File, error), interval time.Duration) (*TimeRotateWriter, error) {
+	w, err := NewRotateFileWriter(fileProvider)
+	return NewTimeRotateWriter(w, interval), err
 }
