@@ -17,6 +17,8 @@ import (
 
 func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 	var f *os.File
+	i := 0
+
 	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Write", func(_ *os.File, p []byte) (n int, err error) {
 		assert.Equal(t, []uint8("my formatter return\n"), p)
 		return 99, nil
@@ -24,19 +26,33 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 
 	file := os.File{}
 	monkey.Patch(os.Create, func(name string) (*os.File, error) {
-		assert.Equal(t, "fake_format_Mon Apr  7 1986", name)
+		if i == 1 {
+			assert.Equal(t, "fake_format_Mon Apr  7 1986", name)
+		}
+		if i == 2 {
+			assert.Equal(t, "fake_format_Tue Apr  7 1987", name)
+		}
 		return &file, nil
 	})
 
-	i := 0
+	c := make(chan time.Time, 1)
+
+	monkey.Patch(time.NewTicker, func(d time.Duration) *time.Ticker {
+		assert.Equal(t, 100*time.Millisecond, d)
+
+		return &time.Ticker{
+			C: c,
+		}
+	})
+
+	r := []time.Time{
+		time.Unix(513216000, 0),// 7/4/1986
+		time.Unix(544752000, 0),// 7/4/1987
+	}
 	monkey.Patch(time.Now, func() time.Time {
-		r := []time.Time{
-			time.Unix(513216000, 0),
-			time.Unix(513217000, 0),
-			time.Unix(513217000, 0),
-		}[i]
+		t := r[i]
 		i++
-		return r
+		return t
 	})
 	defer monkey.UnpatchAll()
 
@@ -47,7 +63,9 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Nil(t, h.Handle(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
-	time.Sleep(300 * time.Millisecond)
+	c <- r[0]
+	c <- r[1]
+
 	assert.Nil(t, h.Handle(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
 }
 
