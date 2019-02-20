@@ -7,6 +7,7 @@ import (
 )
 
 func TimeFileProvider(format string, timeFormat string) func(f *os.File) (*os.File, error) {
+	print("aze")
 	return func(f *os.File) (*os.File, error) {
 		if f != nil {
 			err := f.Close()
@@ -14,6 +15,8 @@ func TimeFileProvider(format string, timeFormat string) func(f *os.File) (*os.Fi
 				return nil, err
 			}
 		}
+		println("ghfhgjhjkhk")
+
 		return os.Create(fmt.Sprintf(format, time.Now().Format(timeFormat)))
 	}
 }
