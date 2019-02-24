@@ -1,12 +1,12 @@
 package handler_test
 
 import (
-	"bou.ke/monkey"
 	"os"
 	"reflect"
 	"testing"
 	"time"
 
+	"bou.ke/monkey"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
