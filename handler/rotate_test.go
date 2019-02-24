@@ -19,35 +19,35 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 	i := int64(0)
 
 	var f *os.File
-	createdFile1 := &os.File{}
-	createdFile2 := &os.File{}
-	//createdFile1, _ := os.Create("file1")//os.File{}
-	//createdFile2, _ := os.Create("file2")//os.File{}
-	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Write", func(aaa *os.File, p []byte) (n int, err error) {
+	createdFile1 := os.File{}
+	createdFile2 := os.File{}
+	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Write", func(file *os.File, p []byte) (n int, err error) {
 		if i == 0 {
-		println("writeFILE1", i, aaa)
-			assert.Equal(t, createdFile1, aaa)
+			assert.Equal(t, &createdFile1, file)
+			assert.Equal(t, []uint8("my formatter return\n"), p)
+			return 99, nil
 		}
 		if i == 1 {
-		println("writeFILE2", i, aaa)
-			assert.Equal(t, createdFile2, aaa)
+			assert.Equal(t, &createdFile2, file)
+			assert.Equal(t, []uint8("my formatter return\n"), p)
+			return 99, nil
 		}
-		assert.Equal(t, []uint8("my formatter return\n"), p)
-		return 99, nil
+
+		assert.True(t, false, "must not be reached")
+		return 0, nil
 	})
 
 	monkey.Patch(os.Create, func(name string) (*os.File, error) {
-		println("create", i)
 		if i == 0 {
 			assert.Equal(t, "fake_format_Thu Jan  1 1970 00", name)
-			return createdFile1, nil
+			return &createdFile1, nil
 		}
 		if i == 1 {
 			assert.Equal(t, "fake_format_Thu Jan  1 1970 01", name)
-			return createdFile2, nil
+			return &createdFile2, nil
 		}
 
-		print("OOPS")
+		assert.True(t, false, "must not be reached")
 		return nil, nil
 	})
 
@@ -60,28 +60,21 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 		}
 	})
 
-	monkey.Patch(time.Now, func() time.Time {return time.Unix(i, 0)})
+	monkey.Patch(time.Now, func() time.Time { return time.Unix(i, 0) })
 	defer monkey.UnpatchAll()
 
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", mock.AnythingOfType("logger.Entry")).Return("my formatter return")
 
 	h, err := handler.NewTimeRotateFileStream("fake_format_%s", "Mon Jan _2 2006 05", &mockFormatter, 100*time.Millisecond)
-	//file1
 	assert.Nil(t, err)
 	assert.Nil(t, h.Handle(logger.Entry{}))
+
 	i++
-	println(i)
-	time.Sleep(200*time.Millisecond)
 	tickerChan <- time.Now()
-	//tickerChan <- time.Now()
-	time.Sleep(200*time.Millisecond)
-	//time.Sleep(100*time.Millisecond)
-	//file2
 	assert.Nil(t, h.Handle(logger.Entry{}))
-	//
-	//tickerChan <- time.Unix(i, 0)
 }
+
 
 func TestNewLogRotateFileStream_Handle(t *testing.T) {
 	var f *os.File
