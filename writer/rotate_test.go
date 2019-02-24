@@ -42,7 +42,7 @@ func TestRotateFileWriter_Rotate(t *testing.T) {
 
 func TestNewRotateFileWriter_WithError(t *testing.T) {
 	_, err := writer.NewRotateFileWriter(func(*os.File) (*os.File, error) {
-		return &os.File{}, errors.New("fake_file_provider_error")
+		return nil, errors.New("fake_file_provider_error")
 	})
 	assert.EqualError(t, err, "fake_file_provider_error")
 }
