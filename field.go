@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -32,9 +31,9 @@ const (
 	BinaryType
 	ByteStringType
 	ErrorType
-	StringerType
 	TimeType
 	DurationType
+	StringerType
 	//ArrayMarshalerType
 	//ObjectMarshalerType
 	// ReflectType indicates that the field carries an interface{}, which should be serialized using reflection.
@@ -47,14 +46,14 @@ type Field struct {
 }
 
 func (f *Field) String() string {
-	return "coucou"
 	switch f.Type {
-	case UnknownType:
-		return "@TODO UnknownType"
 	case SkipType:
-		return "@TODO SkipType"
+		return "<skipped>"
 	case BoolType:
-		return "@TODO BoolType"
+		if f.Value.(bool) {
+			return "true"
+		}
+		return "false"
 	case Int8Type:
 		return strconv.Itoa(int(f.Value.(int8)))
 	case Int16Type:
@@ -74,31 +73,29 @@ func (f *Field) String() string {
 	case UintptrType:
 		return strconv.Itoa(int(f.Value.(uintptr)))
 	case Float32Type:
-		return "@TODO Float32Type"
+		return strconv.FormatFloat(float64(f.Value.(float32)), 'g', 10, 64)
 	case Float64Type:
-		return "@TODO Float64Type"
+		return strconv.FormatFloat(f.Value.(float64), 'g', 10, 64)
 	case Complex64Type:
-		return "@TODO Complex64Type"
+		return fmt.Sprintf("%v", f.Value.(complex64))
 	case Complex128Type:
-		return "@TODO Complex128Type"
+		return fmt.Sprintf("%v", f.Value.(complex128))
 	case StringType:
 		return f.Value.(string)
 	case BinaryType:
-		return "@TODO BinaryType"
+		return string(f.Value.([]byte)[:])
 	case ByteStringType:
-		return "@TODO ByteStringType"
+		return string(f.Value.([]byte)[:])
 	case ErrorType:
-		return "@TODO ErrorType"
-	case StringerType:
-		return "@TODO StringerType"
+		return f.Value.(error).Error()
 	case TimeType:
-		return "@TODO TimeType"
+		return f.Value.(time.Time).String()
 	case DurationType:
-		return "@TODO DurationType"
-	case ReflectType:
-		return "@TODO ReflectType"
+		return f.Value.(time.Duration).String()
+	case StringerType:
+		return f.Value.(fmt.Stringer).String()
 	default:
-		return "unknown field type"
+		return fmt.Sprintf("%v", f.Value)
 	}
 }
 
@@ -176,6 +173,8 @@ func Any(value interface{}) Field {
 	switch val := value.(type) {
 	case bool:
 		return Bool(val)
+	case int:
+		return Int64(int64(val))
 	case int8:
 		return Int8(val)
 	case int16:
@@ -208,17 +207,13 @@ func Any(value interface{}) Field {
 		return Binary(val)
 	case error:
 		return Error(val)
-	case fmt.Stringer:
-		return Stringer(val)
 	case time.Time:
 		return Time(val)
 	case time.Duration:
 		return Duration(val)
+	case fmt.Stringer:
+		return Stringer(val)
 	default:
 		return Reflect(val)
 	}
-}
-
-func (f *Field) MarshalJSON() ([]byte, error) {
-	return json.Marshal(f.Value)
 }

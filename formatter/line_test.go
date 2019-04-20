@@ -18,17 +18,17 @@ func TestLine_Format(t *testing.T) {
 		{
 			name:     "test simple format 1",
 			format:   "%s %s %s",
-			expected: "test message warning %!s(*map[string]interface {}=<nil>)",
+			expected: "test message warning <nil>",
 		},
 		{
 			name:     "test simple format 2",
 			format:   "%s %d %s",
-			expected: "test message 4 %!s(*map[string]interface {}=<nil>)",
+			expected: "test message 4 <nil>",
 		},
 		{
 			name:     "test simple format",
 			format:   "%[2]s %[1]s %[3]s",
-			expected: "warning test message %!s(*map[string]interface {}=<nil>)",
+			expected: "warning test message <nil>",
 		},
 	}
 

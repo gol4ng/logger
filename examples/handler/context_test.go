@@ -9,26 +9,19 @@ import (
 )
 
 func ExampleContextHandler() {
-	streamHandler := handler.NewStream(os.Stdout, formatter.NewJsonMarshall())
+	streamHandler := handler.NewStream(os.Stdout, formatter.NewJsonEncoder())
 
-	//{"a": "1", "b": "2"}
-	contextHandler := handler.NewContext(streamHandler, logger.NewContext().
-		String("my_value_2", "context value 2").
-		String("my_value_3", "context value 3"),
-	)
+	contextHandler := handler.NewContext(streamHandler, logger.Ctx("my_value_1", "value 1"))
 
 	myLogger := logger.NewLogger(handler.NewGroup(contextHandler, streamHandler))
 
-	_ = myLogger.Debug("will be printed", logger.NewContext().
-		String("my_value_1", "value 1").
-		String("my_value_2", "value 2"),
-	)
+	_ = myLogger.Debug("will be printed", logger.Ctx("my_value_1", "overwrited value 1"))
 
 	_ = myLogger.Debug("only context handler values will be printed", nil)
 
 	//Output:
-	// {"Message":"will be printed","Level":7,"Context":{"my_value_1":{"Type":16,"Value":"value 1"},"my_value_2":{"Type":16,"Value":"value 2"},"my_value_3":{"Type":16,"Value":"context value 3"}}}
-	// {"Message":"will be printed","Level":7,"Context":{"my_value_1":{"Type":16,"Value":"value 1"},"my_value_2":{"Type":16,"Value":"value 2"}}}
-	// {"Message":"only context handler values will be printed","Level":7,"Context":{"my_value_2":{"Type":16,"Value":"context value 2"},"my_value_3":{"Type":16,"Value":"context value 3"}}}
-	// {"Message":"only context handler values will be printed","Level":7,"Context":null}
+	//{"Message":"will be printed","Level":7,"Context":{"my_value_1":"overwrited value 1"}}
+	//{"Message":"will be printed","Level":7,"Context":{"my_value_1":"overwrited value 1"}}
+	//{"Message":"only context handler values will be printed","Level":7,"Context":{"my_value_1":"value 1"}}
+	//{"Message":"only context handler values will be printed","Level":7,"Context":null}
 }

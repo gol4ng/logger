@@ -1,8 +1,7 @@
 package logger
 
 import (
-	"fmt"
-	"time"
+	"strings"
 )
 
 type Context map[string]Field
@@ -31,53 +30,12 @@ func (c *Context) Get(name string, field *Field) Field {
 	return *field
 }
 
+func (c *Context) Add(name string, value interface{}) *Context {
+	return c.Set(name, Any(value))
+}
+
 func (c *Context) Skip(name string, value string) *Context {
 	return c.Set(name, Skip(value))
-}
-func (c *Context) Bool(name string, value bool) *Context {
-	return c.Set(name, Bool(value))
-}
-func (c *Context) Int8(name string, value int8) *Context {
-	return c.Set(name, Int8(value))
-}
-func (c *Context) Int16(name string, value int16) *Context {
-	return c.Set(name, Int16(value))
-}
-func (c *Context) Int32(name string, value int32) *Context {
-	return c.Set(name, Int32(value))
-}
-func (c *Context) Int64(name string, value int64) *Context {
-	return c.Set(name, Int64(value))
-}
-func (c *Context) Uint8(name string, value uint8) *Context {
-	return c.Set(name, Uint8(value))
-}
-func (c *Context) Uint16(name string, value uint16) *Context {
-	return c.Set(name, Uint16(value))
-}
-func (c *Context) Uint32(name string, value uint32) *Context {
-	return c.Set(name, Uint32(value))
-}
-func (c *Context) Uint64(name string, value uint64) *Context {
-	return c.Set(name, Uint64(value))
-}
-func (c *Context) Uintptr(name string, value uintptr) *Context {
-	return c.Set(name, Uintptr(value))
-}
-func (c *Context) Float32(name string, value float32) *Context {
-	return c.Set(name, Float32(value))
-}
-func (c *Context) Float64(name string, value float64) *Context {
-	return c.Set(name, Float64(value))
-}
-func (c *Context) Complex64(name string, value complex64) *Context {
-	return c.Set(name, Complex64(value))
-}
-func (c *Context) Complex128(name string, value complex128) *Context {
-	return c.Set(name, Complex128(value))
-}
-func (c *Context) String(name string, value string) *Context {
-	return c.Set(name, String(value))
 }
 func (c *Context) Binary(name string, value []byte) *Context {
 	return c.Set(name, Binary(value))
@@ -85,23 +43,47 @@ func (c *Context) Binary(name string, value []byte) *Context {
 func (c *Context) ByteString(name string, value []byte) *Context {
 	return c.Set(name, ByteString(value))
 }
-func (c *Context) Error(name string, value error) *Context {
-	return c.Set(name, Error(value))
+
+func (c *Context) stringTo(builder *strings.Builder) *Context {
+	if len(*c) == 0 {
+		builder.WriteString("nil")
+		return c
+	}
+	i := 0
+	for name, field := range *c {
+		if i != 0 {
+			builder.WriteRune(' ')
+		}
+		builder.WriteString(name)
+		builder.WriteRune(':')
+		builder.WriteString(field.String())
+		i++
+	}
+	return c
 }
-func (c *Context) Stringer(name string, value fmt.Stringer) *Context {
-	return c.Set(name, Stringer(value))
+
+func (c *Context) String() string {
+	if len(*c) == 0 {
+		return "<nil>"
+	}
+	builder := &strings.Builder{}
+	c.stringTo(builder)
+	return builder.String()
 }
-func (c *Context) Time(name string, value time.Time) *Context {
-	return c.Set(name, Time(value))
+
+// TODO MOVE context serialization
+// fmt GoStringer
+// usefull when you fmt.Printf("%#v", GoStringer)
+func (c *Context) GoString() string {
+	builder := &strings.Builder{}
+	builder.WriteString("logger.context<")
+	c.stringTo(builder)
+	builder.WriteString(">")
+	return builder.String()
 }
-func (c *Context) Duration(name string, value time.Duration) *Context {
-	return c.Set(name, Duration(value))
-}
-func (c *Context) Reflect(name string, value interface{}) *Context {
-	return c.Set(name, Reflect(value))
-}
-func (c *Context) Any(name string, value interface{}) *Context {
-	return c.Set(name, Any(value))
+
+func Ctx(name string, value interface{}) *Context {
+	return NewContext().Add(name, value)
 }
 
 func NewContext() *Context {

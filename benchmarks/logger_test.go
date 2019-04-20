@@ -35,7 +35,7 @@ func BenchmarkLoggerLineFormatter(b *testing.B) {
 func BenchmarkLoggerJsonFormatter(b *testing.B) {
 	b.ReportAllocs()
 
-	lineLogHandler := handler.NewStream(os.Stdout, formatter.NewJson())
+	lineLogHandler := handler.NewStream(os.Stdout, formatter.NewJsonEncoder())
 	myLogger := logger.NewLogger(lineLogHandler)
 
 	b.ResetTimer()

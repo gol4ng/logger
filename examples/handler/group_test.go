@@ -12,7 +12,7 @@ func ExampleGroupHandler() {
 	lineFormatter := formatter.NewDefaultFormatter()
 	lineLogHandler := handler.NewStream(os.Stdout, lineFormatter)
 
-	jsonFormatter := formatter.NewJsonMarshall()
+	jsonFormatter := formatter.NewJsonEncoder()
 	jsonLogHandler := handler.NewStream(os.Stdout, jsonFormatter)
 
 	groupHandler := handler.NewGroup(lineLogHandler, jsonLogHandler)

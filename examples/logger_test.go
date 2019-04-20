@@ -14,48 +14,48 @@ func ExampleLoggerLineFormatter() {
 	lineLogHandler := handler.NewStream(os.Stdout, formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v"))
 	myLogger := logger.NewLogger(lineLogHandler)
 
-	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Info("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Notice("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Warning("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Error("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Critical("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Alert("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Emergency("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Info("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Notice("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Warning("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Error("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Critical("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Alert("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
 
 	//Output:
-	//lvl: debug | msg: Log example | ctx: &map[ctx_key:ctx_value]
-	//lvl: info | msg: Log example | ctx: &map[ctx_key:ctx_value]
-	//lvl: notice | msg: Log example | ctx: &map[ctx_key:ctx_value]
-	//lvl: warning | msg: Log example | ctx: &map[ctx_key:ctx_value]
-	//lvl: error | msg: Log example | ctx: &map[ctx_key:ctx_value]
-	//lvl: critical | msg: Log example | ctx: &map[ctx_key:ctx_value]
-	//lvl: alert | msg: Log example | ctx: &map[ctx_key:ctx_value]
-	//lvl: emergency | msg: Log example | ctx: &map[ctx_key:ctx_value]
+	//lvl: debug | msg: Log example | ctx: my_key:my_value
+	//lvl: info | msg: Log example | ctx: my_key:my_value
+	//lvl: notice | msg: Log example | ctx: my_key:my_value
+	//lvl: warning | msg: Log example | ctx: my_key:my_value
+	//lvl: error | msg: Log example | ctx: my_key:my_value
+	//lvl: critical | msg: Log example | ctx: my_key:my_value
+	//lvl: alert | msg: Log example | ctx: my_key:my_value
+	//lvl: emergency | msg: Log example | ctx: my_key:my_value
 }
 
 func ExampleLoggerJsonFormatter() {
-	lineLogHandler := handler.NewStream(os.Stdout, formatter.NewJson())
+	lineLogHandler := handler.NewStream(os.Stdout, formatter.NewJsonEncoder())
 	myLogger := logger.NewLogger(lineLogHandler)
 
-	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Info("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Notice("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Warning("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Error("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Critical("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Alert("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Emergency("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Info("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Notice("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Warning("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Error("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Critical("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Alert("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
 
 	//Output:
-	//{"Message":"Log example","Level":7,"Context":{"ctx_key":"ctx_value"}}
-	//{"Message":"Log example","Level":6,"Context":{"ctx_key":"ctx_value"}}
-	//{"Message":"Log example","Level":5,"Context":{"ctx_key":"ctx_value"}}
-	//{"Message":"Log example","Level":4,"Context":{"ctx_key":"ctx_value"}}
-	//{"Message":"Log example","Level":3,"Context":{"ctx_key":"ctx_value"}}
-	//{"Message":"Log example","Level":2,"Context":{"ctx_key":"ctx_value"}}
-	//{"Message":"Log example","Level":1,"Context":{"ctx_key":"ctx_value"}}
-	//{"Message":"Log example","Level":0,"Context":{"ctx_key":"ctx_value"}}
+	//{"Message":"Log example","Level":7,"Context":{"my_key":"my_value"}}
+	//{"Message":"Log example","Level":6,"Context":{"my_key":"my_value"}}
+	//{"Message":"Log example","Level":5,"Context":{"my_key":"my_value"}}
+	//{"Message":"Log example","Level":4,"Context":{"my_key":"my_value"}}
+	//{"Message":"Log example","Level":3,"Context":{"my_key":"my_value"}}
+	//{"Message":"Log example","Level":2,"Context":{"my_key":"my_value"}}
+	//{"Message":"Log example","Level":1,"Context":{"my_key":"my_value"}}
+	//{"Message":"Log example","Level":0,"Context":{"my_key":"my_value"}}
 }
 
 func ExampleLoggerMinLevelFilterHandler() {
@@ -63,14 +63,14 @@ func ExampleLoggerMinLevelFilterHandler() {
 	filterLogHandler := handler.NewMinLevelFilter(lineLogHandler, logger.WarningLevel)
 	myLogger := logger.NewLogger(filterLogHandler)
 
-	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Info("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Notice("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Warning("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Error("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Critical("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Alert("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Emergency("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Info("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Notice("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Warning("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Error("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Critical("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Alert("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
 
 	//Output:
 	//warning Log example
@@ -81,36 +81,36 @@ func ExampleLoggerMinLevelFilterHandler() {
 }
 
 func ExampleLoggerGroupHandler() {
-	jsonLogHandler := handler.NewStream(os.Stdout, &formatter.Json{})
+	jsonLogHandler := handler.NewStream(os.Stdout, formatter.NewJsonEncoder())
 	lineLogHandler := handler.NewStream(os.Stdout, formatter.NewDefaultFormatter())
 	groupLogHandler := handler.NewGroup(jsonLogHandler, lineLogHandler)
 	myLogger := logger.NewLogger(groupLogHandler)
 
-	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Info("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Notice("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Warning("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Error("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Critical("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Alert("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Emergency("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Info("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Notice("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Warning("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Error("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Critical("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Alert("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
 
 	//Output:
-	//{"Message":"Log example","Level":7,"Context":{"ctx_key":"ctx_value"}}
+	//{"Message":"Log example","Level":7,"Context":{"my_key":"my_value"}}
 	//debug Log example
-	//{"Message":"Log example","Level":6,"Context":{"ctx_key":"ctx_value"}}
+	//{"Message":"Log example","Level":6,"Context":{"my_key":"my_value"}}
 	//info Log example
-	//{"Message":"Log example","Level":5,"Context":{"ctx_key":"ctx_value"}}
+	//{"Message":"Log example","Level":5,"Context":{"my_key":"my_value"}}
 	//notice Log example
-	//{"Message":"Log example","Level":4,"Context":{"ctx_key":"ctx_value"}}
+	//{"Message":"Log example","Level":4,"Context":{"my_key":"my_value"}}
 	//warning Log example
-	//{"Message":"Log example","Level":3,"Context":{"ctx_key":"ctx_value"}}
+	//{"Message":"Log example","Level":3,"Context":{"my_key":"my_value"}}
 	//error Log example
-	//{"Message":"Log example","Level":2,"Context":{"ctx_key":"ctx_value"}}
+	//{"Message":"Log example","Level":2,"Context":{"my_key":"my_value"}}
 	//critical Log example
-	//{"Message":"Log example","Level":1,"Context":{"ctx_key":"ctx_value"}}
+	//{"Message":"Log example","Level":1,"Context":{"my_key":"my_value"}}
 	//alert Log example
-	//{"Message":"Log example","Level":0,"Context":{"ctx_key":"ctx_value"}}
+	//{"Message":"Log example","Level":0,"Context":{"my_key":"my_value"}}
 	//emergency Log example
 }
 
@@ -119,14 +119,14 @@ func ExampleLoggerWrapHandler() {
 	myLogger := logger.NewLogger(lineLogHandler)
 	myLogger.Wrap(handler.NewMinLevelWrapper(logger.WarningLevel))
 
-	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Info("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Notice("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Warning("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Error("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Critical("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Alert("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Emergency("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Info("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Notice("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Warning("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Error("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Critical("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Alert("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
 
 	//Output:
 	//warning Log example
@@ -142,13 +142,13 @@ func ExampleLoggerTimeRotateHandler() {
 	rotateLogHandler, _ := handler.NewTimeRotateFileStream(os.TempDir()+"%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
-	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Info("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Warning("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Info("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Warning("Log example", logger.Ctx("ctx_key", "ctx_value"))
 	time.Sleep(1 * time.Second)
-	myLogger.Error("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Alert("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Critical("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Error("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Alert("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Critical("Log example", logger.Ctx("ctx_key", "ctx_value"))
 
 	//Output:
 	//
@@ -160,13 +160,13 @@ func ExampleLoggerLogRotateHandler() {
 	rotateLogHandler, _ := handler.NewLogRotateFileStream("test", os.TempDir()+"%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
-	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Info("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Warning("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Info("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Warning("Log example", logger.Ctx("ctx_key", "ctx_value"))
 	time.Sleep(1 * time.Second)
-	myLogger.Error("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Alert("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Critical("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Error("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Alert("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Critical("Log example", logger.Ctx("ctx_key", "ctx_value"))
 
 	//Output:
 	//
@@ -189,14 +189,14 @@ func ExampleLoggerSyslogHandler() {
 		"my_go_logger")
 	myLogger := logger.NewLogger(syslogHandler)
 
-	myLogger.Debug("Log example", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Info("Log example1", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Notice("Log example2", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Warning("Log example3", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Error("Log example4", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Critical("Log example5", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Alert("Log example6", &map[string]interface{}{"ctx_key": "ctx_value"})
-	myLogger.Emergency("Log example7", &map[string]interface{}{"ctx_key": "ctx_value"})
+	myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Info("Log example1", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Notice("Log example2", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Warning("Log example3", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Error("Log example4", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Critical("Log example5", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Alert("Log example6", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Emergency("Log example7", logger.Ctx("ctx_key", "ctx_value"))
 
 	//Output:
 }

@@ -14,7 +14,7 @@ func ExampleDefaultFormatter() {
 		logger.Entry{
 			Message: "My log message",
 			Level: logger.InfoLevel,
-			Context: logger.NewContext().String("my_key", "my_value"),
+			Context: logger.NewContext().Add("my_key", "my_value"),
 		},
 	))
 

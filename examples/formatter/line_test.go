@@ -11,16 +11,14 @@ import (
 func ExampleLineFormatter() {
 	lineFormatter := formatter.NewLine("%s %s %s")
 
-	//TODO fix serialization
-
 	fmt.Println(lineFormatter.Format(
 		logger.Entry{
 			Message: "My log message",
 			Level: logger.InfoLevel,
-			Context: logger.NewContext().String("my_key", "my_value"),
+			Context: logger.NewContext().Add("my_key", "my_value"),
 		},
 	))
 
 	//Output:
-	// My log message info &map[my_key:my_value]
+	// My log message info my_key:my_value
 }
