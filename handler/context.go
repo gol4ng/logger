@@ -5,27 +5,31 @@ import (
 )
 
 type Context struct {
-	h          logger.HandlerInterface
-	defaultCtx map[string]interface{}
+	handler    logger.HandlerInterface
+	defaultCtx *logger.Context
 }
 
-func NewContext(h logger.HandlerInterface, ctxToMerge map[string]interface{}) Context {
-	return Context{h, ctxToMerge}
+func NewContext(handler logger.HandlerInterface, defaultContext *logger.Context) Context {
+	return Context{handler: handler, defaultCtx: defaultContext}
 }
 
 func (c Context) Handle(e logger.Entry) error {
-	newCtx := map[string]interface{}{}
+	newCtx := logger.NewContext()
 	//copy original context
-	for k, v := range *e.Context {
-		newCtx[k] = v
+	if c.defaultCtx != nil {
+		for k, v := range *c.defaultCtx {
+			(*newCtx)[k] = v
+		}
 	}
 	//merge original context with given context
-	for k, v := range c.defaultCtx {
-		newCtx[k] = v
+	if e.Context != nil {
+		for k, v := range *e.Context {
+			(*newCtx)[k] = v
+		}
 	}
 
-	return c.h.Handle(logger.Entry{
-		Context: &newCtx,
+	return c.handler.Handle(logger.Entry{
+		Context: newCtx,
 		Level:   e.Level,
 		Message: e.Message,
 	})

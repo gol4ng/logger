@@ -9,10 +9,15 @@ import (
 )
 
 func ExampleJsonFormatter() {
-	jsonFormatter := formatter.NewJson()
+	jsonFormatter := formatter.NewJsonMarshall()
 
-	fmt.Println(jsonFormatter.Format(logger.Entry{Message: "My log message", Level: logger.InfoLevel, Context: &map[string]interface{}{"my_key": "my_value"}}))
-
+	fmt.Println(jsonFormatter.Format(
+		logger.Entry{
+			Message: "My log message",
+			Level: logger.InfoLevel,
+			Context: logger.NewContext().String("my_key", "my_value"),
+		},
+	))
 	//Output:
-	// {"Message":"My log message","Level":6,"Context":{"my_key":"my_value"}}
+	// {"Message":"My log message","Level":6,"Context":{"my_key":{"Type":16,"Value":"my_value"}}}
 }

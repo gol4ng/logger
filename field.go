@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -46,6 +47,7 @@ type Field struct {
 }
 
 func (f *Field) String() string {
+	return "coucou"
 	switch f.Type {
 	case UnknownType:
 		return "@TODO UnknownType"
@@ -99,8 +101,6 @@ func (f *Field) String() string {
 		return "unknown field type"
 	}
 }
-
-//func (f *Field) GoString() string {}
 
 func Skip(value string) Field {
 	return Field{Type: SkipType, Value: value}
@@ -217,4 +217,8 @@ func Any(value interface{}) Field {
 	default:
 		return Reflect(val)
 	}
+}
+
+func (f *Field) MarshalJSON() ([]byte, error) {
+	return json.Marshal(f.Value)
 }

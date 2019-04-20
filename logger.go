@@ -46,39 +46,39 @@ func (l Level) String() string {
 }
 
 type LoggerInterface interface {
-	Log(msg string, lvl Level, ctx *map[string]interface{})
+	Log(msg string, lvl Level, ctx *Context) error
 }
 
 type Logger struct {
 	handler HandlerInterface
 }
 
-func (l *Logger) Debug(msg string, ctx *map[string]interface{}) error {
+func (l *Logger) Debug(msg string, ctx *Context) error {
 	return l.Log(msg, DebugLevel, ctx)
 }
-func (l *Logger) Info(msg string, ctx *map[string]interface{}) error {
+func (l *Logger) Info(msg string, ctx *Context) error {
 	return l.Log(msg, InfoLevel, ctx)
 }
-func (l *Logger) Notice(msg string, ctx *map[string]interface{}) error {
+func (l *Logger) Notice(msg string, ctx *Context) error {
 	return l.Log(msg, NoticeLevel, ctx)
 }
-func (l *Logger) Warning(msg string, ctx *map[string]interface{}) error {
+func (l *Logger) Warning(msg string, ctx *Context) error {
 	return l.Log(msg, WarningLevel, ctx)
 }
-func (l *Logger) Error(msg string, ctx *map[string]interface{}) error {
+func (l *Logger) Error(msg string, ctx *Context) error {
 	return l.Log(msg, ErrorLevel, ctx)
 }
-func (l *Logger) Critical(msg string, ctx *map[string]interface{}) error {
+func (l *Logger) Critical(msg string, ctx *Context) error {
 	return l.Log(msg, CriticalLevel, ctx)
 }
-func (l *Logger) Alert(msg string, ctx *map[string]interface{}) error {
+func (l *Logger) Alert(msg string, ctx *Context) error {
 	return l.Log(msg, AlertLevel, ctx)
 }
-func (l *Logger) Emergency(msg string, ctx *map[string]interface{}) error {
+func (l *Logger) Emergency(msg string, ctx *Context) error {
 	return l.Log(msg, EmergencyLevel, ctx)
 }
 
-func (l *Logger) Log(msg string, lvl Level, ctx *map[string]interface{}) error {
+func (l *Logger) Log(msg string, lvl Level, ctx *Context) error {
 	return l.handler.Handle(Entry{msg, lvl, ctx})
 }
 
