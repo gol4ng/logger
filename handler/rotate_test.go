@@ -53,7 +53,7 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 
 	tickerChan := make(chan time.Time, 1)
 	monkey.Patch(time.NewTicker, func(d time.Duration) *time.Ticker {
-		assert.Equal(t, 100*time.Millisecond, d)
+		assert.Equal(t, 10*time.Millisecond, d)
 
 		return &time.Ticker{
 			C: tickerChan,
@@ -66,7 +66,7 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", mock.AnythingOfType("logger.Entry")).Return("my formatter return")
 
-	h, err := handler.NewTimeRotateFileStream("fake_format_%s", "Mon Jan _2 2006 05", &mockFormatter, 100*time.Millisecond)
+	h, err := handler.NewTimeRotateFileStream("fake_format_%s", "Mon Jan _2 2006 05", &mockFormatter, 10*time.Millisecond)
 	assert.Nil(t, err)
 	assert.Nil(t, h.Handle(logger.Entry{}))
 
@@ -74,7 +74,6 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 	tickerChan <- time.Now()
 	assert.Nil(t, h.Handle(logger.Entry{}))
 }
-
 
 func TestNewLogRotateFileStream_Handle(t *testing.T) {
 	var f *os.File

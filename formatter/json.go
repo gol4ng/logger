@@ -8,51 +8,58 @@ import (
 )
 
 type Json struct {
-	encode func(v interface{}) ([]byte, error)
+	encode func(interface{}) ([]byte, error)
 }
 
-func (j *Json) Format(e logger.Entry) string {
-	b, _ := j.encode(e)
+func (j *Json) Format(entry logger.Entry) string {
+	b, _ := j.encode(entry)
 
 	return string(b)
 }
 
-func entryJsonEncoder(v interface{}) ([]byte, error) {
-	entry := v.(logger.Entry)
-	data := strings.Builder{}
-	data.WriteRune('{')
-
-	data.WriteString("\"Message\":\"")
-	data.WriteString(entry.Message)
-	data.WriteString("\"")
-
-	data.WriteRune(',')
-	data.WriteString("\"Level\":")
-	data.WriteString(strconv.Itoa(int(entry.Level)))
-
-	data.WriteRune(',')
-	data.WriteString("\"Context\":")
-
-	if entry.Context == nil || len(*(entry.Context)) == 0 {
-		data.WriteString("null")
+func MarshalContextTo(context *logger.Context, builder *strings.Builder) {
+	if context == nil || len(*context) == 0 {
+		builder.WriteString("null")
 	} else {
-		data.WriteString("{")
+		builder.WriteString("{")
 		i := 0
-		for name, field := range *entry.Context {
+		for name, field := range *context {
 			if i != 0 {
-				data.WriteRune(',')
+				builder.WriteRune(',')
 			}
-			data.WriteRune('"')
-			data.WriteString(name)
-			data.WriteString("\":")
+			builder.WriteRune('"')
+			builder.WriteString(name)
+			builder.WriteString("\":")
 			d, _ := json.Marshal(field.Value)
-			data.WriteString(string(d))
+			builder.WriteString(string(d))
 			i++
 		}
-		data.WriteString("}")
+		builder.WriteString("}")
 	}
+}
 
-	data.WriteRune('}')
+func MarshalEntryTo(entry logger.Entry, builder *strings.Builder) {
+	builder.WriteRune('{')
+
+	builder.WriteString("\"Message\":\"")
+	builder.WriteString(entry.Message)
+	builder.WriteString("\"")
+
+	builder.WriteRune(',')
+	builder.WriteString("\"Level\":")
+	builder.WriteString(strconv.Itoa(int(entry.Level)))
+
+	builder.WriteRune(',')
+	builder.WriteString("\"Context\":")
+
+	MarshalContextTo(entry.Context, builder)
+
+	builder.WriteRune('}')
+}
+
+func entryJsonEncoder(value interface{}) ([]byte, error) {
+	data := &strings.Builder{}
+	MarshalEntryTo(value.(logger.Entry), data)
 
 	return []byte(data.String()), nil
 }
@@ -61,6 +68,6 @@ func NewJsonEncoder() *Json {
 	return NewJson(entryJsonEncoder)
 }
 
-func NewJson(encode func(v interface{}) (bytes []byte, e error)) *Json {
+func NewJson(encode func(interface{}) ([]byte, error)) *Json {
 	return &Json{encode: encode}
 }

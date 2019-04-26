@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"os"
 	"time"
+
+	"github.com/gol4ng/logger/writer"
 )
 
-func LogFileProvider(name string, format string, timeFormat string) func(f *os.File) (*os.File, error) {
+func LogFileProvider(name string, format string, timeFormat string) writer.FileProvider {
 	basePath := fmt.Sprintf(format, name)
 	return func(f *os.File) (*os.File, error) {
 		if f != nil {
@@ -19,6 +21,10 @@ func LogFileProvider(name string, format string, timeFormat string) func(f *os.F
 				return nil, err
 			}
 		}
-		return os.Create(basePath)
+		return os.OpenFile(
+			basePath,
+			os.O_CREATE|os.O_APPEND|os.O_WRONLY,
+			0666,
+		)
 	}
 }

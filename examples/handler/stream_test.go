@@ -14,5 +14,5 @@ func ExampleStreamHandler() {
 	lineLogHandler.Handle(logger.Entry{Message: "Log example"})
 
 	//Output:
-	// emergency Log example
+	//<emergency> Log example
 }

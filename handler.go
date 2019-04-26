@@ -6,7 +6,7 @@ type HandlerInterface interface {
 
 type NopHandler struct{}
 
-func (n *NopHandler) Handle(e Entry) error {
+func (n *NopHandler) Handle(entry Entry) error {
 	return nil
 }
 

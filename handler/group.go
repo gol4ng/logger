@@ -9,11 +9,11 @@ type Group struct {
 	handlers    []logger.HandlerInterface
 }
 
-func (g *Group) Handle(e logger.Entry) error {
+func (g *Group) Handle(entry logger.Entry) error {
 	var err error
 	for _, h := range g.handlers {
 		//TODO GO ROUTINE
-		if err = h.Handle(e); err == nil {
+		if err = h.Handle(entry); err == nil {
 			continue
 		}
 		if g.stopOnError {
@@ -25,10 +25,10 @@ func (g *Group) Handle(e logger.Entry) error {
 	return err
 }
 
-func NewGroupBlocking(h []logger.HandlerInterface) *Group {
-	return &Group{handlers: h, stopOnError: true}
+func NewGroupBlocking(handlers []logger.HandlerInterface) *Group {
+	return &Group{handlers: handlers, stopOnError: true}
 }
 
-func NewGroup(h ...logger.HandlerInterface) *Group {
-	return &Group{handlers: h}
+func NewGroup(handlers ...logger.HandlerInterface) *Group {
+	return &Group{handlers: handlers}
 }

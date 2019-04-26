@@ -9,50 +9,50 @@ type Filter struct {
 	filterFn func(logger.Entry) bool
 }
 
-func (f *Filter) Handle(e logger.Entry) error {
-	if f.filterFn(e) {
+func (f *Filter) Handle(entry logger.Entry) error {
+	if f.filterFn(entry) {
 		return nil
 	}
 
-	return f.handler.Handle(e)
+	return f.handler.Handle(entry)
 }
 
 // exclude logs that have a higher level than a given level
-func NewMinLevelFilter(h logger.HandlerInterface, lvl logger.Level) *Filter {
-	return &Filter{h, func(e logger.Entry) bool {
-		return e.Level > lvl
-	}}
+func NewMinLevelFilter(handler logger.HandlerInterface, level logger.Level) *Filter {
+	return NewFilter(handler, func(entry logger.Entry) bool {
+		return entry.Level > level
+	})
 }
 
-func NewMinLevelWrapper(lvl logger.Level) func(h logger.HandlerInterface) logger.HandlerInterface {
+func NewMinLevelWrapper(level logger.Level) logger.WrapperHandler {
 	return func(h logger.HandlerInterface) logger.HandlerInterface {
-		return NewMinLevelFilter(h, lvl)
+		return NewMinLevelFilter(h, level)
 	}
 }
 
 // exclude logs that have a level that are not between two given levels
-func NewRangeLevelFilter(h logger.HandlerInterface, minLvl logger.Level, maxLvl logger.Level) *Filter {
-	if minLvl <= maxLvl {
+func NewRangeLevelFilter(handler logger.HandlerInterface, minLevel logger.Level, maxLevel logger.Level) *Filter {
+	if minLevel <= maxLevel {
 		panic("invalid logger range level : Min level must be lower than max level")
 	}
 
-	return &Filter{h, func(e logger.Entry) bool {
-		return e.Level > minLvl || e.Level < maxLvl
-	}}
+	return NewFilter(handler, func(entry logger.Entry) bool {
+		return entry.Level > minLevel || entry.Level < maxLevel
+	})
 }
 
-func NewRangeLevelWrapper(minLvl logger.Level, maxLvl logger.Level) func(h logger.HandlerInterface) logger.HandlerInterface {
-	return func(h logger.HandlerInterface) logger.HandlerInterface {
-		return NewRangeLevelFilter(h, minLvl, maxLvl)
+func NewRangeLevelWrapper(minLevel logger.Level, maxLevel logger.Level) logger.WrapperHandler {
+	return func(handler logger.HandlerInterface) logger.HandlerInterface {
+		return NewRangeLevelFilter(handler, minLevel, maxLevel)
 	}
 }
 
-func NewFilter(h logger.HandlerInterface, f func(e logger.Entry) bool) *Filter {
-	return &Filter{handler: h, filterFn: f}
+func NewFilter(handler logger.HandlerInterface, filterFn func(logger.Entry) bool) *Filter {
+	return &Filter{handler: handler, filterFn: filterFn}
 }
 
-func NewFilterWrapper(filterFn func(e logger.Entry) bool) func(h logger.HandlerInterface) logger.HandlerInterface {
-	return func(h logger.HandlerInterface) logger.HandlerInterface {
-		return NewFilter(h, filterFn)
+func NewFilterWrapper(filterFn func(logger.Entry) bool) logger.WrapperHandler {
+	return func(handler logger.HandlerInterface) logger.HandlerInterface {
+		return NewFilter(handler, filterFn)
 	}
 }

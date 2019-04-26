@@ -52,11 +52,13 @@ func (c *Context) stringTo(builder *strings.Builder) *Context {
 	i := 0
 	for name, field := range *c {
 		if i != 0 {
-			builder.WriteRune(' ')
+			builder.WriteString(" ")
 		}
+		builder.WriteString("<")
 		builder.WriteString(name)
-		builder.WriteRune(':')
+		builder.WriteString(":")
 		builder.WriteString(field.String())
+		builder.WriteString(">")
 		i++
 	}
 	return c
@@ -76,9 +78,9 @@ func (c *Context) String() string {
 // usefull when you fmt.Printf("%#v", GoStringer)
 func (c *Context) GoString() string {
 	builder := &strings.Builder{}
-	builder.WriteString("logger.context<")
+	builder.WriteString("logger.context[")
 	c.stringTo(builder)
-	builder.WriteString(">")
+	builder.WriteString("]")
 	return builder.String()
 }
 

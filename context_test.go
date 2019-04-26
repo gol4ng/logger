@@ -99,8 +99,8 @@ func TestContext_String(t *testing.T) {
 		strings []string
 	}{
 		{name: "Empty context", context: logger.NewContext(), strings: []string{"<nil>"}},
-		{name: "Simple context", context: logger.Ctx("my_key", "my_value"), strings: []string{"my_key:my_value"}},
-		{name: "Simple context", context: logger.Ctx("my_key", "my_value").Add("my_int_val", 3), strings: []string{"my_key:my_value", "my_int_val:3"}},
+		{name: "Simple context", context: logger.Ctx("my_key", "my_value"), strings: []string{"<my_key:my_value>"}},
+		{name: "Simple context", context: logger.Ctx("my_key", "my_value").Add("my_int_val", 3), strings: []string{"<my_key:my_value>", "<my_int_val:3>"}},
 	}
 
 	for _, tt := range tests {
@@ -119,15 +119,15 @@ func TestContext_GoString(t *testing.T) {
 		context   *logger.Context
 		goStrings []string
 	}{
-		{name: "Empty context", context: logger.NewContext(), goStrings: []string{"<nil>"}},
-		{name: "Simple context", context: logger.Ctx("my_key", "my_value"), goStrings: []string{"my_key:my_value"}},
-		{name: "Simple context", context: logger.Ctx("my_key", "my_value").Add("my_int_val", 3), goStrings: []string{"my_key:my_value", "my_int_val:3"}},
+		{name: "Empty context", context: logger.NewContext(), goStrings: []string{"nil"}},
+		{name: "Simple context", context: logger.Ctx("my_key", "my_value"), goStrings: []string{"<my_key:my_value>"}},
+		{name: "Simple context", context: logger.Ctx("my_key", "my_value").Add("my_int_val", 3), goStrings: []string{"<my_key:my_value>", "<my_int_val:3>"}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			str := tt.context.GoString()
-			assert.Contains(t, str, "logger.context<")
+			assert.Contains(t, str, "logger.context[")
 			for _, s := range tt.goStrings {
 				assert.Contains(t, str, s)
 			}

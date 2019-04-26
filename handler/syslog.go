@@ -11,9 +11,9 @@ type Syslog struct {
 	formatter logger.FormatterInterface
 }
 
-func (s *Syslog) Handle(e logger.Entry) error {
-	msg := s.formatter.Format(e)
-	switch e.Level {
+func (s *Syslog) Handle(entry logger.Entry) error {
+	msg := s.formatter.Format(entry)
+	switch entry.Level {
 	case logger.DebugLevel:
 		return s.writer.Debug(msg)
 	case logger.InfoLevel:

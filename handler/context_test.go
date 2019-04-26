@@ -13,12 +13,12 @@ import (
 
 func TestContext_Handle(t *testing.T) {
 	mockHandler := &mocks.HandlerInterface{}
-	mockHandler.On("Handle", mock.AnythingOfType("logger.Entry")).Return(func(e logger.Entry) error {
-		assert.Equal(t, "my_log_message", e.Message)
-		assert.Equal(t, logger.DebugLevel, e.Level)
-		contextStr := e.Context.String()
-		assert.Contains(t, contextStr, "my_key:my_overwrited_value")
-		assert.Contains(t, contextStr, "my_entry_key:my_entry_value")
+	mockHandler.On("Handle", mock.AnythingOfType("logger.Entry")).Return(func(entry logger.Entry) error {
+		assert.Equal(t, "my_log_message", entry.Message)
+		assert.Equal(t, logger.DebugLevel, entry.Level)
+		contextStr := entry.Context.String()
+		assert.Contains(t, contextStr, "<my_key:my_overwrited_value>")
+		assert.Contains(t, contextStr, "<my_entry_key:my_entry_value>")
 
 		return nil
 	})

@@ -60,8 +60,10 @@ func TestLogFileProvider(t *testing.T) {
 		assert.Equal(t, "fake_format_Thu Jan  1 1970 00", newpath)
 		return nil
 	})
-	monkey.Patch(os.Create, func(name string) (*os.File, error) {
+	monkey.Patch(os.OpenFile, func(name string, flag int, perm os.FileMode) (*os.File, error) {
 		assert.Equal(t, "fake_format_fake_name", name)
+		assert.Equal(t, 521, flag)
+		assert.Equal(t, os.FileMode(0666), perm)
 		return &createdFile, nil
 	})
 	monkey.Patch(time.Now, func() time.Time { return time.Unix(0, 0) })

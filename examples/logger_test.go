@@ -24,14 +24,14 @@ func ExampleLoggerLineFormatter() {
 	myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
 
 	//Output:
-	//lvl: debug | msg: Log example | ctx: my_key:my_value
-	//lvl: info | msg: Log example | ctx: my_key:my_value
-	//lvl: notice | msg: Log example | ctx: my_key:my_value
-	//lvl: warning | msg: Log example | ctx: my_key:my_value
-	//lvl: error | msg: Log example | ctx: my_key:my_value
-	//lvl: critical | msg: Log example | ctx: my_key:my_value
-	//lvl: alert | msg: Log example | ctx: my_key:my_value
-	//lvl: emergency | msg: Log example | ctx: my_key:my_value
+	//lvl: debug | msg: Log example | ctx: <my_key:my_value>
+	//lvl: info | msg: Log example | ctx: <my_key:my_value>
+	//lvl: notice | msg: Log example | ctx: <my_key:my_value>
+	//lvl: warning | msg: Log example | ctx: <my_key:my_value>
+	//lvl: error | msg: Log example | ctx: <my_key:my_value>
+	//lvl: critical | msg: Log example | ctx: <my_key:my_value>
+	//lvl: alert | msg: Log example | ctx: <my_key:my_value>
+	//lvl: emergency | msg: Log example | ctx: <my_key:my_value>
 }
 
 func ExampleLoggerJsonFormatter() {
@@ -73,11 +73,11 @@ func ExampleLoggerMinLevelFilterHandler() {
 	myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
 
 	//Output:
-	//warning Log example
-	//error Log example
-	//critical Log example
-	//alert Log example
-	//emergency Log example
+	//<warning> Log example {"my_key":"my_value"}
+	//<error> Log example {"my_key":"my_value"}
+	//<critical> Log example {"my_key":"my_value"}
+	//<alert> Log example {"my_key":"my_value"}
+	//<emergency> Log example {"my_key":"my_value"}
 }
 
 func ExampleLoggerGroupHandler() {
@@ -97,21 +97,21 @@ func ExampleLoggerGroupHandler() {
 
 	//Output:
 	//{"Message":"Log example","Level":7,"Context":{"my_key":"my_value"}}
-	//debug Log example
+	//<debug> Log example {"my_key":"my_value"}
 	//{"Message":"Log example","Level":6,"Context":{"my_key":"my_value"}}
-	//info Log example
+	//<info> Log example {"my_key":"my_value"}
 	//{"Message":"Log example","Level":5,"Context":{"my_key":"my_value"}}
-	//notice Log example
+	//<notice> Log example {"my_key":"my_value"}
 	//{"Message":"Log example","Level":4,"Context":{"my_key":"my_value"}}
-	//warning Log example
+	//<warning> Log example {"my_key":"my_value"}
 	//{"Message":"Log example","Level":3,"Context":{"my_key":"my_value"}}
-	//error Log example
+	//<error> Log example {"my_key":"my_value"}
 	//{"Message":"Log example","Level":2,"Context":{"my_key":"my_value"}}
-	//critical Log example
+	//<critical> Log example {"my_key":"my_value"}
 	//{"Message":"Log example","Level":1,"Context":{"my_key":"my_value"}}
-	//alert Log example
+	//<alert> Log example {"my_key":"my_value"}
 	//{"Message":"Log example","Level":0,"Context":{"my_key":"my_value"}}
-	//emergency Log example
+	//<emergency> Log example {"my_key":"my_value"}
 }
 
 func ExampleLoggerWrapHandler() {
@@ -129,11 +129,11 @@ func ExampleLoggerWrapHandler() {
 	myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
 
 	//Output:
-	//warning Log example
-	//error Log example
-	//critical Log example
-	//alert Log example
-	//emergency Log example
+	//<warning> Log example {"my_key":"my_value"}
+	//<error> Log example {"my_key":"my_value"}
+	//<critical> Log example {"my_key":"my_value"}
+	//<alert> Log example {"my_key":"my_value"}
+	//<emergency> Log example {"my_key":"my_value"}
 }
 
 func ExampleLoggerTimeRotateHandler() {
@@ -174,12 +174,12 @@ func ExampleLoggerLogRotateHandler() {
 
 // You can run the command below to show syslog messages
 // syslog -F '$Time $Host $(Sender)[$(PID)] <$((Level)(str))>: $Message'
-//Jan 22 22:42:14 hades my_go_logger[113] <Notice>: notice Log example2 &map[ctx_key:ctx_value]
-//Jan 22 22:42:14 hades my_go_logger[113] <Warning>: warning Log example3 &map[ctx_key:ctx_value]
-//Jan 22 22:42:14 hades my_go_logger[113] <Error>: error Log example4 &map[ctx_key:ctx_value]
-//Jan 22 22:42:14 hades my_go_logger[113] <Critical>: critical Log example5 &map[ctx_key:ctx_value]
-//Jan 22 22:42:14 hades my_go_logger[113] <Alert>: alert Log example6 &map[ctx_key:ctx_value]
-//Jan 22 22:42:14 hades my_go_logger[113] <Emergency>: emergency Log example7 &map[ctx_key:ctx_value]
+//Apr 26 12:22:06 hades my_go_logger[69302] <Notice>: <notice> Log example2 {"ctx_key":"ctx_value"}
+//Apr 26 12:22:06 hades my_go_logger[69302] <Warning>: <warning> Log example3 {"ctx_key":"ctx_value"}
+//Apr 26 12:22:06 hades my_go_logger[69302] <Error>: <error> Log example4 {"ctx_key":"ctx_value"}
+//Apr 26 12:22:06 hades my_go_logger[69302] <Critical>: <critical> Log example5 {"ctx_key":"ctx_value"}
+//Apr 26 12:22:06 hades my_go_logger[69302] <Alert>: <alert> Log example6 {"ctx_key":"ctx_value"}
+//Apr 26 12:22:06 hades my_go_logger[69302] <Emergency>: <emergency> Log example7 {"ctx_key":"ctx_value"}
 func ExampleLoggerSyslogHandler() {
 	syslogHandler, _ := handler.NewSyslog(
 		formatter.NewDefaultFormatter(),

@@ -12,36 +12,36 @@ import (
 )
 
 func TestGroup_Handle(t *testing.T) {
-	logEntry := logger.Entry{}
+	entry := logger.Entry{}
 
 	mockHandlerA := mocks.HandlerInterface{}
-	mockHandlerA.On("Handle", logEntry).Return(nil)
+	mockHandlerA.On("Handle", entry).Return(nil)
 
 	mockHandlerB := mocks.HandlerInterface{}
-	mockHandlerB.On("Handle", logEntry).Return(nil)
+	mockHandlerB.On("Handle", entry).Return(nil)
 
 	h := handler.NewGroup(&mockHandlerA, &mockHandlerB)
 
-	assert.Nil(t, h.Handle(logEntry))
+	assert.Nil(t, h.Handle(entry))
 
-	mockHandlerA.AssertCalled(t, "Handle", logEntry)
-	mockHandlerB.AssertCalled(t, "Handle", logEntry)
+	mockHandlerA.AssertCalled(t, "Handle", entry)
+	mockHandlerB.AssertCalled(t, "Handle", entry)
 }
 
 func TestNewGroupBlocking_HandleWithError(t *testing.T) {
-	logEntry := logger.Entry{}
+	entry := logger.Entry{}
 	err := errors.New("my error")
 
 	mockHandlerA := mocks.HandlerInterface{}
-	mockHandlerA.On("Handle", logEntry).Return(err)
+	mockHandlerA.On("Handle", entry).Return(err)
 
 	mockHandlerB := mocks.HandlerInterface{}
-	mockHandlerB.On("Handle", logEntry)
+	mockHandlerB.On("Handle", entry)
 
 	h := handler.NewGroupBlocking([]logger.HandlerInterface{&mockHandlerA, &mockHandlerB})
 
-	assert.Equal(t, err, h.Handle(logEntry))
+	assert.Equal(t, err, h.Handle(entry))
 
-	mockHandlerA.AssertCalled(t, "Handle", logEntry)
-	mockHandlerB.AssertNotCalled(t, "Handle", logEntry)
+	mockHandlerA.AssertCalled(t, "Handle", entry)
+	mockHandlerB.AssertNotCalled(t, "Handle", entry)
 }

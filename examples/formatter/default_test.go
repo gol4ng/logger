@@ -19,5 +19,5 @@ func ExampleDefaultFormatter() {
 	))
 
 	//Output:
-	// info My log message
+	//<info> My log message {"my_key":"my_value"}
 }

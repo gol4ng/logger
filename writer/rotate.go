@@ -13,7 +13,7 @@ type RotateWriter interface {
 
 type RotateFileWriter struct {
 	mutex        sync.Mutex
-	fileProvider func(*os.File) (*os.File, error)
+	fileProvider FileProvider
 	file         *os.File
 }
 
@@ -30,8 +30,7 @@ func (w *RotateFileWriter) Rotate() (err error) {
 	return err
 }
 
-func NewRotateFileWriter(fileProvider func(*os.File) (*os.File, error)) (*RotateFileWriter, error) {
+func NewRotateFileWriter(fileProvider FileProvider) (*RotateFileWriter, error) {
 	file, err := fileProvider(nil)
-	fw := &RotateFileWriter{file: file, fileProvider: fileProvider}
-	return fw, err
+	return &RotateFileWriter{file: file, fileProvider: fileProvider}, err
 }

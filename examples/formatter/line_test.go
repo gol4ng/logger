@@ -20,5 +20,5 @@ func ExampleLineFormatter() {
 	))
 
 	//Output:
-	// My log message info my_key:my_value
+	//My log message info <my_key:my_value>
 }

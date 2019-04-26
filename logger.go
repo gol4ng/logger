@@ -41,53 +41,67 @@ func (l Level) String() string {
 	case EmergencyLevel:
 		return "emergency"
 	default:
-		return fmt.Sprintf("Level(%d)", l)
+		return fmt.Sprintf("level(%d)", l)
 	}
 }
 
+type WrapperHandler func(handler HandlerInterface) HandlerInterface
+
+type LogInterface interface {
+	Log(message string, level Level, context *Context) error
+}
+
 type LoggerInterface interface {
-	Log(msg string, lvl Level, ctx *Context) error
+	LogInterface
+	Debug(message string, context *Context) error
+	Info(message string, context *Context) error
+	Notice(message string, context *Context) error
+	Warning(message string, context *Context) error
+	Error(message string, context *Context) error
+	Critical(message string, context *Context) error
+	Alert(message string, context *Context) error
+	Emergency(message string, context *Context) error
 }
 
 type Logger struct {
 	handler HandlerInterface
 }
 
-func (l *Logger) Debug(msg string, ctx *Context) error {
-	return l.Log(msg, DebugLevel, ctx)
+func (l *Logger) Debug(message string, context *Context) error {
+	return l.Log(message, DebugLevel, context)
 }
-func (l *Logger) Info(msg string, ctx *Context) error {
-	return l.Log(msg, InfoLevel, ctx)
+func (l *Logger) Info(message string, context *Context) error {
+	return l.Log(message, InfoLevel, context)
 }
-func (l *Logger) Notice(msg string, ctx *Context) error {
-	return l.Log(msg, NoticeLevel, ctx)
+func (l *Logger) Notice(message string, context *Context) error {
+	return l.Log(message, NoticeLevel, context)
 }
-func (l *Logger) Warning(msg string, ctx *Context) error {
-	return l.Log(msg, WarningLevel, ctx)
+func (l *Logger) Warning(message string, context *Context) error {
+	return l.Log(message, WarningLevel, context)
 }
-func (l *Logger) Error(msg string, ctx *Context) error {
-	return l.Log(msg, ErrorLevel, ctx)
+func (l *Logger) Error(message string, context *Context) error {
+	return l.Log(message, ErrorLevel, context)
 }
-func (l *Logger) Critical(msg string, ctx *Context) error {
-	return l.Log(msg, CriticalLevel, ctx)
+func (l *Logger) Critical(message string, context *Context) error {
+	return l.Log(message, CriticalLevel, context)
 }
-func (l *Logger) Alert(msg string, ctx *Context) error {
-	return l.Log(msg, AlertLevel, ctx)
+func (l *Logger) Alert(message string, context *Context) error {
+	return l.Log(message, AlertLevel, context)
 }
-func (l *Logger) Emergency(msg string, ctx *Context) error {
-	return l.Log(msg, EmergencyLevel, ctx)
-}
-
-func (l *Logger) Log(msg string, lvl Level, ctx *Context) error {
-	return l.handler.Handle(Entry{msg, lvl, ctx})
+func (l *Logger) Emergency(message string, context *Context) error {
+	return l.Log(message, EmergencyLevel, context)
 }
 
-func (l *Logger) Wrap(w func(h HandlerInterface) HandlerInterface) {
-	l.handler = w(l.handler)
+func (l *Logger) Log(message string, level Level, context *Context) error {
+	return l.handler.Handle(Entry{message, level, context})
 }
 
-func (l *Logger) WrapNew(w func(h HandlerInterface) HandlerInterface) *Logger {
-	return &Logger{handler: w(l.handler)}
+func (l *Logger) Wrap(wrapper WrapperHandler) {
+	l.handler = wrapper(l.handler)
+}
+
+func (l *Logger) WrapNew(wrapper WrapperHandler) *Logger {
+	return &Logger{handler: wrapper(l.handler)}
 }
 
 func NewNopLogger() *Logger {
