@@ -12,7 +12,6 @@ type Group struct {
 func (g *Group) Handle(entry logger.Entry) error {
 	var err error
 	for _, h := range g.handlers {
-		//TODO GO ROUTINE
 		if err = h.Handle(entry); err == nil {
 			continue
 		}
@@ -25,7 +24,7 @@ func (g *Group) Handle(entry logger.Entry) error {
 	return err
 }
 
-func NewGroupBlocking(handlers []logger.HandlerInterface) *Group {
+func NewGroupBlocking(handlers ...logger.HandlerInterface) *Group {
 	return &Group{handlers: handlers, stopOnError: true}
 }
 

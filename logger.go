@@ -63,6 +63,12 @@ type LoggerInterface interface {
 	Emergency(message string, context *Context) error
 }
 
+type WrappableLoggerInterface interface {
+	LoggerInterface
+	Wrap(wrapper WrapperHandler) WrappableLoggerInterface
+	WrapNew(wrapper WrapperHandler) WrappableLoggerInterface
+}
+
 type Logger struct {
 	handler HandlerInterface
 }
@@ -96,18 +102,19 @@ func (l *Logger) Log(message string, level Level, context *Context) error {
 	return l.handler.Handle(Entry{message, level, context})
 }
 
-func (l *Logger) Wrap(wrapper WrapperHandler) {
+func (l *Logger) Wrap(wrapper WrapperHandler) WrappableLoggerInterface {
 	l.handler = wrapper(l.handler)
+	return l
 }
 
-func (l *Logger) WrapNew(wrapper WrapperHandler) *Logger {
+func (l *Logger) WrapNew(wrapper WrapperHandler) WrappableLoggerInterface {
 	return &Logger{handler: wrapper(l.handler)}
 }
 
-func NewNopLogger() *Logger {
+func NewNopLogger() WrappableLoggerInterface {
 	return &Logger{handler: &NopHandler{}}
 }
 
-func NewLogger(h HandlerInterface) *Logger {
-	return &Logger{handler: h}
+func NewLogger(handler HandlerInterface) WrappableLoggerInterface {
+	return &Logger{handler: handler}
 }

@@ -1,6 +1,7 @@
 package formatter_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -32,6 +33,41 @@ func TestJson_Format(t *testing.T) {
 			f := formatter.NewJsonEncoder()
 
 			assert.Equal(t, tt.expected, f.Format(tt.entry))
+		})
+	}
+}
+
+func TestMarshalContextTo(t *testing.T) {
+	tests := []struct {
+		name            string
+		context         *logger.Context
+		expectedStrings []string
+	}{
+		{
+			name:            "test simple message without context",
+			context:         nil,
+			expectedStrings: []string{"null"},
+		},
+		{
+			name:            "test simple message with context",
+			context:         logger.NewContext().Add("my_key", "my_value"),
+			expectedStrings: []string{"{\"my_key\":\"my_value\"}"},
+		},
+		{
+			name:            "test multiple message with context",
+			context:         logger.NewContext().Add("my_key", "my_value").Add("my_key2", "my_value2"),
+			expectedStrings: []string{"\"my_key\":\"my_value\"", "\"my_key2\":\"my_value2\""},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			builder := &strings.Builder{}
+			formatter.MarshalContextTo(tt.context, builder)
+			str := builder.String()
+			for _, s := range tt.expectedStrings {
+				assert.Contains(t, str, s)
+			}
 		})
 	}
 }

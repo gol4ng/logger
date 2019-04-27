@@ -62,7 +62,7 @@ func TestLogFileProvider(t *testing.T) {
 	})
 	monkey.Patch(os.OpenFile, func(name string, flag int, perm os.FileMode) (*os.File, error) {
 		assert.Equal(t, "fake_format_fake_name", name)
-		assert.Equal(t, 521, flag)
+		assert.Equal(t, os.O_CREATE|os.O_APPEND|os.O_WRONLY, flag)
 		assert.Equal(t, os.FileMode(0666), perm)
 		return &createdFile, nil
 	})

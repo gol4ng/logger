@@ -19,16 +19,16 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 	i := int64(0)
 
 	var f *os.File
-	createdFile1 := os.File{}
-	createdFile2 := os.File{}
+	createdFile1 := &os.File{}
+	createdFile2 := &os.File{}
 	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Write", func(file *os.File, p []byte) (n int, err error) {
 		if i == 0 {
-			assert.Equal(t, &createdFile1, file)
+			assert.Equal(t, createdFile1, file)
 			assert.Equal(t, []uint8("my formatter return\n"), p)
 			return 99, nil
 		}
 		if i == 1 {
-			assert.Equal(t, &createdFile2, file)
+			assert.Equal(t, createdFile2, file)
 			assert.Equal(t, []uint8("my formatter return\n"), p)
 			return 99, nil
 		}
@@ -37,14 +37,18 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 		return 0, nil
 	})
 
-	monkey.Patch(os.Create, func(name string) (*os.File, error) {
+	monkey.Patch(os.OpenFile, func(name string, flag int, perm os.FileMode) (*os.File, error) {
 		if i == 0 {
 			assert.Equal(t, "fake_format_Thu Jan  1 1970 00", name)
-			return &createdFile1, nil
+			assert.Equal(t, os.O_CREATE|os.O_APPEND|os.O_WRONLY, flag)
+			assert.Equal(t, os.FileMode(0666), perm)
+			return createdFile1, nil
 		}
 		if i == 1 {
 			assert.Equal(t, "fake_format_Thu Jan  1 1970 01", name)
-			return &createdFile2, nil
+			assert.Equal(t, os.O_CREATE|os.O_APPEND|os.O_WRONLY, flag)
+			assert.Equal(t, os.FileMode(0666), perm)
+			return createdFile2, nil
 		}
 
 		assert.True(t, false, "must not be reached")
@@ -83,10 +87,14 @@ func TestNewLogRotateFileStream_Handle(t *testing.T) {
 	})
 
 	file := os.File{}
-	monkey.Patch(os.Create, func(name string) (*os.File, error) {
+
+	monkey.Patch(os.OpenFile, func(name string, flag int, perm os.FileMode) (*os.File, error) {
 		assert.Equal(t, "fake_format_test", name)
+		assert.Equal(t, os.O_CREATE|os.O_APPEND|os.O_WRONLY, flag)
+		assert.Equal(t, os.FileMode(0666), perm)
 		return &file, nil
 	})
+
 	monkey.Patch(os.Rename, func(oldpath, newpath string) error {
 		assert.Equal(t, "fake_format_test", oldpath)
 		assert.Equal(t, "fake_format_Mon Apr  7 1986", newpath)

@@ -38,7 +38,7 @@ func TestNewGroupBlocking_HandleWithError(t *testing.T) {
 	mockHandlerB := mocks.HandlerInterface{}
 	mockHandlerB.On("Handle", entry)
 
-	h := handler.NewGroupBlocking([]logger.HandlerInterface{&mockHandlerA, &mockHandlerB})
+	h := handler.NewGroupBlocking(&mockHandlerA, &mockHandlerB)
 
 	assert.Equal(t, err, h.Handle(entry))
 
