@@ -8,10 +8,16 @@ import (
 )
 
 func ExampleDefaultFormatter() {
-	jsonFormatter := formatter.NewDefaultFormatter()
+	defaultFormatter := formatter.NewDefaultFormatter()
 
-	fmt.Println(jsonFormatter.Format(logger.Entry{Message: "My log message", Level: logger.InfoLevel, Context: &map[string]interface{}{"my_key": "my_value"}}))
+	fmt.Println(defaultFormatter.Format(
+		logger.Entry{
+			Message: "My log message",
+			Level: logger.InfoLevel,
+			Context: logger.NewContext().Add("my_key", "my_value"),
+		},
+	))
 
 	//Output:
-	// info My log message
+	//<info> My log message {"my_key":"my_value"}
 }

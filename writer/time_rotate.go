@@ -1,7 +1,6 @@
 package writer
 
 import (
-	"os"
 	"time"
 )
 
@@ -30,7 +29,7 @@ func NewTimeRotateWriter(writer RotateWriter, interval time.Duration) *TimeRotat
 	return w
 }
 
-func NewTimeRotateFileWriter(fileProvider func(*os.File) (*os.File, error), interval time.Duration) (*TimeRotateWriter, error) {
+func NewTimeRotateFileWriter(fileProvider FileProvider, interval time.Duration) (*TimeRotateWriter, error) {
 	w, err := NewRotateFileWriter(fileProvider)
 	return NewTimeRotateWriter(w, interval), err
 }

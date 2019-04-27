@@ -18,17 +18,17 @@ func TestLine_Format(t *testing.T) {
 		{
 			name:     "test simple format 1",
 			format:   "%s %s %s",
-			expected: "test message warning %!s(*map[string]interface {}=<nil>)",
+			expected: "test message warning <my_key:my_value>",
 		},
 		{
 			name:     "test simple format 2",
 			format:   "%s %d %s",
-			expected: "test message 4 %!s(*map[string]interface {}=<nil>)",
+			expected: "test message 4 <my_key:my_value>",
 		},
 		{
 			name:     "test simple format",
 			format:   "%[2]s %[1]s %[3]s",
-			expected: "warning test message %!s(*map[string]interface {}=<nil>)",
+			expected: "warning test message <my_key:my_value>",
 		},
 	}
 
@@ -36,7 +36,7 @@ func TestLine_Format(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			f := formatter.NewLine(tt.format)
 
-			assert.Equal(t, tt.expected, f.Format(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
+			assert.Equal(t, tt.expected, f.Format(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: logger.Ctx("my_key", "my_value")}))
 		})
 	}
 }

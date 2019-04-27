@@ -23,11 +23,11 @@ func ExampleMinLevelFilterHandler() {
 	minLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.EmergencyLevel})
 
 	//Output:
-	//warning will be printed
-	//error will be printed
-	//critical will be printed
-	//alert will be printed
-	//emergency will be printed
+	//<warning> will be printed
+	//<error> will be printed
+	//<critical> will be printed
+	//<alert> will be printed
+	//<emergency> will be printed
 }
 
 func ExampleRangeLevelFilterHandler() {
@@ -45,9 +45,9 @@ func ExampleRangeLevelFilterHandler() {
 	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be excluded", Level: logger.EmergencyLevel})
 
 	//Output:
-	//info will be printed
-	//notice will be printed
-	//warning will be printed
+	//<info> will be printed
+	//<notice> will be printed
+	//<warning> will be printed
 }
 
 func ExampleCustomFilterHandler() {
@@ -67,10 +67,10 @@ func ExampleCustomFilterHandler() {
 	rangeLvlFilterHandler.Handle(logger.Entry{Message: "will be printed", Level: logger.EmergencyLevel})
 
 	//Output:
-	//debug will be printed
-	//notice will be printed
-	//warning will be printed
-	//error will be printed
-	//critical will be printed
-	//emergency will be printed
+	//<debug> will be printed
+	//<notice> will be printed
+	//<warning> will be printed
+	//<error> will be printed
+	//<critical> will be printed
+	//<emergency> will be printed
 }

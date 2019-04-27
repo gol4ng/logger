@@ -37,10 +37,13 @@ func TestTimeFileProvider(t *testing.T) {
 		return nil
 	})
 
-	monkey.Patch(os.Create, func(name string) (*os.File, error) {
+	monkey.Patch(os.OpenFile, func(name string, flag int, perm os.FileMode) (*os.File, error) {
 		assert.Equal(t, "fake_format_Thu Jan  1 1970 00", name)
+		assert.Equal(t, os.O_CREATE|os.O_APPEND|os.O_WRONLY, flag)
+		assert.Equal(t, os.FileMode(0666), perm)
 		return &createdFile, nil
 	})
+
 	monkey.Patch(time.Now, func() time.Time { return time.Unix(0, 0) })
 	defer monkey.UnpatchAll()
 
