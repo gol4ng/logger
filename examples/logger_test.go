@@ -1,14 +1,49 @@
 package example_handler_test
 
 import (
+	"bytes"
+	"fmt"
 	"log/syslog"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
 	"github.com/gol4ng/logger/handler"
 )
+
+func ExampleLoggerCallerHandler() {
+	output := &Output{}
+	myLogger := logger.NewLogger(
+		handler.NewCaller(
+			handler.NewStream(output, formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")),
+			4,
+		),
+	)
+
+	myLogger.Debug("Log example", nil)
+	myLogger.Info("Log example", nil)
+	myLogger.Notice("Log example", nil)
+	myLogger.Warning("Log example", nil)
+	myLogger.Error("Log example", nil)
+	myLogger.Critical("Log example", nil)
+	myLogger.Alert("Log example", nil)
+	myLogger.Emergency("Log example", nil)
+
+	output.Constains([]string{
+		"lvl: debug | msg: Log example | ctx:", "<_file:/", "<_line:",
+		"lvl: info | msg: Log example | ctx:", "<_file:/", "<_line:",
+		"lvl: notice | msg: Log example | ctx:", "<_file:/", "<_line:",
+		"lvl: warning | msg: Log example | ctx:", "<_file:/", "<_line:",
+		"lvl: error | msg: Log example | ctx:", "<_file:/", "<_line:",
+		"lvl: critical | msg: Log example | ctx:", "<_file:/", "<_line:",
+		"lvl: alert | msg: Log example | ctx:", "<_file:/", "<_line:",
+		"lvl: emergency | msg: Log example | ctx:", "<_file:/", "<_line:",
+	})
+
+	//Output:
+}
 
 func ExampleLoggerLineFormatter() {
 	lineLogHandler := handler.NewStream(os.Stdout, formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v"))
@@ -199,4 +234,17 @@ func ExampleLoggerSyslogHandler() {
 	myLogger.Emergency("Log example7", logger.Ctx("ctx_key", "ctx_value"))
 
 	//Output:
+}
+
+type Output struct {
+	bytes.Buffer
+}
+
+func (o *Output) Constains(str []string) {
+	b := o.String()
+	for _, s := range str {
+		if strings.Contains(b, s) != true {
+			fmt.Printf("buffer %s must contain %s\n", b, s)
+		}
+	}
 }
