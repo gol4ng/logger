@@ -45,8 +45,6 @@ func (l Level) String() string {
 	}
 }
 
-type WrapperHandler func(handler HandlerInterface) HandlerInterface
-
 type LogInterface interface {
 	Log(message string, level Level, context *Context) error
 }
@@ -62,6 +60,8 @@ type LoggerInterface interface {
 	Alert(message string, context *Context) error
 	Emergency(message string, context *Context) error
 }
+
+type WrapperHandler func(handler HandlerInterface) HandlerInterface
 
 type WrappableLoggerInterface interface {
 	LoggerInterface
