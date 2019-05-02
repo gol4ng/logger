@@ -31,8 +31,8 @@ func (c Context) Handle(entry logger.Entry) error {
 	})
 }
 
-func NewContext(handler logger.HandlerInterface, defaultContext *logger.Context) Context {
-	return Context{handler: handler, defaultCtx: defaultContext}
+func NewContext(handler logger.HandlerInterface, defaultContext *logger.Context) *Context {
+	return &Context{handler: handler, defaultCtx: defaultContext}
 }
 
 func NewContextWrapper(defaultContext *logger.Context) logger.WrapperHandler {
