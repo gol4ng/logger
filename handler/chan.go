@@ -4,15 +4,9 @@ import (
 	"github.com/gol4ng/logger"
 )
 
-type Chan struct {
-	entryChan chan<- logger.Entry
-}
-
-func (c Chan) Handle(entry logger.Entry) error {
-	c.entryChan <- entry
-	return nil
-}
-
-func NewChan(entryChan chan<- logger.Entry) Chan {
-	return Chan{entryChan: entryChan}
+func Chan(entryChan chan<- logger.Entry) logger.HandlerInterface {
+	return func(entry logger.Entry) error {
+		entryChan <- entry
+		return nil
+	}
 }

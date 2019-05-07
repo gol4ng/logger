@@ -1,13 +1,19 @@
 package benchmarks_test
 
 import (
-	"os"
+	"github.com/gol4ng/logger/middleware"
 	"testing"
 
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
 	"github.com/gol4ng/logger/handler"
 )
+
+type NopWriter struct{}
+
+func (w *NopWriter) Write(p []byte) (n int, err error) {
+	return 0, nil
+}
 
 func BenchmarkNopLogger(b *testing.B) {
 	b.ReportAllocs()
@@ -23,8 +29,9 @@ func BenchmarkNopLogger(b *testing.B) {
 func BenchmarkLoggerLineFormatter(b *testing.B) {
 	b.ReportAllocs()
 
-	lineLogHandler := handler.NewStream(os.Stdout, formatter.NewLine("%[2]s | %[1]s"))
-	myLogger := logger.NewLogger(lineLogHandler)
+	myLogger := logger.NewLogger(
+		handler.Stream(&NopWriter{}, formatter.NewLine("%[2]s | %[1]s")),
+	)
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
@@ -35,8 +42,9 @@ func BenchmarkLoggerLineFormatter(b *testing.B) {
 func BenchmarkLoggerJsonFormatter(b *testing.B) {
 	b.ReportAllocs()
 
-	lineLogHandler := handler.NewStream(os.Stdout, formatter.NewJsonEncoder())
-	myLogger := logger.NewLogger(lineLogHandler)
+	myLogger := logger.NewLogger(
+		handler.Stream(&NopWriter{}, formatter.NewJsonEncoder()),
+	)
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
@@ -47,9 +55,9 @@ func BenchmarkLoggerJsonFormatter(b *testing.B) {
 func BenchmarkLoggerMinLevelFilterHandler(b *testing.B) {
 	b.ReportAllocs()
 
-	lineLogHandler := handler.NewStream(os.Stdout, &logger.NopFormatter{})
-	filterLogHandler := handler.NewMinLevelFilter(lineLogHandler, logger.InfoLevel)
-	myLogger := logger.NewLogger(filterLogHandler)
+	myLogger := logger.NewLogger(
+		middleware.MinLevelFilter(logger.InfoLevel)(logger.NopHandler),
+	)
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
@@ -61,10 +69,10 @@ func BenchmarkLoggerMinLevelFilterHandler(b *testing.B) {
 func BenchmarkLoggerGroupHandler(b *testing.B) {
 	b.ReportAllocs()
 
-	jsonLogHandler := handler.NewStream(os.Stdout, &formatter.Json{})
-	lineLogHandler := handler.NewStream(os.Stdout, &logger.NopFormatter{})
-	groupLogHandler := handler.NewGroup(jsonLogHandler, lineLogHandler)
-	myLogger := logger.NewLogger(groupLogHandler)
+	myLogger := logger.NewLogger(handler.Group(
+		handler.Stream(&NopWriter{}, &logger.NopFormatter{}),
+		handler.Stream(&NopWriter{}, &logger.NopFormatter{}),
+	))
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {

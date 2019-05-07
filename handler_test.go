@@ -9,17 +9,5 @@ import (
 )
 
 func TestNopHandler_Handle(t *testing.T) {
-	tests := []struct {
-		name    string
-		handler *logger.NopHandler
-	}{
-		{name: "test nop handler struct", handler: &logger.NopHandler{}},
-		{name: "test NewNopHandler()", handler: logger.NewNopHandler()},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Nil(t, tt.handler.Handle(logger.Entry{}))
-		})
-	}
+	assert.Nil(t, logger.NopHandler(logger.Entry{}))
 }

@@ -70,13 +70,13 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", mock.AnythingOfType("logger.Entry")).Return("my formatter return")
 
-	h, err := handler.NewTimeRotateFileStream("fake_format_%s", "Mon Jan _2 2006 05", &mockFormatter, 10*time.Millisecond)
+	h, err := handler.TimeRotateFileStream("fake_format_%s", "Mon Jan _2 2006 05", &mockFormatter, 10*time.Millisecond)
 	assert.Nil(t, err)
-	assert.Nil(t, h.Handle(logger.Entry{}))
+	assert.Nil(t, h(logger.Entry{}))
 
 	i++
 	tickerChan <- time.Now()
-	assert.Nil(t, h.Handle(logger.Entry{}))
+	assert.Nil(t, h(logger.Entry{}))
 }
 
 func TestNewLogRotateFileStream_Handle(t *testing.T) {
@@ -106,10 +106,10 @@ func TestNewLogRotateFileStream_Handle(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", mock.AnythingOfType("logger.Entry")).Return("my formatter return")
 
-	h, err := handler.NewLogRotateFileStream("test", "fake_format_%s", "Mon Jan _2 2006", &mockFormatter, 100*time.Millisecond)
+	h, err := handler.LogRotateFileStream("test", "fake_format_%s", "Mon Jan _2 2006", &mockFormatter, 100*time.Millisecond)
 	assert.Nil(t, err)
 
-	assert.Nil(t, h.Handle(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
+	assert.Nil(t, h(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
 	time.Sleep(200 * time.Millisecond)
-	assert.Nil(t, h.Handle(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
+	assert.Nil(t, h(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
 }

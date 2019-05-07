@@ -10,14 +10,14 @@ import (
 
 func ExampleGroupHandler() {
 	lineFormatter := formatter.NewDefaultFormatter()
-	lineLogHandler := handler.NewStream(os.Stdout, lineFormatter)
+	lineLogHandler := handler.Stream(os.Stdout, lineFormatter)
 
 	jsonFormatter := formatter.NewJsonEncoder()
-	jsonLogHandler := handler.NewStream(os.Stdout, jsonFormatter)
+	jsonLogHandler := handler.Stream(os.Stdout, jsonFormatter)
 
-	groupHandler := handler.NewGroup(lineLogHandler, jsonLogHandler)
+	groupHandler := handler.Group(lineLogHandler, jsonLogHandler)
 
-	groupHandler.Handle(logger.Entry{Message: "Log example"})
+	groupHandler(logger.Entry{Message: "Log example"})
 
 	//Output:
 	// <emergency> Log example

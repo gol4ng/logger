@@ -1,6 +1,7 @@
-package example_handler_test
+package example_middleware_test
 
 import (
+	"github.com/gol4ng/logger/middleware"
 	"os"
 
 	"github.com/gol4ng/logger"
@@ -9,11 +10,11 @@ import (
 )
 
 func ExampleContextHandler() {
-	streamHandler := handler.NewStream(os.Stdout, formatter.NewJsonEncoder())
+	streamHandler := handler.Stream(os.Stdout, formatter.NewJsonEncoder())
 
-	contextHandler := handler.NewContext(streamHandler, logger.Ctx("my_value_1", "value 1"))
+	contextHandler := middleware.Context(logger.Ctx("my_value_1", "value 1"))
 
-	myLogger := logger.NewLogger(handler.NewGroup(contextHandler, streamHandler))
+	myLogger := logger.NewLogger(handler.Group(contextHandler(streamHandler), streamHandler))
 
 	_ = myLogger.Debug("will be printed", logger.Ctx("my_value_1", "overwrited value 1"))
 

@@ -18,9 +18,9 @@ func TestStream_Handle(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", mock.AnythingOfType("logger.Entry")).Return("my formatter return")
 
-	h := handler.NewStream(&b, &mockFormatter)
+	h := handler.Stream(&b, &mockFormatter)
 
-	assert.Nil(t, h.Handle(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
+	assert.Nil(t, h(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
 	assert.Equal(t, "my formatter return\n", b.String())
 }
 
@@ -29,9 +29,9 @@ func TestStream_HandleWithError(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", mock.AnythingOfType("logger.Entry")).Return("my formatter return")
 
-	h := handler.NewStream(&WriterError{Error: err}, &mockFormatter)
+	h := handler.Stream(&WriterError{Error: err}, &mockFormatter)
 
-	assert.Equal(t, err, h.Handle(logger.Entry{}))
+	assert.Equal(t, err, h(logger.Entry{}))
 }
 
 type WriterError struct {

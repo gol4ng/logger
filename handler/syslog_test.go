@@ -33,9 +33,9 @@ func TestSyslog_HandleWithError(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", logEntry).Return("fake_syslog_message")
 
-	h, _ := handler.NewSyslog(&mockFormatter, "fake_network", "fake_raddr", syslog.LOG_DEBUG, "fake_tag")
+	h, _ := handler.Syslog(&mockFormatter, "fake_network", "fake_raddr", syslog.LOG_DEBUG, "fake_tag")
 
-	assert.EqualError(t, h.Handle(logEntry), "fake_syslog_write_error")
+	assert.EqualError(t, h(logEntry), "fake_syslog_write_error")
 }
 
 func TestSyslog_Handle(t *testing.T) {
@@ -98,9 +98,9 @@ func TestSyslog_Handle(t *testing.T) {
 			mockFormatter := mocks.FormatterInterface{}
 			mockFormatter.On("Format", logEntry).Return(syslogMsg)
 
-			h, _ := handler.NewSyslog(&mockFormatter, "fake_network", "fake_raddr", syslog.LOG_DEBUG, "")
+			h, _ := handler.Syslog(&mockFormatter, "fake_network", "fake_raddr", syslog.LOG_DEBUG, "")
 
-			assert.Nil(t, h.Handle(logEntry))
+			assert.Nil(t, h(logEntry))
 		})
 	}
 }
