@@ -1,12 +1,12 @@
 package benchmarks_test
 
 import (
-	"github.com/gol4ng/logger/middleware"
 	"testing"
 
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
 	"github.com/gol4ng/logger/handler"
+	"github.com/gol4ng/logger/middleware"
 )
 
 type NopWriter struct{}

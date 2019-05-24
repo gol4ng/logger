@@ -1,10 +1,10 @@
 package middleware_test
 
 import (
-	"github.com/gol4ng/logger/middleware"
 	"testing"
 
 	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/middleware"
 	"github.com/stretchr/testify/assert"
 )
 

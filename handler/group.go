@@ -5,18 +5,13 @@ import (
 )
 
 func Group(handlers ...logger.HandlerInterface) logger.HandlerInterface {
-	stopOnError := false
 	return func(entry logger.Entry) error {
 		var err error
 		for _, handler := range handlers {
-			if err = handler(entry); err == nil {
-				continue
-			}
-			if stopOnError {
+			if err = handler(entry); err != nil {
 				return err
 			}
-			//TODO handle multiple err
 		}
-		return err
+		return nil
 	}
 }

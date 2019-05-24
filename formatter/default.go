@@ -1,8 +1,9 @@
 package formatter
 
 import (
-	"github.com/gol4ng/logger"
 	"strings"
+
+	"github.com/gol4ng/logger"
 )
 
 type DefaultFormatter struct{}

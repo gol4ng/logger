@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"github.com/gol4ng/logger"
 	"runtime"
+
+	"github.com/gol4ng/logger"
 )
 
-// This handler will add 2 fields in the handled entry context
+// This middleware will add 2 fields in the handled entry context
 // eg:
 //     _file:/..../file_of_the_handle_caller.go
 //     _line:72

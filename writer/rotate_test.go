@@ -1,14 +1,14 @@
 package writer_test
 
 import (
-	"bou.ke/monkey"
 	"errors"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"reflect"
 	"testing"
 
+	"bou.ke/monkey"
 	"github.com/gol4ng/logger/writer"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRotateFileWriter_Write(t *testing.T) {

@@ -1,13 +1,12 @@
 package example_middleware_test
 
 import (
-	"github.com/gol4ng/logger/middleware"
 	"os"
 
-	"github.com/gol4ng/logger/formatter"
-
 	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
 	"github.com/gol4ng/logger/handler"
+	"github.com/gol4ng/logger/middleware"
 )
 
 func ExampleMinLevelFilterHandler() {

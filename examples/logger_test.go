@@ -3,14 +3,15 @@ package example_handler_test
 import (
 	"bytes"
 	"fmt"
-	"github.com/gol4ng/logger"
-	"github.com/gol4ng/logger/formatter"
-	"github.com/gol4ng/logger/handler"
-	"github.com/gol4ng/logger/middleware"
 	"log/syslog"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
+	"github.com/gol4ng/logger/handler"
+	"github.com/gol4ng/logger/middleware"
 )
 
 func ExampleLoggerCallerHandler() {
@@ -40,7 +41,6 @@ func ExampleLoggerCallerHandler() {
 		"lvl: alert | msg: Log example | ctx:", "<_file:/", "<_line:",
 		"lvl: emergency | msg: Log example | ctx:", "<_file:/", "<_line:",
 	})
-	fmt.Println(output)
 
 	//Output:
 }
@@ -235,7 +235,6 @@ func ExampleLoggerLogRotateHandler() {
 	//Output:
 }
 
-//
 // You can run the command below to show syslog messages
 // syslog -F '$Time $Host $(Sender)[$(PID)] <$((Level)(str))>: $Message'
 //Apr 26 12:22:06 hades my_go_logger[69302] <Notice>: <notice> Log example2 {"ctx_key":"ctx_value"}

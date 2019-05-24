@@ -1,15 +1,16 @@
 package handler_test
 
 import (
+	"log/syslog"
+	"reflect"
+	"testing"
+
 	"bou.ke/monkey"
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/mocks"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"log/syslog"
-	"reflect"
-	"testing"
 )
 
 func TestSyslog_HandleWithError(t *testing.T) {

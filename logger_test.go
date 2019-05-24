@@ -1,13 +1,33 @@
 package logger_test
 
 import (
+	"errors"
 	"testing"
 
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
-
 	"github.com/gol4ng/logger"
+	"github.com/stretchr/testify/assert"
 )
+
+func TestLevel_String(t *testing.T) {
+	tests := []struct {
+		level    logger.Level
+		expected string
+	}{
+		{level: logger.DebugLevel, expected: "debug"},
+		{level: logger.InfoLevel, expected: "info"},
+		{level: logger.NoticeLevel, expected: "notice"},
+		{level: logger.WarningLevel, expected: "warning"},
+		{level: logger.ErrorLevel, expected: "error"},
+		{level: logger.CriticalLevel, expected: "critical"},
+		{level: logger.AlertLevel, expected: "alert"},
+		{level: logger.EmergencyLevel, expected: "emergency"},
+		{level: 123, expected: "level(123)"},
+	}
+
+	for _, tt := range tests {
+		assert.Equal(t, tt.expected, tt.level.String())
+	}
+}
 
 func TestLogger_Log(t *testing.T) {
 	tests := []struct {

@@ -1,10 +1,11 @@
 package handler_test
 
 import (
+	"testing"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestChan_Handle(t *testing.T) {

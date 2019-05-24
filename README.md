@@ -2,7 +2,7 @@
 
 [![GoDoc](https://godoc.org/github.com/gol4ng/logger?status.svg)](https://godoc.org/github.com/gol4ng/logger)
 
-Gol4ng/Logger is another GO logger. The main line was to provide a friendly and fast API to send your log whenever you want. 
+Gol4ng/Logger is another GO logger. The main line is to provide a friendly and fast API to send your log whenever you want. 
 
 ## Installation
 

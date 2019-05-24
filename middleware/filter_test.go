@@ -2,12 +2,11 @@ package middleware_test
 
 import (
 	"fmt"
-	"github.com/gol4ng/logger/middleware"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/middleware"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFilter_HandleWithoutExclusion(t *testing.T) {
@@ -169,16 +168,16 @@ func TestNewRangeLevelFilter(t *testing.T) {
 		for i, logLevel := range levels {
 			t.Run(fmt.Sprintf(tt.name, logLevel), func(t *testing.T) {
 				entry := logger.Entry{Level: logLevel}
+				mockCalled := false
 				mockHandler := func(entry logger.Entry) error {
-					if !tt.logLevelsHandled[i] {
-						assert.Fail(t, "Handler function must ne be called")
-					}
+					mockCalled = true
 					return nil
 				}
 
-				h := middleware.RangeLevelFilter(tt.level1, tt.level2)
+				filter := middleware.RangeLevelFilter(tt.level1, tt.level2)
 
-				assert.Nil(t, h(mockHandler)(entry))
+				assert.Nil(t, filter(mockHandler)(entry))
+				assert.Equal(t, tt.logLevelsHandled[i], mockCalled)
 			})
 		}
 	}

@@ -2,9 +2,10 @@ package logger_test
 
 import (
 	"context"
+	"testing"
+
 	"github.com/gol4ng/logger"
 	"gotest.tools/assert"
-	"testing"
 )
 
 func Test_FromContext_Empty(t *testing.T) {

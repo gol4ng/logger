@@ -3,9 +3,8 @@ package benchmark_formatter_test
 import (
 	"testing"
 
-	"github.com/gol4ng/logger/formatter"
-
 	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
 )
 
 func BenchmarkLineFormatter(b *testing.B) {

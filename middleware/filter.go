@@ -37,6 +37,6 @@ func RangeLevelFilter(level1 logger.Level, level2 logger.Level) logger.Middlewar
 		level2 = l
 	}
 	return Filter(func(entry logger.Entry) bool {
-		return entry.Level > level1 || entry.Level < level2
+		return entry.Level < level1 || entry.Level > level2
 	})
 }

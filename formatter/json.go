@@ -2,9 +2,10 @@ package formatter
 
 import (
 	"encoding/json"
-	"github.com/gol4ng/logger"
 	"strconv"
 	"strings"
+
+	"github.com/gol4ng/logger"
 )
 
 type Json struct {
