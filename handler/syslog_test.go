@@ -1,15 +1,16 @@
 package handler_test
 
 import (
+	"log/syslog"
+	"reflect"
+	"testing"
+
 	"bou.ke/monkey"
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/mocks"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"log/syslog"
-	"reflect"
-	"testing"
 )
 
 func TestSyslog_HandleWithError(t *testing.T) {
@@ -33,9 +34,9 @@ func TestSyslog_HandleWithError(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", logEntry).Return("fake_syslog_message")
 
-	h, _ := handler.NewSyslog(&mockFormatter, "fake_network", "fake_raddr", syslog.LOG_DEBUG, "fake_tag")
+	h, _ := handler.Syslog(&mockFormatter, "fake_network", "fake_raddr", syslog.LOG_DEBUG, "fake_tag")
 
-	assert.EqualError(t, h.Handle(logEntry), "fake_syslog_write_error")
+	assert.EqualError(t, h(logEntry), "fake_syslog_write_error")
 }
 
 func TestSyslog_Handle(t *testing.T) {
@@ -98,9 +99,9 @@ func TestSyslog_Handle(t *testing.T) {
 			mockFormatter := mocks.FormatterInterface{}
 			mockFormatter.On("Format", logEntry).Return(syslogMsg)
 
-			h, _ := handler.NewSyslog(&mockFormatter, "fake_network", "fake_raddr", syslog.LOG_DEBUG, "")
+			h, _ := handler.Syslog(&mockFormatter, "fake_network", "fake_raddr", syslog.LOG_DEBUG, "")
 
-			assert.Nil(t, h.Handle(logEntry))
+			assert.Nil(t, h(logEntry))
 		})
 	}
 }

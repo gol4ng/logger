@@ -8,9 +8,8 @@ import (
 	"time"
 
 	"bou.ke/monkey"
-	"github.com/stretchr/testify/assert"
-
 	"github.com/gol4ng/logger/writer/file_provider"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTimeFileProvider_CloseWithError(t *testing.T) {

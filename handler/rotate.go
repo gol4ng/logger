@@ -8,12 +8,12 @@ import (
 	"github.com/gol4ng/logger/writer/file_provider"
 )
 
-func NewTimeRotateFileStream(format string, timeFormat string, formatter logger.FormatterInterface, interval time.Duration) (*Stream, error) {
+func TimeRotateFileStream(format string, timeFormat string, formatter logger.FormatterInterface, interval time.Duration) (logger.HandlerInterface, error) {
 	w, err := writer.NewTimeRotateFileWriter(file_provider.TimeFileProvider(format, timeFormat), interval)
-	return &Stream{writer: w, formatter: formatter}, err
+	return Stream(w, formatter), err
 }
 
-func NewLogRotateFileStream(name string, format string, timeFormat string, formatter logger.FormatterInterface, interval time.Duration) (*Stream, error) {
+func LogRotateFileStream(name string, format string, timeFormat string, formatter logger.FormatterInterface, interval time.Duration) (logger.HandlerInterface, error) {
 	w, err := writer.NewTimeRotateFileWriter(file_provider.LogFileProvider(name, format, timeFormat), interval)
-	return &Stream{writer: w, formatter: formatter}, err
+	return Stream(w, formatter), err
 }

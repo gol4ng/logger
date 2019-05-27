@@ -2,11 +2,12 @@ package logger_test
 
 import (
 	"errors"
-	"github.com/gol4ng/logger"
-	"github.com/stretchr/testify/assert"
 	"runtime"
 	"testing"
 	"time"
+
+	"github.com/gol4ng/logger"
+	"github.com/stretchr/testify/assert"
 )
 
 // Create a stringer object

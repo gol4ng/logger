@@ -10,12 +10,13 @@ import (
 func BenchmarkGroupHandler(b *testing.B) {
 	b.ReportAllocs()
 
-	nopHandler := logger.NewNopHandler()
-
-	groupHandler := handler.NewGroup(nopHandler, nopHandler)
+	groupHandler := handler.Group(
+		logger.NopHandler,
+		logger.NopHandler,
+	)
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		groupHandler.Handle(logger.Entry{Message: "This log message go anywhere.", Level: logger.InfoLevel})
+		groupHandler(logger.Entry{Message: "This log message goes nowhere.", Level: logger.InfoLevel})
 	}
 }

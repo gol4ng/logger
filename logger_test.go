@@ -1,16 +1,33 @@
 package logger_test
 
 import (
+	"errors"
 	"testing"
 
-	"github.com/pkg/errors"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-
 	"github.com/gol4ng/logger"
-	"github.com/gol4ng/logger/mocks"
+	"github.com/stretchr/testify/assert"
 )
+
+func TestLevel_String(t *testing.T) {
+	tests := []struct {
+		level    logger.Level
+		expected string
+	}{
+		{level: logger.DebugLevel, expected: "debug"},
+		{level: logger.InfoLevel, expected: "info"},
+		{level: logger.NoticeLevel, expected: "notice"},
+		{level: logger.WarningLevel, expected: "warning"},
+		{level: logger.ErrorLevel, expected: "error"},
+		{level: logger.CriticalLevel, expected: "critical"},
+		{level: logger.AlertLevel, expected: "alert"},
+		{level: logger.EmergencyLevel, expected: "emergency"},
+		{level: 123, expected: "level(123)"},
+	}
+
+	for _, tt := range tests {
+		assert.Equal(t, tt.expected, tt.level.String())
+	}
+}
 
 func TestLogger_Log(t *testing.T) {
 	tests := []struct {
@@ -57,17 +74,13 @@ func TestLogger_Log(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockHandler := mocks.HandlerInterface{}
-
-			mockHandler.On("Handle", mock.AnythingOfType("logger.Entry")).Return(func(entry logger.Entry) error {
+			l := logger.NewLogger(func(entry logger.Entry) error {
 				assert.Equal(t, "l message", entry.Message)
 				assert.Equal(t, tt.level, entry.Level)
 				assert.Nil(t, entry.Context)
 
 				return nil
 			})
-
-			l := logger.NewLogger(&mockHandler)
 
 			var err error
 			switch tt.level {
@@ -99,19 +112,15 @@ func TestLogger_Log(t *testing.T) {
 				err = l.Log("l message", tt.level, nil)
 			}
 			assert.Nil(t, err)
-
-			mockHandler.AssertCalled(t, "Handle", mock.AnythingOfType("logger.Entry"))
 		})
 	}
 }
 
 func TestNewLogger_LogWithError(t *testing.T) {
-	mockHandler := mocks.HandlerInterface{}
 	err := errors.New("my error")
-
-	mockHandler.On("Handle", mock.AnythingOfType("logger.Entry")).Return(err)
-
-	l := logger.NewLogger(&mockHandler)
+	l := logger.NewLogger(func(entry logger.Entry) error {
+		return err
+	})
 
 	assert.Equal(t, err, l.Debug("l message", nil))
 	assert.Equal(t, err, l.Info("l message", nil))
@@ -139,56 +148,65 @@ func TestNewNilLogger_Log(t *testing.T) {
 }
 
 func TestNewLogger_Wrap(t *testing.T) {
-	mockHandler := mocks.HandlerInterface{}
-	mockHandler.On("Handle", mock.AnythingOfType("logger.Entry")).Return(func(entry logger.Entry) error {
+	mockHandlerCalled := false
+	mockHandler := func(entry logger.Entry) error {
+		mockHandlerCalled = true
 		assert.Equal(t, "l message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
 		assert.Nil(t, entry.Context)
 
 		return nil
-	})
+	}
 
-	l := logger.NewLogger(&mockHandler)
+	l := logger.NewLogger(mockHandler)
 
-	mockHandlerWrapper := mocks.HandlerInterface{}
-	mockHandlerWrapper.On("Handle", mock.AnythingOfType("logger.Entry")).Return(func(entry logger.Entry) error {
-		return mockHandler.Handle(entry)
-	})
+	mockHandlerWrapperCalled := false
+	mockHandlerWrapper := func(entry logger.Entry) error {
+		mockHandlerWrapperCalled = true
+		return mockHandler(entry)
+	}
 
 	l.Wrap(func(h logger.HandlerInterface) logger.HandlerInterface {
-		return &mockHandlerWrapper
+		return mockHandlerWrapper
 	})
 
 	assert.Nil(t, l.Debug("l message", nil))
 
-	mockHandler.AssertCalled(t, "Handle", mock.AnythingOfType("logger.Entry"))
-	mockHandlerWrapper.AssertCalled(t, "Handle", mock.AnythingOfType("logger.Entry"))
+	assert.True(t, mockHandlerCalled)
+	assert.True(t, mockHandlerWrapperCalled)
 }
 
 func TestNewLogger_WrapNew(t *testing.T) {
-	mockHandler := mocks.HandlerInterface{}
-	mockHandler.On("Handle", mock.AnythingOfType("logger.Entry")).Return(func(entry logger.Entry) error {
+	mockHandlerCalled := false
+	mockHandler := func(entry logger.Entry) error {
+		mockHandlerCalled = true
 		assert.Equal(t, "l message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
 		assert.Nil(t, entry.Context)
 
 		return nil
+	}
+
+	l := logger.NewLogger(mockHandler)
+
+	mockHandlerWrapperCalled := false
+	mockHandlerWrapper := func(entry logger.Entry) error {
+		mockHandlerWrapperCalled = true
+		return mockHandler(entry)
+	}
+
+	l2 := l.WrapNew(func(h logger.HandlerInterface) logger.HandlerInterface {
+		return mockHandlerWrapper
 	})
 
-	l := logger.NewLogger(&mockHandler)
+	assert.Nil(t, l.Debug("l message", nil))
+	assert.True(t, mockHandlerCalled)
+	assert.False(t, mockHandlerWrapperCalled)
 
-	mockHandlerWrapper := mocks.HandlerInterface{}
-	mockHandlerWrapper.On("Handle", mock.AnythingOfType("logger.Entry")).Return(func(entry logger.Entry) error {
-		return mockHandler.Handle(entry)
-	})
+	mockHandlerCalled = false
+	mockHandlerWrapperCalled = false
 
-	newLog := l.WrapNew(func(h logger.HandlerInterface) logger.HandlerInterface {
-		return &mockHandlerWrapper
-	})
-
-	assert.NotEqual(t, l, newLog)
-	assert.Nil(t, newLog.Debug("l message", nil))
-
-	mockHandler.AssertCalled(t, "Handle", mock.AnythingOfType("logger.Entry"))
-	mockHandlerWrapper.AssertCalled(t, "Handle", mock.AnythingOfType("logger.Entry"))
+	assert.Nil(t, l2.Debug("l message", nil))
+	assert.True(t, mockHandlerCalled)
+	assert.True(t, mockHandlerWrapperCalled)
 }

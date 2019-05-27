@@ -1,16 +1,16 @@
 package writer_test
 
 import (
-	"bou.ke/monkey"
 	"errors"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
 
+	"bou.ke/monkey"
 	"github.com/gol4ng/logger/mocks"
 	"github.com/gol4ng/logger/writer"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTimeRotateWriter_StartWithError(t *testing.T) {

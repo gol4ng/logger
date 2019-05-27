@@ -4,30 +4,14 @@ import (
 	"github.com/gol4ng/logger"
 )
 
-type Group struct {
-	stopOnError bool
-	handlers    []logger.HandlerInterface
-}
-
-func (g *Group) Handle(entry logger.Entry) error {
-	var err error
-	for _, h := range g.handlers {
-		if err = h.Handle(entry); err == nil {
-			continue
+func Group(handlers ...logger.HandlerInterface) logger.HandlerInterface {
+	return func(entry logger.Entry) error {
+		var err error
+		for _, handler := range handlers {
+			if err = handler(entry); err != nil {
+				return err
+			}
 		}
-		if g.stopOnError {
-			return err
-		}
-		//TODO handle multiple err
+		return nil
 	}
-
-	return err
-}
-
-func NewGroupBlocking(handlers ...logger.HandlerInterface) *Group {
-	return &Group{handlers: handlers, stopOnError: true}
-}
-
-func NewGroup(handlers ...logger.HandlerInterface) *Group {
-	return &Group{handlers: handlers}
 }

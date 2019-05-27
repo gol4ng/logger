@@ -1,20 +1,25 @@
 package benchmark_handler_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
 )
 
+type NopWriter struct{}
+
+func (w *NopWriter) Write(p []byte) (n int, err error) {
+	return 0, nil
+}
+
 func BenchmarkStdoutStreamHandler(b *testing.B) {
 	b.ReportAllocs()
 
-	streamHandler := handler.NewStream(os.Stdout, logger.NewNopFormatter())
+	streamHandler := handler.Stream(&NopWriter{}, logger.NewNopFormatter())
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		streamHandler.Handle(logger.Entry{Message: "This log message go anywhere.", Level: logger.InfoLevel})
+		streamHandler(logger.Entry{Message: "This log message goes nowhere.", Level: logger.InfoLevel})
 	}
 }

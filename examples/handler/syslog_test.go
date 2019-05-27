@@ -17,20 +17,20 @@ import (
 //Jan 22 22:42:14 hades my_go_logger[113] <Alert>: alert Log example6 &map[ctx_key:ctx_value]
 //Jan 22 22:42:14 hades my_go_logger[113] <Emergency>: emergency Log example7 &map[ctx_key:ctx_value]
 func ExampleSyslogHandler() {
-	syslogHandler, _ := handler.NewSyslog(
+	syslogHandler, _ := handler.Syslog(
 		formatter.NewLine("%[2]s %[1]s %[3]s"),
 		"",
 		"",
 		syslog.LOG_DEBUG,
 		"my_go_logger")
 
-	syslogHandler.Handle(logger.Entry{Message: "Log example", Level: logger.DebugLevel})
-	syslogHandler.Handle(logger.Entry{Message: "Log example", Level: logger.InfoLevel})
-	syslogHandler.Handle(logger.Entry{Message: "Log example", Level: logger.NoticeLevel})
-	syslogHandler.Handle(logger.Entry{Message: "Log example", Level: logger.WarningLevel})
-	syslogHandler.Handle(logger.Entry{Message: "Log example", Level: logger.ErrorLevel})
-	syslogHandler.Handle(logger.Entry{Message: "Log example", Level: logger.CriticalLevel})
-	syslogHandler.Handle(logger.Entry{Message: "Log example", Level: logger.AlertLevel})
-	syslogHandler.Handle(logger.Entry{Message: "Log example", Level: logger.EmergencyLevel})
+	syslogHandler(logger.Entry{Message: "Log example", Level: logger.DebugLevel})
+	syslogHandler(logger.Entry{Message: "Log example", Level: logger.InfoLevel})
+	syslogHandler(logger.Entry{Message: "Log example", Level: logger.NoticeLevel})
+	syslogHandler(logger.Entry{Message: "Log example", Level: logger.WarningLevel})
+	syslogHandler(logger.Entry{Message: "Log example", Level: logger.ErrorLevel})
+	syslogHandler(logger.Entry{Message: "Log example", Level: logger.CriticalLevel})
+	syslogHandler(logger.Entry{Message: "Log example", Level: logger.AlertLevel})
+	syslogHandler(logger.Entry{Message: "Log example", Level: logger.EmergencyLevel})
 	//Output:
 }

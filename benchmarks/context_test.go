@@ -1,8 +1,9 @@
 package benchmarks_test
 
 import (
-	"github.com/gol4ng/logger"
 	"testing"
+
+	"github.com/gol4ng/logger"
 )
 
 func Benchmark_Context_Typed(b *testing.B) {

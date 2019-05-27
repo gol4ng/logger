@@ -1,10 +1,10 @@
 package logger_test
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/gol4ng/logger"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestContext_Merge(t *testing.T) {

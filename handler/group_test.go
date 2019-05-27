@@ -4,44 +4,54 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
-	"github.com/gol4ng/logger/mocks"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGroup_Handle(t *testing.T) {
 	entry := logger.Entry{}
 
-	mockHandlerA := mocks.HandlerInterface{}
-	mockHandlerA.On("Handle", entry).Return(nil)
+	Acalled := false
+	mockHandlerA := func(entry logger.Entry) error {
+		Acalled = true
+		return nil
+	}
 
-	mockHandlerB := mocks.HandlerInterface{}
-	mockHandlerB.On("Handle", entry).Return(nil)
+	Bcalled := false
+	mockHandlerB := func(entry logger.Entry) error {
+		Bcalled = true
+		return nil
+	}
 
-	h := handler.NewGroup(&mockHandlerA, &mockHandlerB)
+	h := handler.Group(mockHandlerA, mockHandlerB)
 
-	assert.Nil(t, h.Handle(entry))
+	assert.Nil(t, h(entry))
 
-	mockHandlerA.AssertCalled(t, "Handle", entry)
-	mockHandlerB.AssertCalled(t, "Handle", entry)
+	assert.True(t, Acalled)
+	assert.True(t, Bcalled)
 }
 
-func TestNewGroupBlocking_HandleWithError(t *testing.T) {
+func TestGroup_HandleWithError(t *testing.T) {
 	entry := logger.Entry{}
+
 	err := errors.New("my error")
+	Acalled := false
+	mockHandlerA := func(entry logger.Entry) error {
+		Acalled = true
+		return err
+	}
 
-	mockHandlerA := mocks.HandlerInterface{}
-	mockHandlerA.On("Handle", entry).Return(err)
+	Bcalled := false
+	mockHandlerB := func(entry logger.Entry) error {
+		Bcalled = true
+		return nil
+	}
 
-	mockHandlerB := mocks.HandlerInterface{}
-	mockHandlerB.On("Handle", entry)
+	h := handler.Group(mockHandlerA, mockHandlerB)
 
-	h := handler.NewGroupBlocking(&mockHandlerA, &mockHandlerB)
+	assert.Equal(t, err, h(entry))
 
-	assert.Equal(t, err, h.Handle(entry))
-
-	mockHandlerA.AssertCalled(t, "Handle", entry)
-	mockHandlerB.AssertNotCalled(t, "Handle", entry)
+	assert.True(t, Acalled)
+	assert.False(t, Bcalled)
 }

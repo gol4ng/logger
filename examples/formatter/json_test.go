@@ -3,9 +3,8 @@ package example_formatter_test
 import (
 	"fmt"
 
-	"github.com/gol4ng/logger/formatter"
-
 	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
 )
 
 func ExampleJsonFormatter() {
