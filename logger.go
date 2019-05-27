@@ -63,8 +63,8 @@ type LoggerInterface interface {
 
 type WrappableLoggerInterface interface {
 	LoggerInterface
-	Wrap(wrapper Middleware) LoggerInterface
-	WrapNew(wrapper Middleware) LoggerInterface
+	Wrap(wrapper MiddlewareInterface) LoggerInterface
+	WrapNew(wrapper MiddlewareInterface) LoggerInterface
 }
 
 type Logger struct {
@@ -100,12 +100,12 @@ func (l *Logger) Log(message string, level Level, context *Context) error {
 	return l.handler(Entry{message, level, context})
 }
 
-func (l *Logger) Wrap(wrapper Middleware) LoggerInterface {
+func (l *Logger) Wrap(wrapper MiddlewareInterface) LoggerInterface {
 	l.handler = wrapper(l.handler)
 	return l
 }
 
-func (l *Logger) WrapNew(wrapper Middleware) LoggerInterface {
+func (l *Logger) WrapNew(wrapper MiddlewareInterface) LoggerInterface {
 	return &Logger{handler: wrapper(l.handler)}
 }
 

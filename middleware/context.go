@@ -4,7 +4,7 @@ import (
 	"github.com/gol4ng/logger"
 )
 
-func Context(defaultContext *logger.Context) logger.Middleware {
+func Context(defaultContext *logger.Context) logger.MiddlewareInterface {
 	return func(handler logger.HandlerInterface) logger.HandlerInterface {
 		return func(entry logger.Entry) error {
 			newCtx := logger.NewContext()

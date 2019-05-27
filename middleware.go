@@ -1,3 +1,3 @@
 package logger
 
-type Middleware func(handler HandlerInterface) HandlerInterface
+type MiddlewareInterface func(handler HandlerInterface) HandlerInterface

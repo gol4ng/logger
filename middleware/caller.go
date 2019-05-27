@@ -10,7 +10,7 @@ import (
 // eg:
 //     _file:/..../file_of_the_handle_caller.go
 //     _line:72
-func Caller(skip int) logger.Middleware {
+func Caller(skip int) logger.MiddlewareInterface {
 	return func(handler logger.HandlerInterface) logger.HandlerInterface {
 		return func(entry logger.Entry) error {
 			_, file, line, ok := runtime.Caller(skip)
