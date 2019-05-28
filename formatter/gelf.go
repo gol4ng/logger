@@ -2,58 +2,69 @@ package formatter
 
 import (
 	"encoding/json"
-	"os"
-	"time"
-
 	"github.com/gol4ng/logger"
+	"os"
+	"strconv"
+	"strings"
+	"time"
 )
 
 const (
 	Version string = "1.1"
 )
 
-type Gelf struct {
+type GelfEncoder struct {
 	hostname string
+	version  string
 }
 
-func (j *Gelf) Convert(e logger.Entry) *Message {
-	return &Message{
-		Version:  Version,
-		Host:     j.hostname,
-		Short:    e.Message,
-		Full:     "TODO",
-		TimeUnix: float64(time.Now().Unix()),
-		Level:    e.Level,
-		//Extra:    *e.Context,
-		//Facility: "", this field is deprecated
+func (g *GelfEncoder) encode(entry *logger.Entry) ([]byte, error) {
+	builder := &strings.Builder{}
+
+	builder.WriteRune('{')
+
+	builder.WriteString("\"version\":\"")
+	builder.WriteString(g.version)
+	builder.WriteString("\",")
+
+	builder.WriteString("\"host\":\"")
+	builder.WriteString(g.hostname)
+	builder.WriteString("\",")
+
+	builder.WriteString("\"level\":")
+	builder.WriteString(strconv.Itoa(int(entry.Level)))
+	builder.WriteString(",")
+
+	builder.WriteString("\"timestamp\":")
+	builder.WriteString(strconv.Itoa(int(time.Now().Unix())))
+	builder.WriteString(",")
+
+	builder.WriteString("\"short_message\":")
+	builder.WriteString(entry.Message)
+	builder.WriteString(",")
+
+	builder.WriteString("\"full_message\":")
+	logger.EntryToString(entry, builder)
+
+	for name, field := range *entry.Context {
+		builder.WriteString(",\"_")
+		builder.WriteString(strings.Replace(name, " ", "_", -1))
+		builder.WriteString("\":")
+		d, _ := json.Marshal(field.Value)
+		builder.WriteString(string(d))
 	}
+
+	builder.WriteRune('}')
+
+	return []byte(builder.String()), nil
 }
 
-func (j *Gelf) Format(e logger.Entry) string {
-	// TODO CHECK json ENCODER
-	b, _ := json.Marshal(j.Convert(e))
-
-	return string(b)
-}
-
-func NewGelf() (*Gelf, error) {
+func NewGelfEncoder() *Json {
 	hostname, err := os.Hostname()
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	return &Gelf{
-		hostname: hostname,
-	}, nil
-}
-
-type Message struct {
-	Version  string                 `json:"version"`
-	Host     string                 `json:"host"`
-	Short    string                 `json:"short_message"`
-	Full     string                 `json:"full_message,omitempty"`
-	TimeUnix float64                `json:"timestamp"`
-	Level    logger.Level           `json:"level,omitempty"`
-	Extra    map[string]interface{} `json:"-"`
-	//Facility string                 `json:"facility,omitempty"`
+	e := GelfEncoder{hostname: hostname, version: Version}
+	return NewJson(e.encode)
 }

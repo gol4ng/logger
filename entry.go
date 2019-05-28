@@ -13,14 +13,18 @@ type Entry struct {
 // String will return Entry as string
 func (e *Entry) String() string {
 	builder := &strings.Builder{}
+	EntryToString(e, builder)
+	return builder.String()
+}
+
+func EntryToString(entry *Entry, builder *strings.Builder) {
 	builder.WriteString("<")
-	builder.WriteString(e.Level.String())
+	builder.WriteString(entry.Level.String())
 	builder.WriteString("> ")
-	builder.WriteString(e.Message)
-	if e.Context != nil {
+	builder.WriteString(entry.Message)
+	if entry.Context != nil {
 		builder.WriteString(" [ ")
-		builder.WriteString(e.Context.String())
+		builder.WriteString(entry.Context.String())
 		builder.WriteString(" ]")
 	}
-	return builder.String()
 }

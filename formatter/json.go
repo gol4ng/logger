@@ -13,17 +13,28 @@ import (
 //
 // the encode function is useful if you do not use the default provided logger implementation
 type Json struct {
-	encode func(interface{}) ([]byte, error)
+	encode func(*logger.Entry) ([]byte, error)
 }
 
 // Format will return Entry as json
-func (j *Json) Format(entry logger.Entry) string {
+func (j *Json) Format(entry *logger.Entry) string {
 	b, _ := j.encode(entry)
 	return string(b)
 }
 
-// MarshalContextTo will marshall the logger context into json
-func MarshalContextTo(context *logger.Context, builder *strings.Builder) {
+// NewJsonEncoder will create a new Json with default json encoder function
+func NewJsonEncoder() *Json {
+	return NewJson(JsonEncoder)
+}
+
+// NewJson will create a new Json with given json encoder
+// it allow you tu use your own json encoder
+func NewJson(encode func(*logger.Entry) ([]byte, error)) *Json {
+	return &Json{encode: encode}
+}
+
+// ContextTo will marshall the logger context into json
+func ContextToJson(context *logger.Context, builder *strings.Builder) {
 	if context == nil || len(*context) == 0 {
 		builder.WriteString("null")
 	} else {
@@ -44,8 +55,8 @@ func MarshalContextTo(context *logger.Context, builder *strings.Builder) {
 	}
 }
 
-// MarshalEntryTo will marshall the logger Entry into json
-func MarshalEntryTo(entry logger.Entry, builder *strings.Builder) {
+// EntryToJson will marshall the logger Entry into json
+func EntryToJson(entry *logger.Entry, builder *strings.Builder) {
 	builder.WriteRune('{')
 
 	builder.WriteString("\"Message\":\"")
@@ -59,25 +70,15 @@ func MarshalEntryTo(entry logger.Entry, builder *strings.Builder) {
 	builder.WriteRune(',')
 	builder.WriteString("\"Context\":")
 
-	MarshalContextTo(entry.Context, builder)
+	ContextToJson(entry.Context, builder)
 
 	builder.WriteRune('}')
 }
 
-func entryJsonEncoder(value interface{}) ([]byte, error) {
-	data := &strings.Builder{}
-	MarshalEntryTo(value.(logger.Entry), data)
+// JsonEncoder will return Entry to json string
+func JsonEncoder(entry *logger.Entry) ([]byte, error) {
+	builder := &strings.Builder{}
+	EntryToJson(entry, builder)
 
-	return []byte(data.String()), nil
-}
-
-// NewJsonEncoder will create a new Json with default json encoder function
-func NewJsonEncoder() *Json {
-	return NewJson(entryJsonEncoder)
-}
-
-// NewJson will create a new Json with given json encoder
-// it allow you tu use your own json encoder
-func NewJson(encode func(interface{}) ([]byte, error)) *Json {
-	return &Json{encode: encode}
+	return []byte(builder.String()), nil
 }
