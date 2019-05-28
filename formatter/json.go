@@ -13,11 +13,11 @@ import (
 //
 // the encode function is useful if you do not use the default provided logger implementation
 type Json struct {
-	encode func(*logger.Entry) ([]byte, error)
+	encode func(logger.Entry) ([]byte, error)
 }
 
 // Format will return Entry as json
-func (j *Json) Format(entry *logger.Entry) string {
+func (j *Json) Format(entry logger.Entry) string {
 	b, _ := j.encode(entry)
 	return string(b)
 }
@@ -29,7 +29,7 @@ func NewJsonEncoder() *Json {
 
 // NewJson will create a new Json with given json encoder
 // it allow you tu use your own json encoder
-func NewJson(encode func(*logger.Entry) ([]byte, error)) *Json {
+func NewJson(encode func(logger.Entry) ([]byte, error)) *Json {
 	return &Json{encode: encode}
 }
 
@@ -56,7 +56,7 @@ func ContextToJson(context *logger.Context, builder *strings.Builder) {
 }
 
 // EntryToJson will marshall the logger Entry into json
-func EntryToJson(entry *logger.Entry, builder *strings.Builder) {
+func EntryToJson(entry logger.Entry, builder *strings.Builder) {
 	builder.WriteRune('{')
 
 	builder.WriteString("\"Message\":\"")
@@ -76,7 +76,7 @@ func EntryToJson(entry *logger.Entry, builder *strings.Builder) {
 }
 
 // JsonEncoder will return Entry to json string
-func JsonEncoder(entry *logger.Entry) ([]byte, error) {
+func JsonEncoder(entry logger.Entry) ([]byte, error) {
 	builder := &strings.Builder{}
 	EntryToJson(entry, builder)
 

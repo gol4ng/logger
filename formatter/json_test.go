@@ -13,17 +13,17 @@ import (
 func TestJson_Format(t *testing.T) {
 	tests := []struct {
 		name     string
-		entry    *logger.Entry
+		entry    logger.Entry
 		expected string
 	}{
 		{
 			name:     "test simple message without context",
-			entry:    &logger.Entry{Message: "test message", Level: logger.DebugLevel, Context: nil},
+			entry:    logger.Entry{Message: "test message", Level: logger.DebugLevel, Context: nil},
 			expected: `{"Message":"test message","Level":7,"Context":null}`,
 		},
 		{
 			name:     "test simple message with context",
-			entry:    &logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: logger.NewContext().Add("my_key", "my_value")},
+			entry:    logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: logger.NewContext().Add("my_key", "my_value")},
 			expected: `{"Message":"test message","Level":4,"Context":{"my_key":"my_value"}}`,
 		},
 	}

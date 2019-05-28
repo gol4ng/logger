@@ -13,11 +13,11 @@ type Entry struct {
 // String will return Entry as string
 func (e *Entry) String() string {
 	builder := &strings.Builder{}
-	EntryToString(e, builder)
+	EntryToString(*e, builder)
 	return builder.String()
 }
 
-func EntryToString(entry *Entry, builder *strings.Builder) {
+func EntryToString(entry Entry, builder *strings.Builder) {
 	builder.WriteString("<")
 	builder.WriteString(entry.Level.String())
 	builder.WriteString("> ")
