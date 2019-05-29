@@ -28,7 +28,7 @@ func TestGelfTCP_Handle(t *testing.T) {
 		return TCPConn, nil
 	})
 	monkey.PatchInstanceMethod(reflect.TypeOf(TCPConn), "Write", func(conn *net.TCPConn, b []byte) (n int, err error) {
-		assert.Equal(t, []uint8("{\"version\":\"1.1\",\"host\":\"my_fake_hostname\",\"level\":4,\"timestamp\":513216000.000,\"short_message\":\"test message\",\"full_message\":\"<warning> test message\"}\n"), b)
+		assert.Equal(t, []uint8("{\"version\":\"1.1\",\"host\":\"my_fake_hostname\",\"level\":4,\"timestamp\":513216000.000,\"short_message\":\"test message\",\"full_message\":\"<warning> test message\"}\x00"), b)
 		return 99, nil
 	})
 	monkey.Patch(time.Now, func() time.Time { return time.Unix(513216000, 0) })

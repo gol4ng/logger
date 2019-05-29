@@ -50,7 +50,7 @@ func (g *Gelf) Format(entry logger.Entry) string {
 		}
 	}
 
-	builder.WriteString("}\n")
+	builder.WriteString("}")
 
 	return builder.String()
 }

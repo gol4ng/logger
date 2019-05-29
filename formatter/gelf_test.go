@@ -21,7 +21,7 @@ func TestGelf_Format(t *testing.T) {
 
 	assert.Equal(
 		t,
-		"{\"version\":\"1.1\",\"host\":\"my_fake_hostname\",\"level\":6,\"timestamp\":513216000.000,\"short_message\":\"My log message\",\"full_message\":\"<info> My log message [ <my key:my_value> ]\",\"_my_key\":\"my_value\"}\n",
+		"{\"version\":\"1.1\",\"host\":\"my_fake_hostname\",\"level\":6,\"timestamp\":513216000.000,\"short_message\":\"My log message\",\"full_message\":\"<info> My log message [ <my key:my_value> ]\",\"_my_key\":\"my_value\"}",
 		gelf.Format(logger.Entry{Message: "My log message", Level: logger.InfoLevel, Context: logger.NewContext().Add("my key", "my_value")}),
 	)
 }
