@@ -11,7 +11,7 @@ func ExampleJsonFormatter() {
 	jsonFormatter := formatter.NewJsonEncoder()
 
 	fmt.Println(jsonFormatter.Format(
-		&logger.Entry{
+		logger.Entry{
 			Message: "My log message",
 			Level: logger.InfoLevel,
 			Context: logger.NewContext().Add("my_key", "my_value"),

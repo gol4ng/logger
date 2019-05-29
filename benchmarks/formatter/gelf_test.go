@@ -10,7 +10,7 @@ import (
 func BenchmarkGelfFormatter(b *testing.B) {
 	b.ReportAllocs()
 
-	gelfFormatter, _ := formatter.NewGelf()
+	gelfFormatter := formatter.NewGelf()
 	e := logger.Entry{Message: "This log message is really logged.", Level: logger.InfoLevel}
 
 	b.ResetTimer()

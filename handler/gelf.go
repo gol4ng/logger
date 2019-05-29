@@ -5,10 +5,10 @@ import (
 )
 
 func NewGelfTCP(network string, address string) (*Socket, error) {
-	return NewTCPSocket(network, address, formatter.NewGelfEncoder())
+	return NewTCPSocket(network, address, formatter.NewGelf())
 }
 
 // TODO
 //func NewGelfUDP(network string, address string) (*Socket, error) {
-//	return NewUDPSocket(network, address, formatter.NewGelfEncoder())
+//	return NewUDPSocket(network, address, formatter.NewGelf())
 //}
