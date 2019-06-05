@@ -6,14 +6,17 @@ import (
 	"testing"
 
 	"bou.ke/monkey"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/mocks"
+
 	"github.com/pkg/errors"
+
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSyslog_HandleWithError(t *testing.T) {
+func TestSyslog_HandleWithWriteError(t *testing.T) {
 	var w *syslog.Writer // Has to be a pointer to because `Dial` has a pointer receiver
 
 	monkey.Patch(syslog.Dial, func(network, raddr string, priority syslog.Priority, tag string) (*syslog.Writer, error) {
@@ -37,6 +40,27 @@ func TestSyslog_HandleWithError(t *testing.T) {
 	h, _ := handler.Syslog(&mockFormatter, "fake_network", "fake_raddr", syslog.LOG_DEBUG, "fake_tag")
 
 	assert.EqualError(t, h(logEntry), "fake_syslog_write_error")
+}
+
+func TestSyslog_HandleWithDialError(t *testing.T) {
+	monkey.Patch(syslog.Dial, func(network, raddr string, priority syslog.Priority, tag string) (*syslog.Writer, error) {
+		assert.Equal(t, "fake_network", network)
+		assert.Equal(t, "fake_raddr", raddr)
+		assert.Equal(t, syslog.LOG_DEBUG, priority)
+		assert.Equal(t, "fake_tag", tag)
+		return nil, errors.New("fake_syslog_write_error")
+	})
+	defer monkey.UnpatchAll()
+
+	logEntry := logger.Entry{Level: -1}
+
+	mockFormatter := mocks.FormatterInterface{}
+	mockFormatter.AssertNotCalled(t, "Format", logEntry)
+
+	h, err := handler.Syslog(&mockFormatter, "fake_network", "fake_raddr", syslog.LOG_DEBUG, "fake_tag")
+
+	assert.Error(t, err, "fake_syslog_write_error")
+	assert.Nil(t, h)
 }
 
 func TestSyslog_Handle(t *testing.T) {
