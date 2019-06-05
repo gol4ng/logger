@@ -36,7 +36,7 @@ func TestTCPSocket_Handle(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", mock.AnythingOfType("logger.Entry")).Return("my formatter return")
 
-	h, err := handler.NewTCPSocket("fake_network", "fake_address", &mockFormatter)
+	h, err := handler.TCPSocket("fake_network", "fake_address", &mockFormatter)
 
 	assert.Nil(t, err)
 	assert.Nil(t, h.Handle(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
@@ -65,7 +65,7 @@ func TestUDPSocket_Handle(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", mock.AnythingOfType("logger.Entry")).Return("my formatter return")
 
-	h, err := handler.NewUDPSocket("fake_network", "fake_address", &mockFormatter)
+	h, err := handler.UdpSocket("fake_network", "fake_address", &mockFormatter)
 
 	assert.Nil(t, err)
 	assert.Nil(t, h.Handle(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))

@@ -21,30 +21,10 @@ func (g *Socket) Handle(entry logger.Entry) error {
 	return nil
 }
 
-func NewTCPSocket(network string, address string, formatter logger.FormatterInterface) (*Socket, error) {
-	tcpAddr, err := net.ResolveTCPAddr(network, address)
-	if err != nil {
-		return nil, err
-	}
-
-	connection, err := net.DialTCP(network, nil, tcpAddr)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Socket{connection: connection, formatter: formatter}, nil
+func TCPSocket(tcpConn *net.TCPConn, formatter logger.FormatterInterface) *Socket {
+	return &Socket{connection: tcpConn, formatter: formatter}
 }
 
-func NewUDPSocket(network string, address string, formatter logger.FormatterInterface) (*Socket, error) {
-	udpAddr, err := net.ResolveUDPAddr(network, address)
-	if err != nil {
-		return nil, err
-	}
-
-	connection, err := net.DialUDP(network, nil, udpAddr)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Socket{connection: connection, formatter: formatter}, nil
+func UdpSocket(udpConn *net.UDPConn, formatter logger.FormatterInterface) *Socket {
+	return &Socket{connection: udpConn, formatter: formatter}
 }
