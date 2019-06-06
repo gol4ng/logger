@@ -32,14 +32,14 @@ func ExampleLoggerCallerHandler() {
 	myLogger.Emergency("Log example", nil)
 
 	output.Constains([]string{
-		"lvl: debug | msg: Log example | ctx:", "<_file:/", "<_line:",
-		"lvl: info | msg: Log example | ctx:", "<_file:/", "<_line:",
-		"lvl: notice | msg: Log example | ctx:", "<_file:/", "<_line:",
-		"lvl: warning | msg: Log example | ctx:", "<_file:/", "<_line:",
-		"lvl: error | msg: Log example | ctx:", "<_file:/", "<_line:",
-		"lvl: critical | msg: Log example | ctx:", "<_file:/", "<_line:",
-		"lvl: alert | msg: Log example | ctx:", "<_file:/", "<_line:",
-		"lvl: emergency | msg: Log example | ctx:", "<_file:/", "<_line:",
+		"lvl: debug | msg: Log example | ctx:", "<file:/", "<line:",
+		"lvl: info | msg: Log example | ctx:", "<file:/", "<line:",
+		"lvl: notice | msg: Log example | ctx:", "<file:/", "<line:",
+		"lvl: warning | msg: Log example | ctx:", "<file:/", "<line:",
+		"lvl: error | msg: Log example | ctx:", "<file:/", "<line:",
+		"lvl: critical | msg: Log example | ctx:", "<file:/", "<line:",
+		"lvl: alert | msg: Log example | ctx:", "<file:/", "<line:",
+		"lvl: emergency | msg: Log example | ctx:", "<file:/", "<line:",
 	})
 
 	//Output:
