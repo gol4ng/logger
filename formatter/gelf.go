@@ -2,11 +2,12 @@ package formatter
 
 import (
 	"encoding/json"
-	"github.com/gol4ng/logger"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gol4ng/logger"
 )
 
 const (
@@ -62,4 +63,17 @@ func NewGelf() *Gelf {
 	}
 
 	return &Gelf{hostname: hostname, version: Version}
+}
+
+// http://docs.graylog.org/en/3.0/pages/gelf.html#gelf-via-tcp
+type GelfTCPFormatter struct {
+	*Gelf
+}
+
+func (g *GelfTCPFormatter) Format(entry logger.Entry) string {
+	return g.Gelf.Format(entry) + "\x00"
+}
+
+func NewGelfTCP() *GelfTCPFormatter {
+	return &GelfTCPFormatter{}
 }

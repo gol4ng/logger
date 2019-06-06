@@ -7,24 +7,10 @@ import (
 	"github.com/gol4ng/logger"
 )
 
-type Socket struct {
-	connection net.Conn
-	formatter  logger.FormatterInterface
-}
-
-func (g *Socket) Handle(entry logger.Entry) error {
-	buffer := bytes.NewBuffer([]byte(g.formatter.Format(entry)))
-	_, err := g.connection.Write(buffer.Bytes())
-	if err != nil {
+func Socket(connection net.Conn, formatter logger.FormatterInterface) logger.HandlerInterface {
+	return func(entry logger.Entry) error {
+		buffer := bytes.NewBuffer([]byte(formatter.Format(entry)))
+		_, err := connection.Write(buffer.Bytes())
 		return err
 	}
-	return nil
-}
-
-func TCPSocket(tcpConn *net.TCPConn, formatter logger.FormatterInterface) *Socket {
-	return &Socket{connection: tcpConn, formatter: formatter}
-}
-
-func UdpSocket(udpConn *net.UDPConn, formatter logger.FormatterInterface) *Socket {
-	return &Socket{connection: udpConn, formatter: formatter}
 }
