@@ -11,6 +11,9 @@ func Syslog(formatter logger.FormatterInterface, network, raddr string, priority
 		tag = "golang"
 	}
 	writer, err := syslog.Dial(network, raddr, priority, tag)
+	if err != nil {
+		return nil, err
+	}
 
 	return func(entry logger.Entry) error {
 		msg := formatter.Format(entry)
@@ -35,5 +38,5 @@ func Syslog(formatter logger.FormatterInterface, network, raddr string, priority
 			_, err := writer.Write([]byte(msg))
 			return err
 		}
-	}, err
+	}, nil
 }
