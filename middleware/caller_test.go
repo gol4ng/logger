@@ -13,9 +13,9 @@ func TestCaller_Handle(t *testing.T) {
 		assert.Equal(t, "my_log_message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
 		contextStr := entry.Context.String()
-		assert.Contains(t, contextStr, "<_file:")
+		assert.Contains(t, contextStr, "<file:")
 		assert.Contains(t, contextStr, "caller_test.go")
-		assert.Contains(t, contextStr, "<_line:30>")
+		assert.Contains(t, contextStr, "<line:30>")
 
 		return nil
 	}
