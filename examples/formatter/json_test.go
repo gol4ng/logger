@@ -8,7 +8,7 @@ import (
 )
 
 func ExampleJsonFormatter() {
-	jsonFormatter := formatter.NewJsonEncoder()
+	jsonFormatter := formatter.NewJSONEncoder()
 
 	fmt.Println(jsonFormatter.Format(
 		logger.Entry{

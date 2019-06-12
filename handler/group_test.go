@@ -67,7 +67,7 @@ func ExampleGroup() {
 	lineFormatter := formatter.NewDefaultFormatter()
 	lineLogHandler := handler.Stream(os.Stdout, lineFormatter)
 
-	jsonFormatter := formatter.NewJsonEncoder()
+	jsonFormatter := formatter.NewJSONEncoder()
 	jsonLogHandler := handler.Stream(os.Stdout, jsonFormatter)
 
 	groupHandler := handler.Group(lineLogHandler, jsonLogHandler)

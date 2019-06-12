@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -143,5 +144,8 @@ func NewNopLogger() *Logger {
 
 // NewLogger will return a new logger
 func NewLogger(handler HandlerInterface) *Logger {
+	if handler == nil {
+		panic(errors.New("handler must not be <nil>"))
+	}
 	return &Logger{handler: handler}
 }

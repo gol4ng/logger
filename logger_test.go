@@ -125,6 +125,15 @@ func TestLogger_Log(t *testing.T) {
 	}
 }
 
+func TestNewLogger_WillPanic(t *testing.T) {
+	defer func() {
+		if err := recover(); err != nil {
+			assert.Equal(t, err, errors.New("handler must not be <nil>"))
+		}
+	}()
+	logger.NewLogger(nil)
+}
+
 func TestNewLogger_LogWithError(t *testing.T) {
 	err := errors.New("my error")
 	l := logger.NewLogger(func(entry logger.Entry) error {
@@ -220,7 +229,6 @@ func TestNewLogger_WrapNew(t *testing.T) {
 	assert.True(t, mockHandlerWrapperCalled)
 }
 
-
 /////////////////////
 // Examples
 /////////////////////
@@ -288,7 +296,7 @@ func ExampleLogger_lineFormatter() {
 func ExampleLogger_jsonFormatter() {
 	output := &Output{}
 	myLogger := logger.NewLogger(
-		handler.Stream(output, formatter.NewJsonEncoder()),
+		handler.Stream(output, formatter.NewJSONEncoder()),
 	)
 
 	myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
@@ -347,7 +355,7 @@ func ExampleLogger_groupHandler() {
 	output2 := &Output{}
 	myLogger := logger.NewLogger(
 		handler.Group(
-			handler.Stream(output, formatter.NewJsonEncoder()),
+			handler.Stream(output, formatter.NewJSONEncoder()),
 			handler.Stream(output2, formatter.NewDefaultFormatter()),
 		),
 	)

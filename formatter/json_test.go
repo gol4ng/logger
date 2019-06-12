@@ -30,7 +30,7 @@ func TestJson_Format(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f := formatter.NewJsonEncoder()
+			f := formatter.NewJSONEncoder()
 
 			assert.Equal(t, tt.expected, f.Format(tt.entry))
 		})
@@ -63,7 +63,7 @@ func TestMarshalContextTo(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			builder := &strings.Builder{}
-			formatter.ContextToJson(tt.context, builder)
+			formatter.ContextToJSON(tt.context, builder)
 			str := builder.String()
 			for _, s := range tt.expectedStrings {
 				assert.Contains(t, str, s)
@@ -77,7 +77,7 @@ func TestMarshalContextTo(t *testing.T) {
 /////////////////////
 
 func ExampleJsonFormatter() {
-	jsonFormatter := formatter.NewJsonEncoder()
+	jsonFormatter := formatter.NewJSONEncoder()
 
 	fmt.Println(jsonFormatter.Format(
 		logger.Entry{

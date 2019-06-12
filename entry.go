@@ -17,6 +17,7 @@ func (e *Entry) String() string {
 	return builder.String()
 }
 
+// EntryToString will write entry as string in builder
 func EntryToString(entry Entry, builder *strings.Builder) {
 	builder.WriteString("<")
 	builder.WriteString(entry.Level.String())

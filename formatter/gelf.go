@@ -11,14 +11,17 @@ import (
 )
 
 const (
+	// Version is the current Gelf version
 	Version string = "1.1"
 )
 
+// Gelf formatter will transform Entry into Gelf format
 type Gelf struct {
 	hostname string
 	version  string
 }
 
+// Format will return Entry as gelf
 func (g *Gelf) Format(entry logger.Entry) string {
 	builder := &strings.Builder{}
 
@@ -56,6 +59,7 @@ func (g *Gelf) Format(entry logger.Entry) string {
 	return builder.String()
 }
 
+// NewGelf will create a new Gelf formatter
 func NewGelf() *Gelf {
 	hostname, err := os.Hostname()
 	if err != nil {
@@ -65,15 +69,18 @@ func NewGelf() *Gelf {
 	return &Gelf{hostname: hostname, version: Version}
 }
 
+// GelfTCPFormatter will decorate Gelf formatter in order to add null byte between each entry
 // http://docs.graylog.org/en/3.0/pages/gelf.html#gelf-via-tcp
 type GelfTCPFormatter struct {
 	*Gelf
 }
 
+// Format will return Entry as gelf TCP
 func (g *GelfTCPFormatter) Format(entry logger.Entry) string {
 	return g.Gelf.Format(entry) + "\x00"
 }
 
+// NewGelfTCP will create a new GelfTCPFormatter
 func NewGelfTCP() *GelfTCPFormatter {
-	return &GelfTCPFormatter{}
+	return &GelfTCPFormatter{Gelf: NewGelf()}
 }

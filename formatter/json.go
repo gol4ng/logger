@@ -22,19 +22,19 @@ func (j *Json) Format(entry logger.Entry) string {
 	return string(b)
 }
 
-// NewJsonEncoder will create a new Json with default json encoder function
-func NewJsonEncoder() *Json {
-	return NewJson(JsonEncoder)
+// NewJSONEncoder will create a new Json with default json encoder function
+func NewJSONEncoder() *Json {
+	return NewJSON(JSONEncoder)
 }
 
-// NewJson will create a new Json with given json encoder
+// NewJSON will create a new Json with given json encoder
 // it allow you tu use your own json encoder
-func NewJson(encode func(logger.Entry) ([]byte, error)) *Json {
+func NewJSON(encode func(logger.Entry) ([]byte, error)) *Json {
 	return &Json{encode: encode}
 }
 
-// ContextTo will marshall the logger context into json
-func ContextToJson(context *logger.Context, builder *strings.Builder) {
+// ContextToJSON will marshall the logger context into json
+func ContextToJSON(context *logger.Context, builder *strings.Builder) {
 	if context == nil || len(*context) == 0 {
 		builder.WriteString("null")
 	} else {
@@ -55,8 +55,8 @@ func ContextToJson(context *logger.Context, builder *strings.Builder) {
 	}
 }
 
-// EntryToJson will marshall the logger Entry into json
-func EntryToJson(entry logger.Entry, builder *strings.Builder) {
+// EntryToJSON will marshall the logger Entry into json
+func EntryToJSON(entry logger.Entry, builder *strings.Builder) {
 	builder.WriteRune('{')
 
 	builder.WriteString("\"Message\":\"")
@@ -70,15 +70,15 @@ func EntryToJson(entry logger.Entry, builder *strings.Builder) {
 	builder.WriteRune(',')
 	builder.WriteString("\"Context\":")
 
-	ContextToJson(entry.Context, builder)
+	ContextToJSON(entry.Context, builder)
 
 	builder.WriteRune('}')
 }
 
-// JsonEncoder will return Entry to json string
-func JsonEncoder(entry logger.Entry) ([]byte, error) {
+// JSONEncoder will return Entry to json string
+func JSONEncoder(entry logger.Entry) ([]byte, error) {
 	builder := &strings.Builder{}
-	EntryToJson(entry, builder)
+	EntryToJSON(entry, builder)
 
 	return []byte(builder.String()), nil
 }
