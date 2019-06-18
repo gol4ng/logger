@@ -4,6 +4,8 @@ import (
 	"github.com/gol4ng/logger"
 )
 
+// middleware that allows you to add a default context to each logs
+// if a default context key is redefined when calling Log/Debug/Info/... func, it will override the default ctx value
 func Context(defaultContext *logger.Context) logger.MiddlewareInterface {
 	return func(handler logger.HandlerInterface) logger.HandlerInterface {
 		return func(entry logger.Entry) error {

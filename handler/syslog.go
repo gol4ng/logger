@@ -6,6 +6,7 @@ import (
 	"github.com/gol4ng/logger"
 )
 
+// handler that writes each logs into syslog
 func Syslog(formatter logger.FormatterInterface, network, raddr string, priority syslog.Priority, tag string) (logger.HandlerInterface, error) {
 	if "" == tag {
 		tag = "golang"

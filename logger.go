@@ -22,6 +22,7 @@ const (
 
 type Level int8
 
+// transform a logger.Level (int) value into a human readable string value
 func (l Level) String() string {
 	switch l {
 	case DebugLevel:
@@ -44,11 +45,12 @@ func (l Level) String() string {
 		return fmt.Sprintf("level(%d)", l)
 	}
 }
-
+// this interface is the simplest entry point you can rely on in your app
+// if you want a more readable api, you can rely on LoggerInterface
 type LogInterface interface {
 	Log(message string, level Level, context *Context) error
 }
-
+// more readable interface that gives you helper functions in order not to pass the log level in the func param
 type LoggerInterface interface {
 	LogInterface
 	Debug(message string, context *Context) error
@@ -60,59 +62,66 @@ type LoggerInterface interface {
 	Alert(message string, context *Context) error
 	Emergency(message string, context *Context) error
 }
-
+// expose a Wrap function that allows you to wrap a logger with a middleware
 type WrappableLoggerInterface interface {
 	LoggerInterface
-	Wrap(wrapper MiddlewareInterface) LoggerInterface
-	WrapNew(wrapper MiddlewareInterface) LoggerInterface
+	Wrap(middleware MiddlewareInterface) LoggerInterface
+	WrapNew(middleware MiddlewareInterface) LoggerInterface
 }
-
+// basic implementation of LogInterface, LoggerInterface and
 type Logger struct {
 	handler HandlerInterface
 }
-
+// helper tp log a debug message
 func (l *Logger) Debug(message string, context *Context) error {
 	return l.Log(message, DebugLevel, context)
 }
+// helper tp log a info message
 func (l *Logger) Info(message string, context *Context) error {
 	return l.Log(message, InfoLevel, context)
 }
+// helper tp log a notice message
 func (l *Logger) Notice(message string, context *Context) error {
 	return l.Log(message, NoticeLevel, context)
 }
+// helper tp log a warning message
 func (l *Logger) Warning(message string, context *Context) error {
 	return l.Log(message, WarningLevel, context)
 }
+// helper tp log a error message
 func (l *Logger) Error(message string, context *Context) error {
 	return l.Log(message, ErrorLevel, context)
 }
+// helper tp log a critical message
 func (l *Logger) Critical(message string, context *Context) error {
 	return l.Log(message, CriticalLevel, context)
 }
+// helper tp log a alert message
 func (l *Logger) Alert(message string, context *Context) error {
 	return l.Log(message, AlertLevel, context)
 }
+// helper tp log a emergency message
 func (l *Logger) Emergency(message string, context *Context) error {
 	return l.Log(message, EmergencyLevel, context)
 }
-
+// log a message with a given level
 func (l *Logger) Log(message string, level Level, context *Context) error {
 	return l.handler(Entry{message, level, context})
 }
-
-func (l *Logger) Wrap(wrapper MiddlewareInterface) LoggerInterface {
-	l.handler = wrapper(l.handler)
+// wrap a logger with a middleware
+func (l *Logger) Wrap(middleware MiddlewareInterface) LoggerInterface {
+	l.handler = middleware(l.handler)
 	return l
 }
-
-func (l *Logger) WrapNew(wrapper MiddlewareInterface) LoggerInterface {
-	return &Logger{handler: wrapper(l.handler)}
+// immutable wrap func
+func (l *Logger) WrapNew(middleware MiddlewareInterface) LoggerInterface {
+	return &Logger{handler: middleware(l.handler)}
 }
-
+// create a logger that logs nowhere
 func NewNopLogger() WrappableLoggerInterface {
 	return &Logger{handler: NopHandler}
 }
-
+// basic logger constructor
 func NewLogger(handler HandlerInterface) WrappableLoggerInterface {
 	return &Logger{handler: handler}
 }

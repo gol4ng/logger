@@ -4,36 +4,36 @@ import (
 	"strings"
 )
 
+// represents a log context
 type Context map[string]Field
-
+// merge a context with another one
 func (c *Context) Merge(context Context) *Context {
 	for name, field := range context {
 		c.Set(name, field)
 	}
 	return c
 }
-
+// add a new context field
 func (c *Context) Set(name string, value Field) *Context {
 	(*c)[name] = value
 	return c
 }
-
+// checks if the current context has a context entry having a given name
 func (c *Context) Has(name string) bool {
 	_, ok := (*c)[name]
 	return ok
 }
-
+// FIXME useless : remove field param
 func (c *Context) Get(name string, field *Field) Field {
 	if c.Has(name) {
 		return (*c)[name]
 	}
 	return *field
 }
-
+// helper that adds a context entry without specifying field type
 func (c *Context) Add(name string, value interface{}) *Context {
 	return c.Set(name, Any(value))
 }
-
 func (c *Context) Skip(name string, value string) *Context {
 	return c.Set(name, Skip(value))
 }
@@ -63,7 +63,7 @@ func (c *Context) stringTo(builder *strings.Builder) *Context {
 	}
 	return c
 }
-
+// stringify a context
 func (c *Context) String() string {
 	if len(*c) == 0 {
 		return "<nil>"
@@ -83,11 +83,11 @@ func (c *Context) GoString() string {
 	builder.WriteString("]")
 	return builder.String()
 }
-
+// create a new context with some context entry
 func Ctx(name string, value interface{}) *Context {
 	return NewContext().Add(name, value)
 }
-
+// create a new context
 func NewContext() *Context {
 	return &Context{}
 }
