@@ -7,6 +7,7 @@ import (
 
 	"github.com/gol4ng/logger"
 )
+
 // json formatter will transform a logger entry into JSON
 // it takes an encode function that allows you to encode the data
 //
@@ -14,11 +15,13 @@ import (
 type Json struct {
 	encode func(interface{}) ([]byte, error)
 }
+
 // transforms a log entry into json
 func (j *Json) Format(entry logger.Entry) string {
 	b, _ := j.encode(entry)
 	return string(b)
 }
+
 // marshall the logger context into json
 func MarshalContextTo(context *logger.Context, builder *strings.Builder) {
 	if context == nil || len(*context) == 0 {
@@ -40,6 +43,7 @@ func MarshalContextTo(context *logger.Context, builder *strings.Builder) {
 		builder.WriteString("}")
 	}
 }
+
 // marshall the logger entry into json
 func MarshalEntryTo(entry logger.Entry, builder *strings.Builder) {
 	builder.WriteRune('{')
@@ -66,10 +70,12 @@ func entryJsonEncoder(value interface{}) ([]byte, error) {
 
 	return []byte(data.String()), nil
 }
+
 // json encoder that encodes a logger entry into json
 func NewJsonEncoder() *Json {
 	return NewJson(entryJsonEncoder)
 }
+
 // json formatter constructor
 func NewJson(encode func(interface{}) ([]byte, error)) *Json {
 	return &Json{encode: encode}

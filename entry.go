@@ -9,6 +9,7 @@ type Entry struct {
 	Level   Level
 	Context *Context
 }
+
 // stringify a log entry
 // typically used when logging with line formatter
 func (e *Entry) String() string {

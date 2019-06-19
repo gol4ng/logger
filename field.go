@@ -39,11 +39,13 @@ const (
 	// ReflectType indicates that the field carries an interface{}, which should be serialized using reflection.
 	ReflectType
 )
+
 // represents a contextual information that is passed in a logger context
 type Field struct {
 	Type  FieldType
 	Value interface{}
 }
+
 // stringify any type of Field.Value
 func (f *Field) String() string {
 	switch f.Type {
@@ -98,94 +100,117 @@ func (f *Field) String() string {
 		return fmt.Sprintf("%v", f.Value)
 	}
 }
+
 // create Skip Field
 func Skip(value string) Field {
 	return Field{Type: SkipType, Value: value}
 }
+
 // create Bool Field
 func Bool(value bool) Field {
 	return Field{Type: BoolType, Value: value}
 }
+
 // create Int8 Field
 func Int8(value int8) Field {
 	return Field{Type: Int8Type, Value: value}
 }
+
 // create Int16 Field
 func Int16(value int16) Field {
 	return Field{Type: Int16Type, Value: value}
 }
+
 // create Int32 Field
 func Int32(value int32) Field {
 	return Field{Type: Int32Type, Value: value}
 }
+
 // create Int64 Field
 func Int64(value int64) Field {
 	return Field{Type: Int64Type, Value: value}
 }
+
 // create Uint8 Field
 func Uint8(value uint8) Field {
 	return Field{Type: Uint8Type, Value: value}
 }
+
 // create Uint16 Field
 func Uint16(value uint16) Field {
 	return Field{Type: Uint16Type, Value: value}
 }
+
 // create Uint32 Field
 func Uint32(value uint32) Field {
 	return Field{Type: Uint32Type, Value: value}
 }
+
 // create Uint64 Field
 func Uint64(value uint64) Field {
 	return Field{Type: Uint64Type, Value: value}
 }
+
 // create Uintptr Field
 func Uintptr(value uintptr) Field {
 	return Field{Type: UintptrType, Value: value}
 }
+
 // create Float32 Field
 func Float32(value float32) Field {
 	return Field{Type: Float32Type, Value: value}
 }
+
 // create Float64 Field
 func Float64(value float64) Field {
 	return Field{Type: Float64Type, Value: value}
 }
+
 // create Complex64 Field
 func Complex64(value complex64) Field {
 	return Field{Type: Complex64Type, Value: value}
 }
+
 // create Complex128 Field
 func Complex128(value complex128) Field {
 	return Field{Type: Complex128Type, Value: value}
 }
+
 // create String Field
 func String(value string) Field {
 	return Field{Type: StringType, Value: value}
 }
+
 // create Binary Field
 func Binary(value []byte) Field {
 	return Field{Type: BinaryType, Value: value}
 }
+
 // create ByteString Field
 func ByteString(value []byte) Field {
 	return Field{Type: ByteStringType, Value: value}
 }
+
 // create Error Field
 func Error(value error) Field {
 	return Field{Type: ErrorType, Value: value}
 }
+
 // create Stringer Field
 func Stringer(value fmt.Stringer) Field {
 	return Field{Type: StringerType, Value: value}
 }
+
 // create Time Field
 func Time(value time.Time) Field {
 	return Field{Type: TimeType, Value: value}
 }
+
 // create Duration Field
 func Duration(value time.Duration) Field {
 	return Field{Type: DurationType, Value: value}
 }
+
 // create Reflect Field
 func Reflect(value interface{}) Field {
 	return Field{Type: ReflectType, Value: value}
