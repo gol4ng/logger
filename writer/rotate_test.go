@@ -2,6 +2,7 @@ package writer_test
 
 import (
 	"errors"
+	"io"
 	"os"
 	"reflect"
 	"testing"
@@ -11,8 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRotateFileWriter_Write(t *testing.T) {
-	var f *os.File
+func TestRotateIoWriter_Write(t *testing.T) {
+	f  := &os.File{}
 	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Write", func(_ *os.File, b []byte) (n int, err error) {
 		assert.Equal(t, []byte("fake_data"), b)
 		return 99, nil
@@ -20,7 +21,7 @@ func TestRotateFileWriter_Write(t *testing.T) {
 	defer monkey.UnpatchAll()
 
 	file := os.File{}
-	w, err := writer.NewRotateFileWriter(func(*os.File) (*os.File, error) {
+	w, err := writer.NewRotateIoWriter(func(io.Writer) (io.Writer, error) {
 		return &file, nil
 	})
 	assert.Nil(t, err)
@@ -30,8 +31,8 @@ func TestRotateFileWriter_Write(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func TestRotateFileWriter_Rotate(t *testing.T) {
-	w, err := writer.NewRotateFileWriter(func(*os.File) (*os.File, error) {
+func TestRotateIoWriter_Rotate(t *testing.T) {
+	w, err := writer.NewRotateIoWriter(func(io.Writer) (io.Writer, error) {
 		return &os.File{}, nil
 	})
 	assert.Nil(t, err)
@@ -40,15 +41,15 @@ func TestRotateFileWriter_Rotate(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func TestNewRotateFileWriter_WithError(t *testing.T) {
-	_, err := writer.NewRotateFileWriter(func(*os.File) (*os.File, error) {
+func TestNewRotateIoWriter_WithError(t *testing.T) {
+	_, err := writer.NewRotateIoWriter(func(io.Writer) (io.Writer, error) {
 		return nil, errors.New("fake_file_provider_error")
 	})
 	assert.EqualError(t, err, "fake_file_provider_error")
 }
 
-func TestNewRotateFileWriter(t *testing.T) {
-	_, err := writer.NewRotateFileWriter(func(*os.File) (*os.File, error) {
+func TestNewRotateIoWriter(t *testing.T) {
+	_, err := writer.NewRotateIoWriter(func(io.Writer) (io.Writer, error) {
 		return &os.File{}, nil
 	})
 	assert.Nil(t, err)
