@@ -6,18 +6,18 @@ import (
 	"github.com/gol4ng/logger"
 )
 
-// allows you to format a logger entry into a human readable string
+// Line formatter will transform log Entry into string
 type Line struct {
 	format string
 }
 
-// format a logger entry into a human readable string
+// Format will return Entry as string
 // typically used for stdout output
 func (l *Line) Format(entry logger.Entry) string {
 	return fmt.Sprintf(l.format, entry.Message, entry.Level, entry.Context)
 }
 
-// create new line formatter instance
+// NewLine will create a new Line with format (fmt)
 func NewLine(format string) *Line {
 	return &Line{format}
 }

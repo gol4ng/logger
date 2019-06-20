@@ -2,7 +2,7 @@ package logger
 
 import "strings"
 
-// logger.Entry represents a log in its entirety
+// Entry represents a log in its entirety
 // it is composed of a level, a message and context
 type Entry struct {
 	Message string
@@ -10,8 +10,7 @@ type Entry struct {
 	Context *Context
 }
 
-// stringify a log entry
-// typically used when logging with line formatter
+// String will return Entry as string
 func (e *Entry) String() string {
 	builder := &strings.Builder{}
 	builder.WriteString("<")

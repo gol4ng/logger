@@ -4,8 +4,8 @@ import (
 	"github.com/gol4ng/logger"
 )
 
-// middleware that filters the logs regarding a given func
-// ex: allows you to only treat the logs that have a specific level
+// Filter will exclude some Entry for the underlaying handler with the given filter function
+// eg: allows you to only treat the logs that have a specific level
 func Filter(filterFn func(logger.Entry) bool) logger.MiddlewareInterface {
 	return func(handler logger.HandlerInterface) logger.HandlerInterface {
 		return func(entry logger.Entry) error {
@@ -17,21 +17,21 @@ func Filter(filterFn func(logger.Entry) bool) logger.MiddlewareInterface {
 	}
 }
 
-// exclude logs that have a minor level than a given level
+// MinLevelFilter will exclude logs that have a minor level than a given level
 func MinLevelFilter(level logger.Level) logger.MiddlewareInterface {
 	return Filter(func(entry logger.Entry) bool {
 		return entry.Level > level
 	})
 }
 
-// exclude logs that have a major level than a given level
+// MaxLevelFilter will exclude logs that have a major level than a given level
 func MaxLevelFilter(level logger.Level) logger.MiddlewareInterface {
 	return Filter(func(entry logger.Entry) bool {
 		return entry.Level < level
 	})
 }
 
-// exclude logs that have a level that are not between two given levels
+// RangeLevelFilter will exclude logs that have a level that are not between two given levels
 func RangeLevelFilter(level1 logger.Level, level2 logger.Level) logger.MiddlewareInterface {
 	if level1 > level2 {
 		l := level1

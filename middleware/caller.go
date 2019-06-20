@@ -6,7 +6,7 @@ import (
 	"github.com/gol4ng/logger"
 )
 
-// This middleware will add 2 fields in the handled entry context
+// Caller will add 2 fields in the handled entry context
 // eg:
 //     _file:/..../file_of_the_handle_caller.go
 //     _line:72

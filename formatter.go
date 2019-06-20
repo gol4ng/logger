@@ -1,18 +1,20 @@
 package logger
 
-// allows you to format a logger entry
-// ex: format a log entry to gelf format
+// FormatterInterface will convert Entry into string
+// ex: format a log entry to string/json/... format
 type FormatterInterface interface {
 	Format(entry Entry) string
 }
 
+// NopFormatter is a no operating formatter
 type NopFormatter struct{}
 
+// Format will return empty string
 func (n *NopFormatter) Format(entry Entry) string {
 	return ""
 }
 
-// instantiate a formatter that returns a void string
+// NewNopFormatter will create a NopFormatter
 func NewNopFormatter() *NopFormatter {
 	return &NopFormatter{}
 }

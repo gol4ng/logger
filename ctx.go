@@ -4,15 +4,15 @@ import "context"
 
 var contextKey struct{}
 
-// inject a logger into the go-context
+// InjectInContext will inject a logger into the go-context
 func InjectInContext(ctx context.Context, l LoggerInterface) context.Context {
 	return context.WithValue(ctx, contextKey, l)
 }
 
-// retrieve a logger from the go-context if any
-func FromContext(ctx context.Context, l LoggerInterface) LoggerInterface {
+// FromContext will retrieve a logger from the go-context or return defaultLogger
+func FromContext(ctx context.Context, defaultLogger LoggerInterface) LoggerInterface {
 	if _logger, ok := ctx.Value(contextKey).(LoggerInterface); ok {
 		return _logger
 	}
-	return l
+	return defaultLogger
 }

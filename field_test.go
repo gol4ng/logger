@@ -105,14 +105,15 @@ func TestField_Any(t *testing.T) {
 			var memStatsEnd runtime.MemStats
 			runtime.ReadMemStats(&memStatsEnd)
 			assert.Equal(t, tt.expectedMallocs, memStatsEnd.Mallocs-memStatsStart.Mallocs)
-			if tt.expectedTotalAlloc != memStatsEnd.TotalAlloc-memStatsStart.TotalAlloc {
-				t.Logf(
-					"Test \"%s\" totalAlloc:%d expected %d",
-					tt.name,
-					memStatsEnd.TotalAlloc-memStatsStart.TotalAlloc,
-					tt.expectedTotalAlloc,
-				)
-			}
+			// This assertion was to variable
+			//if tt.expectedTotalAlloc != memStatsEnd.TotalAlloc-memStatsStart.TotalAlloc {
+			//	t.Logf(
+			//		"Test \"%s\" totalAlloc:%d expected %d",
+			//		tt.name,
+			//		memStatsEnd.TotalAlloc-memStatsStart.TotalAlloc,
+			//		tt.expectedTotalAlloc,
+			//	)
+			//}
 			assert.Equal(t, tt.expectedType, field.Type)
 		})
 	}
