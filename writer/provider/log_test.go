@@ -1,4 +1,4 @@
-package file_provider_test
+package provider_test
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"bou.ke/monkey"
-	"github.com/gol4ng/logger/writer/file_provider"
+	"github.com/gol4ng/logger/writer/provider"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,7 +21,7 @@ func TestLogFileProvider_RenameWithError(t *testing.T) {
 	monkey.Patch(time.Now, func() time.Time {return time.Unix(0, 0)})
 	defer monkey.UnpatchAll()
 
-	fileProvider := file_provider.LogFileProvider("fake_name", "fake_format_%s", "Mon Jan _2 2006 05")
+	fileProvider := provider.LogFileProvider("fake_name", "fake_format_%s", "Mon Jan _2 2006 05")
 	newFile, err := fileProvider(&os.File{})
 	assert.EqualError(t, err, "fake_rename_error")
 	assert.Nil(t, newFile)
@@ -40,7 +40,7 @@ func TestLogFileProvider_CloseWithError(t *testing.T) {
 	monkey.Patch(time.Now, func() time.Time { return time.Unix(0, 0) })
 	defer monkey.UnpatchAll()
 
-	w := file_provider.LogFileProvider("fake_name", "fake_format_%s", "Mon Jan _2 2006 05")
+	w := provider.LogFileProvider("fake_name", "fake_format_%s", "Mon Jan _2 2006 05")
 	newFile, err := w(&os.File{})
 	assert.EqualError(t, err, "fake_file_close_error")
 	assert.Nil(t, newFile)
@@ -68,7 +68,7 @@ func TestLogFileProvider(t *testing.T) {
 	monkey.Patch(time.Now, func() time.Time { return time.Unix(0, 0) })
 	defer monkey.UnpatchAll()
 
-	w := file_provider.LogFileProvider("fake_name", "fake_format_%s", "Mon Jan _2 2006 05")
+	w := provider.LogFileProvider("fake_name", "fake_format_%s", "Mon Jan _2 2006 05")
 	newFile, err := w(&existingFile)
 	assert.Nil(t, err)
 	assert.Equal(t, &createdFile, newFile)

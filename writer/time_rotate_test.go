@@ -2,6 +2,7 @@ package writer_test
 
 import (
 	"errors"
+	"io"
 	"os"
 	"testing"
 	"time"
@@ -50,14 +51,14 @@ func TestNewTimeRotateWriter(t *testing.T) {
 }
 
 func TestNewTimeRotateFileWriter_WithError(t *testing.T) {
-	_, err := writer.NewTimeRotateFileWriter(func(*os.File) (*os.File, error) {
+	_, err := writer.NewTimeRotateFileWriter(func(io.Writer) (io.Writer, error) {
 		return &os.File{}, errors.New("fake_file_provider_error")
 	}, 1*time.Second)
 	assert.EqualError(t, err, "fake_file_provider_error")
 }
 
 func TestNewTimeRotateFileWriter(t *testing.T) {
-	_, err := writer.NewTimeRotateFileWriter(func(*os.File) (*os.File, error) {
+	_, err := writer.NewTimeRotateFileWriter(func(io.Writer) (io.Writer, error) {
 		return &os.File{}, nil
 	}, 1*time.Second)
 	assert.Nil(t, err)

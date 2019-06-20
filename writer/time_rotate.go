@@ -29,7 +29,7 @@ func NewTimeRotateWriter(writer RotateWriter, interval time.Duration) *TimeRotat
 	return w
 }
 
-func NewTimeRotateFileWriter(fileProvider FileProvider, interval time.Duration) (*TimeRotateWriter, error) {
-	w, err := NewRotateFileWriter(fileProvider)
+func NewTimeRotateFileWriter(provider Provider, interval time.Duration) (*TimeRotateWriter, error) {
+	w, err := NewRotateIoWriter(provider)
 	return NewTimeRotateWriter(w, interval), err
 }

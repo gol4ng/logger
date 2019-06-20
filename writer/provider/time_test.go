@@ -1,4 +1,4 @@
-package file_provider_test
+package provider_test
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"bou.ke/monkey"
-	"github.com/gol4ng/logger/writer/file_provider"
+	"github.com/gol4ng/logger/writer/provider"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,7 +21,7 @@ func TestTimeFileProvider_CloseWithError(t *testing.T) {
 	})
 	defer monkey.UnpatchAll()
 
-	fileProvider := file_provider.TimeFileProvider("unused", "unused")
+	fileProvider := provider.TimeFileProvider("unused", "unused")
 	newFile, err := fileProvider(&existingFile)
 	assert.EqualError(t, err, "fake_file_close_error")
 	assert.Nil(t, newFile)
@@ -46,7 +46,7 @@ func TestTimeFileProvider(t *testing.T) {
 	monkey.Patch(time.Now, func() time.Time { return time.Unix(0, 0) })
 	defer monkey.UnpatchAll()
 
-	fileProvider := file_provider.TimeFileProvider("fake_format_%s", "Mon Jan _2 2006 05")
+	fileProvider := provider.TimeFileProvider("fake_format_%s", "Mon Jan _2 2006 05")
 	newFile, err := fileProvider(&existingFile)
 	assert.Nil(t, err)
 	assert.Equal(t, &createdFile, newFile)

@@ -2,7 +2,6 @@ package writer
 
 import (
 	"io"
-	"os"
 	"sync"
 )
 
@@ -11,26 +10,26 @@ type RotateWriter interface {
 	Rotate() error
 }
 
-type RotateFileWriter struct {
-	mutex        sync.Mutex
-	fileProvider FileProvider
-	file         *os.File
+type RotateIoWriter struct {
+	mutex          sync.Mutex
+	writerProvider Provider
+	writer         io.Writer
 }
 
-func (w *RotateFileWriter) Write(output []byte) (int, error) {
+func (w *RotateIoWriter) Write(output []byte) (int, error) {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
-	return w.file.Write(output)
+	return w.writer.Write(output)
 }
 
-func (w *RotateFileWriter) Rotate() (err error) {
+func (w *RotateIoWriter) Rotate() (err error) {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
-	w.file, err = w.fileProvider(w.file)
+	w.writer, err = w.writerProvider(w.writer)
 	return err
 }
 
-func NewRotateFileWriter(fileProvider FileProvider) (*RotateFileWriter, error) {
-	file, err := fileProvider(nil)
-	return &RotateFileWriter{file: file, fileProvider: fileProvider}, err
+func NewRotateIoWriter(provider Provider) (*RotateIoWriter, error) {
+	writer, err := provider(nil)
+	return &RotateIoWriter{writer: writer, writerProvider: provider}, err
 }
