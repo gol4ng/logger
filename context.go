@@ -4,8 +4,12 @@ import (
 	"strings"
 )
 
+// Context contain all contextual log data
+// we advise you to choose your data wisely
+// You should keep a reasonable quantity of data
 type Context map[string]Field
 
+// Merge and overwrite context data with the given one
 func (c *Context) Merge(context Context) *Context {
 	for name, field := range context {
 		c.Set(name, field)
@@ -13,33 +17,42 @@ func (c *Context) Merge(context Context) *Context {
 	return c
 }
 
+// Set will add a new context field
 func (c *Context) Set(name string, value Field) *Context {
 	(*c)[name] = value
 	return c
 }
 
+// Has will checks if the current context has a field name
 func (c *Context) Has(name string) bool {
 	_, ok := (*c)[name]
 	return ok
 }
 
-func (c *Context) Get(name string, field *Field) Field {
+// Get will return field with given name or the default value
+func (c *Context) Get(name string, defaultField *Field) Field {
 	if c.Has(name) {
 		return (*c)[name]
 	}
-	return *field
+	return *defaultField
 }
 
+// Add will guess and add value to the context
 func (c *Context) Add(name string, value interface{}) *Context {
 	return c.Set(name, Any(value))
 }
 
+// Skip will add skip field to context
 func (c *Context) Skip(name string, value string) *Context {
 	return c.Set(name, Skip(value))
 }
+
+// Binary will add binary field to context
 func (c *Context) Binary(name string, value []byte) *Context {
 	return c.Set(name, Binary(value))
 }
+
+// ByteString will add byteString field to context
 func (c *Context) ByteString(name string, value []byte) *Context {
 	return c.Set(name, ByteString(value))
 }
@@ -64,6 +77,7 @@ func (c *Context) stringTo(builder *strings.Builder) *Context {
 	return c
 }
 
+// String will return context as string
 func (c *Context) String() string {
 	if len(*c) == 0 {
 		return "<nil>"
@@ -73,9 +87,8 @@ func (c *Context) String() string {
 	return builder.String()
 }
 
-// TODO MOVE context serialization
-// fmt GoStringer
-// usefull when you fmt.Printf("%#v", GoStringer)
+// GoString was called by fmt.Printf("%#v", context)
+// fmt GoStringer interface
 func (c *Context) GoString() string {
 	builder := &strings.Builder{}
 	builder.WriteString("logger.context[")
@@ -84,10 +97,12 @@ func (c *Context) GoString() string {
 	return builder.String()
 }
 
+// Ctx will create a new context with given value
 func Ctx(name string, value interface{}) *Context {
 	return NewContext().Add(name, value)
 }
 
+// NewContext will create a new context
 func NewContext() *Context {
 	return &Context{}
 }

@@ -3,6 +3,8 @@ package handler_test
 import (
 	"bytes"
 	"errors"
+	"github.com/gol4ng/logger/formatter"
+	"os"
 	"testing"
 
 	"github.com/gol4ng/logger"
@@ -40,4 +42,17 @@ type WriterError struct {
 
 func (w *WriterError) Write(p []byte) (n int, err error) {
 	return w.Number, w.Error
+}
+
+/////////////////////
+// Examples
+/////////////////////
+
+func ExampleStream() {
+	lineFormatter := formatter.NewDefaultFormatter()
+	lineLogHandler := handler.Stream(os.Stdout, lineFormatter)
+	lineLogHandler(logger.Entry{Message: "Log example"})
+
+	//Output:
+	//<emergency> Log example
 }

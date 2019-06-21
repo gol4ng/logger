@@ -1,6 +1,7 @@
 package formatter_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/gol4ng/logger"
@@ -38,4 +39,23 @@ func TestLine_Format(t *testing.T) {
 			assert.Equal(t, tt.expected, f.Format(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: logger.Ctx("my_key", "my_value")}))
 		})
 	}
+}
+
+/////////////////////
+// Examples
+/////////////////////
+
+func ExampleLineFormatter() {
+	lineFormatter := formatter.NewLine("%s %s %s")
+
+	fmt.Println(lineFormatter.Format(
+		logger.Entry{
+			Message: "My log message",
+			Level: logger.InfoLevel,
+			Context: logger.NewContext().Add("my_key", "my_value"),
+		},
+	))
+
+	//Output:
+	//My log message info <my_key:my_value>
 }

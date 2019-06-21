@@ -2,6 +2,8 @@ package handler_test
 
 import (
 	"errors"
+	"github.com/gol4ng/logger/formatter"
+	"os"
 	"testing"
 
 	"github.com/gol4ng/logger"
@@ -54,4 +56,25 @@ func TestGroup_HandleWithError(t *testing.T) {
 
 	assert.True(t, Acalled)
 	assert.False(t, Bcalled)
+}
+
+
+/////////////////////
+// Examples
+/////////////////////
+
+func ExampleGroup() {
+	lineFormatter := formatter.NewDefaultFormatter()
+	lineLogHandler := handler.Stream(os.Stdout, lineFormatter)
+
+	jsonFormatter := formatter.NewJsonEncoder()
+	jsonLogHandler := handler.Stream(os.Stdout, jsonFormatter)
+
+	groupHandler := handler.Group(lineLogHandler, jsonLogHandler)
+
+	groupHandler(logger.Entry{Message: "Log example"})
+
+	//Output:
+	// <emergency> Log example
+	// {"Message":"Log example","Level":0,"Context":null}
 }
