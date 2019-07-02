@@ -10,7 +10,7 @@ import (
 func BenchmarkDefaultFormatter(b *testing.B) {
 	b.ReportAllocs()
 
-	jsonFormatter := formatter.NewJsonEncoder()
+	jsonFormatter := formatter.NewJSONEncoder()
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {

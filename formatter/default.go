@@ -18,7 +18,7 @@ func (n *DefaultFormatter) Format(entry logger.Entry) string {
 	builder.WriteString(entry.Message)
 	if entry.Context != nil {
 		builder.WriteString(" ")
-		MarshalContextTo(entry.Context, builder)
+		ContextToJSON(entry.Context, builder)
 	}
 
 	return builder.String()

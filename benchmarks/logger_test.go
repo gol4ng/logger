@@ -43,7 +43,7 @@ func BenchmarkLoggerJsonFormatter(b *testing.B) {
 	b.ReportAllocs()
 
 	myLogger := logger.NewLogger(
-		handler.Stream(&NopWriter{}, formatter.NewJsonEncoder()),
+		handler.Stream(&NopWriter{}, formatter.NewJSONEncoder()),
 	)
 
 	b.ResetTimer()

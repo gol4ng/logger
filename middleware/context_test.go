@@ -45,7 +45,7 @@ func TestContext_Handle(t *testing.T) {
 /////////////////////
 
 func ExampleContext() {
-	streamHandler := handler.Stream(os.Stdout, formatter.NewJsonEncoder())
+	streamHandler := handler.Stream(os.Stdout, formatter.NewJSONEncoder())
 
 	contextHandler := middleware.Context(logger.Ctx("my_value_1", "value 1"))
 
