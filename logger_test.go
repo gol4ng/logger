@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log/syslog"
 	"os"
 	"strings"
@@ -422,9 +423,15 @@ func ExampleLogger_wrapHandler() {
 }
 
 func ExampleLogger_timeRotateHandler() {
+	tmpDir, err := ioutil.TempDir("", "tmp_ExampleLogger_timeRotateHandler")
+	if err != nil {
+		panic(err)
+	}
+	defer os.RemoveAll(tmpDir)
+
 	lineFormatter := formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")
 
-	rotateLogHandler, _ := handler.TimeRotateFileStream(os.TempDir()+"/%s.log", time.Stamp, lineFormatter, 1*time.Second)
+	rotateLogHandler, _ := handler.TimeRotateFileStream(tmpDir+"%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
 	myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))
@@ -439,9 +446,15 @@ func ExampleLogger_timeRotateHandler() {
 }
 
 func ExampleLogger_logRotateHandler() {
+	tmpDir, err := ioutil.TempDir("", "ExampleLogger_logRotateHandler")
+	if err != nil {
+		panic(err)
+	}
+	defer os.RemoveAll(tmpDir)
+
 	lineFormatter := formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")
 
-	rotateLogHandler, _ := handler.LogRotateFileStream("test", os.TempDir()+"/%s.log", time.Stamp, lineFormatter, 1*time.Second)
+	rotateLogHandler, _ := handler.LogRotateFileStream("test", tmpDir+"%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
 	myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))
@@ -479,7 +492,8 @@ func ExampleLogger_syslogHandler() {
 	myLogger.Error("Log example4", logger.Ctx("ctx_key", "ctx_value"))
 	myLogger.Critical("Log example5", logger.Ctx("ctx_key", "ctx_value"))
 	myLogger.Alert("Log example6", logger.Ctx("ctx_key", "ctx_value"))
-	myLogger.Emergency("Log example7", logger.Ctx("ctx_key", "ctx_value"))
+	// folowing log will endup process with Exit 1
+	//myLogger.Emergency("Log example7", logger.Ctx("ctx_key", "ctx_value"))
 
 	//Output:
 }
