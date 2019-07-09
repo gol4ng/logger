@@ -4,9 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/gol4ng/logger/formatter"
-	"github.com/gol4ng/logger/handler"
-	"github.com/gol4ng/logger/middleware"
 	"log/syslog"
 	"os"
 	"strings"
@@ -14,6 +11,9 @@ import (
 	"time"
 
 	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
+	"github.com/gol4ng/logger/handler"
+	"github.com/gol4ng/logger/middleware"
 	"github.com/stretchr/testify/assert"
 )
 
