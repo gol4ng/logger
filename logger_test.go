@@ -440,7 +440,7 @@ func ExampleLogger_timeRotateHandler() {
 func ExampleLogger_logRotateHandler() {
 	lineFormatter := formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")
 
-	rotateLogHandler, _ := handler.LogRotateFileStream("test", os.TempDir()+"%/s.log", time.Stamp, lineFormatter, 1*time.Second)
+	rotateLogHandler, _ := handler.LogRotateFileStream("test", os.TempDir()+"/%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
 	myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))
