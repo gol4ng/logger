@@ -8,10 +8,12 @@ import (
 	"testing"
 
 	"bou.ke/monkey"
+
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/mocks"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSyslog_HandleWithDialError(t *testing.T) {
