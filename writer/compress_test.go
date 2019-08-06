@@ -1,12 +1,15 @@
 package writer_test
 
 import (
-	"bou.ke/monkey"
 	"bytes"
-	"github.com/gol4ng/logger/writer"
-	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
+
+	"bou.ke/monkey"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/gol4ng/logger/writer"
 )
 
 func TestCompressWriter_Write_CompressNone(t *testing.T) {

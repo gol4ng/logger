@@ -6,15 +6,17 @@ import (
 	"testing"
 
 	"bou.ke/monkey"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/mocks"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestSocket(t *testing.T) {
-	var Connection net.Conn
+	Connection := &net.TCPConn{}
 	monkey.PatchInstanceMethod(reflect.TypeOf(Connection), "Write", func(conn *net.TCPConn, b []byte) (n int, err error) {
 		assert.Equal(t, []uint8("my formatter return"), b)
 		return 99, nil
