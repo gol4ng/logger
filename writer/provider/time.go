@@ -9,7 +9,7 @@ import (
 	"github.com/gol4ng/logger/writer"
 )
 
-// provide a new file (io.Writer) having named with a given filename format
+// TimeFileProvider provide a new file (io.Writer) having named with a given filename format
 // ex: `provider.TimeFileProvider("fake_format_%s", "2006-01-02")` will create a file named "fake_format_2019-08-17" (i.e fake_format_<ISO_8601_DATE>)
 func TimeFileProvider(fileNameFormat string, timeFormat string) writer.Provider {
 	return func(w io.Writer) (io.Writer, error) {
