@@ -17,7 +17,7 @@ import (
 )
 
 func TestNewTimeRotateFileStream_Handle(t *testing.T) {
-	t.Skip("rework this test")
+	// t.Skip("rework this test")
 	i := int64(0)
 
 	var f *os.File
@@ -37,6 +37,13 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 		}
 		assert.True(t, false, "must not be reached")
 		return 0, nil
+	})
+	// mock os.File::Close method in order not to return an error
+	// on the second call of rotate, the TimeFileProvider will have a writer that is not nil (it will contain `createdFile1` that is technically nil
+	// if we do not mock the `Close` method on `createdFile1` which will and up with a syscall.EINVAL error
+	// as the code will pass here https://github.com/golang/go/blob/release-branch.go1.12/src/os/file_unix.go#L242
+	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Close", func(file *os.File) error {
+		return nil
 	})
 	// mock os.OpenFile method
 	monkey.Patch(os.OpenFile, func(name string, flag int, perm os.FileMode) (*os.File, error) {
