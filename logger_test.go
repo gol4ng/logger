@@ -10,11 +10,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/middleware"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestLevel_String(t *testing.T) {

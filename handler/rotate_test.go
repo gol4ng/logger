@@ -23,22 +23,22 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 	var f *os.File
 	createdFile1 := &os.File{}
 	createdFile2 := &os.File{}
+	// mock os.File::Write method
 	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Write", func(file *os.File, p []byte) (n int, err error) {
 		if i == 0 {
 			assert.Equal(t, createdFile1, file)
-			assert.Equal(t, []uint8("my formatter return\n"), p)
+			assert.Equal(t, []byte("my formatter return\n"), p)
 			return 99, nil
 		}
 		if i == 1 {
 			assert.Equal(t, createdFile2, file)
-			assert.Equal(t, []uint8("my formatter return\n"), p)
+			assert.Equal(t, []byte("my formatter return\n"), p)
 			return 99, nil
 		}
-
 		assert.True(t, false, "must not be reached")
 		return 0, nil
 	})
-
+	// mock os.OpenFile method
 	monkey.Patch(os.OpenFile, func(name string, flag int, perm os.FileMode) (*os.File, error) {
 		if i == 0 {
 			assert.Equal(t, "fake_format_Thu Jan  1 1970 00", name)
@@ -52,39 +52,40 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 			assert.Equal(t, os.FileMode(0666), perm)
 			return createdFile2, nil
 		}
-
 		assert.True(t, false, "must not be reached")
 		return nil, nil
 	})
-
+	// mock time.NewTicker method : override private ticker channel in order to be able to send ticks manually
 	tickerChan := make(chan time.Time, 1)
 	monkey.Patch(time.NewTicker, func(d time.Duration) *time.Ticker {
 		assert.Equal(t, 10*time.Millisecond, d)
-
 		return &time.Ticker{
 			C: tickerChan,
 		}
 	})
-
+	// mock time.Now method in order to return always the same time whenever the test is launched
 	monkey.Patch(time.Now, func() time.Time { return time.Unix(i, 0) })
 	defer monkey.UnpatchAll()
-
+	// mock a basic formatter that will return "my formatter return" on any call of `Format`
 	mockFormatter := mocks.FormatterInterface{}
 	mockFormatter.On("Format", mock.AnythingOfType("logger.Entry")).Return("my formatter return")
 
+	// create the handler to test
 	h, err := handler.TimeRotateFileStream("fake_format_%s", "Mon Jan _2 2006 05", &mockFormatter, 10*time.Millisecond)
 	assert.Nil(t, err)
+	// call the handler a first time (i=0)
 	assert.Nil(t, h(logger.Entry{}))
-
+	// send tick to trigger a file rotation
 	i++
 	tickerChan <- time.Now()
+	// call the handler a second time to check the rotation (i=1)
 	assert.Nil(t, h(logger.Entry{}))
 }
 
 func TestNewLogRotateFileStream_Handle(t *testing.T) {
 	var f *os.File
 	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Write", func(_ *os.File, p []byte) (n int, err error) {
-		assert.Equal(t, []uint8("my formatter return\n"), p)
+		assert.Equal(t, []byte("my formatter return\n"), p)
 		return 99, nil
 	})
 
