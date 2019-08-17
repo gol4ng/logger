@@ -17,7 +17,6 @@ import (
 )
 
 func TestNewTimeRotateFileStream_Handle(t *testing.T) {
-	// t.Skip("rework this test")
 	i := int64(0)
 
 	var f *os.File
