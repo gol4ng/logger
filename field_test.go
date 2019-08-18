@@ -2,12 +2,12 @@ package logger_test
 
 import (
 	"errors"
-	"runtime"
 	"testing"
 	"time"
 
-	"github.com/gol4ng/logger"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/gol4ng/logger"
 )
 
 // Create a stringer object
@@ -97,23 +97,7 @@ func TestField_Any(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var memStatsStart runtime.MemStats
-			runtime.ReadMemStats(&memStatsStart)
-
 			field := logger.Any(tt.value)
-
-			var memStatsEnd runtime.MemStats
-			runtime.ReadMemStats(&memStatsEnd)
-			assert.Equal(t, tt.expectedMallocs, memStatsEnd.Mallocs-memStatsStart.Mallocs)
-			// This assertion was to variable
-			//if tt.expectedTotalAlloc != memStatsEnd.TotalAlloc-memStatsStart.TotalAlloc {
-			//	t.Logf(
-			//		"Test \"%s\" totalAlloc:%d expected %d",
-			//		tt.name,
-			//		memStatsEnd.TotalAlloc-memStatsStart.TotalAlloc,
-			//		tt.expectedTotalAlloc,
-			//	)
-			//}
 			assert.Equal(t, tt.expectedType, field.Type)
 		})
 	}
