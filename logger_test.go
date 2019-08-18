@@ -4,17 +4,18 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/gol4ng/logger/formatter"
-	"github.com/gol4ng/logger/handler"
-	"github.com/gol4ng/logger/middleware"
 	"log/syslog"
 	"os"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/gol4ng/logger"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
+	"github.com/gol4ng/logger/handler"
+	"github.com/gol4ng/logger/middleware"
 )
 
 func TestLevel_String(t *testing.T) {
@@ -423,7 +424,7 @@ func ExampleLogger_wrapHandler() {
 func ExampleLogger_timeRotateHandler() {
 	lineFormatter := formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")
 
-	rotateLogHandler, _ := handler.TimeRotateFileStream(os.TempDir()+"%s.log", time.Stamp, lineFormatter, 1*time.Second)
+	rotateLogHandler, _ := handler.TimeRotateFileStream(os.TempDir()+"/%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
 	myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))
@@ -440,7 +441,7 @@ func ExampleLogger_timeRotateHandler() {
 func ExampleLogger_logRotateHandler() {
 	lineFormatter := formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")
 
-	rotateLogHandler, _ := handler.LogRotateFileStream("test", os.TempDir()+"%s.log", time.Stamp, lineFormatter, 1*time.Second)
+	rotateLogHandler, _ := handler.LogRotateFileStream("test", os.TempDir()+"/%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
 	myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))

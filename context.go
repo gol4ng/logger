@@ -79,7 +79,7 @@ func (c *Context) stringTo(builder *strings.Builder) *Context {
 
 // String will return context as string
 func (c *Context) String() string {
-	if len(*c) == 0 {
+	if c == nil || len(*c) == 0 {
 		return "<nil>"
 	}
 	builder := &strings.Builder{}

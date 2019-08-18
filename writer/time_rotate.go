@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// TimeRotateWriter will rotate the io.writer over the time with the given interval
+// TimeRotateWriter will call RotateWriter::Rotate func over the time with the given interval
 // it delegate the io.writer creation to the Provider
 type TimeRotateWriter struct {
 	RotateWriter
@@ -13,7 +13,7 @@ type TimeRotateWriter struct {
 }
 
 // Start will start listening the interval ticker
-// rotate gonna be called for each tick of the ticker
+// rotate is gonna be called for each tick of the ticker
 func (t *TimeRotateWriter) Start() {
 	ticker := time.NewTicker(t.Interval)
 	go func() {
@@ -28,13 +28,14 @@ func (t *TimeRotateWriter) Start() {
 }
 
 // NewTimeRotateWriter will create a new TimeRotateWriter
+// it will call the given RotateWriter::Rotate func over the time with the given interval
 func NewTimeRotateWriter(writer RotateWriter, interval time.Duration) *TimeRotateWriter {
 	w := &TimeRotateWriter{RotateWriter: writer, Interval: interval}
 	w.Start()
 	return w
 }
 
-// NewTimeRotateFileWriter will create a new TimeRotateFileWriter
+// NewTimeRotateFileWriter will create a TimeRotateFileWriter that rotate an io.writer over the time with the given interval
 func NewTimeRotateFileWriter(provider Provider, interval time.Duration) (*TimeRotateWriter, error) {
 	w, err := NewRotateIoWriter(provider)
 	return NewTimeRotateWriter(w, interval), err

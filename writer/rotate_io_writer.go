@@ -5,15 +5,15 @@ import (
 	"sync"
 )
 
-// RotateIoWriter will rotate the io.writer when rotate was called
-// it delegate the io.writer creation to the Provider
+// RotateIoWriter will rotate the io.writer when rotate is called
+// it delegates the io.writer creation to the Provider
 type RotateIoWriter struct {
 	mutex          sync.Mutex
 	writerProvider Provider
 	writer         io.Writer
 }
 
-// Write will passthrough data to the underlaying io.writer
+// Write will pass-through data to the underlying io.writer
 func (w *RotateIoWriter) Write(output []byte) (int, error) {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
@@ -29,7 +29,9 @@ func (w *RotateIoWriter) Rotate() (err error) {
 }
 
 // NewRotateIoWriter will create a RotateIoWriter
+// create a new io.Writer that can be changed other the time when Rotate() is called
 func NewRotateIoWriter(provider Provider) (*RotateIoWriter, error) {
+	// create new io.Writer
 	writer, err := provider(nil)
 	return &RotateIoWriter{writer: writer, writerProvider: provider}, err
 }

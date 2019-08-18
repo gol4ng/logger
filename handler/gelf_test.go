@@ -8,9 +8,11 @@ import (
 	"time"
 
 	"bou.ke/monkey"
+
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestGelfTCP_Handle(t *testing.T) {
@@ -36,8 +38,7 @@ func TestGelfTCP_Handle(t *testing.T) {
 	defer monkey.UnpatchAll()
 
 
-	h, err := handler.NewGelfTCP("fake_network", "fake_address")
+	h := handler.GelfTCP("fake_network", "fake_address")
 
-	assert.Nil(t, err)
-	assert.Nil(t, h.Handle(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
+	assert.Nil(t, h(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
 }

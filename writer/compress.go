@@ -1,7 +1,6 @@
 package writer
 
 import (
-	"bytes"
 	"compress/gzip"
 	"compress/zlib"
 	"io"
@@ -27,18 +26,17 @@ type CompressWriter struct {
 // Write will compress data and pass it to the underlaying io.Writer
 func (w *CompressWriter) Write(p []byte) (int, error) {
 	if w.compressionType == CompressNone {
-		return w.Write(p)
+		return w.Writer.Write(p)
 	}
 
-	var buffer bytes.Buffer
 	var writer io.WriteCloser
 	var err error
 
 	switch w.compressionType {
 	case CompressGzip:
-		writer, err = gzip.NewWriterLevel(&buffer, w.compressionLevel)
+		writer, err = gzip.NewWriterLevel(w.Writer, w.compressionLevel)
 	case CompressZlib:
-		writer, err = zlib.NewWriterLevel(&buffer, w.compressionLevel)
+		writer, err = zlib.NewWriterLevel(w.Writer, w.compressionLevel)
 	}
 	if err != nil {
 		return 0, err
@@ -48,11 +46,7 @@ func (w *CompressWriter) Write(p []byte) (int, error) {
 	if err != nil {
 		return n, err
 	}
-	if err := writer.Close(); err != nil {
-		return n, err
-	}
-
-	return w.Writer.Write(buffer.Bytes())
+	return n, writer.Close()
 }
 
 // NewCompressWriter will return a new compress writer
