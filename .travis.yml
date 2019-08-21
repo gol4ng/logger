@@ -1,5 +1,9 @@
 language: go
 
+cache:
+  directories:
+    - $GOPATH/pkg/mod
+
 # The coverprofile for multiple packages works in go 1.10
 # see https://tip.golang.org/doc/go1.10#test
 go:
@@ -14,4 +18,4 @@ script:
   - go test --race -gcflags=-l -coverprofile c.out ./...
 
 after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - CC_TEST_REPORTER_ID=$CC_TEST_REPORTER_ID ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
