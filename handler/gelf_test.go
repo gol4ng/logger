@@ -18,42 +18,30 @@ import (
 	"github.com/gol4ng/logger/writer"
 )
 
-func mockGelfTcpCall(t *testing.T, expectedNetwork, expectedAddress string) func() {
-	return func() {
-		monkey.Patch(handler.GelfTCP, func(network, address string) logger.HandlerInterface {
-			assert.Equal(t, network, expectedNetwork)
-			assert.Equal(t, address, expectedAddress)
-			return logger.NopHandler
-		})
-	}
-}
-
-func mockGelfUdpCall(t *testing.T, expectedNetwork, expectedAddress string) func() {
-	return func() {
-		monkey.Patch(handler.GelfUDP, func(network, address string) logger.HandlerInterface {
-			assert.Equal(t, network, expectedNetwork)
-			assert.Equal(t, address, expectedAddress)
-			return logger.NopHandler
-		})
-	}
-}
-
 func TestGelf(t *testing.T) {
-	type args struct { network string; address string }
-	tests := []struct { name string; args args; asserts func() } {
+	tests := []struct {
+		name string
+		network string
+		address string
+		method func (network string, address string) logger.HandlerInterface
+	}{
 		// TCPs
-		{ name: `with_tcp_network`, args: args{ network: "tcp", address: "fake addr"}, asserts: mockGelfTcpCall(t, "tcp", "fake addr")},
-		{ name: `with_tcp4_network`, args: args{ network: "tcp4", address: "fake addr" }, asserts: mockGelfTcpCall(t, "tcp4", "fake addr")},
-		{ name: `with_tcp6_network`, args: args{ network: "tcp6", address: "fake addr" }, asserts: mockGelfTcpCall(t, "tcp6", "fake addr")},
+		{ name: `with_tcp_network`, network: "tcp", address: "fake addr", method: handler.GelfTCP},
+		{ name: `with_tcp4_network`, network: "tcp4", address: "fake addr" , method: handler.GelfTCP},
+		{ name: `with_tcp6_network`, network: "tcp6", address: "fake addr" , method: handler.GelfTCP},
 		// UDPs
-		{ name: `with_udp_network`, args: args{ network: "udp", address: "fake addr" }, asserts: mockGelfUdpCall(t, "udp", "fake addr")},
-		{ name: `with_udp4_network`, args: args{ network: "udp4", address: "fake addr" }, asserts: mockGelfUdpCall(t, "udp4", "fake addr")},
-		{ name: `with_udp6_network`, args: args{ network: "udp6", address: "fake addr" }, asserts: mockGelfUdpCall(t, "udp6", "fake addr")},
+		{ name: `with_udp_network`, network: "udp", address: "fake addr" , method: handler.GelfUDP},
+		{ name: `with_udp4_network`, network: "udp4", address: "fake addr" , method: handler.GelfUDP},
+		{ name: `with_udp6_network`, network: "udp6", address: "fake addr" , method: handler.GelfUDP},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.asserts()
-			assert.NotNil(t, handler.Gelf(tt.args.network, tt.args.address))
+			monkey.Patch(tt.method, func(network, address string) logger.HandlerInterface {
+				assert.Equal(t, network, tt.network)
+				assert.Equal(t, address, tt.address)
+				return logger.NopHandler
+			})
+			assert.IsType(t, logger.NopHandler, handler.Gelf(tt.network, tt.address))
 			monkey.UnpatchAll()
 		})
 	}
