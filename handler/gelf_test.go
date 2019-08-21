@@ -18,6 +18,53 @@ import (
 	"github.com/gol4ng/logger/writer"
 )
 
+func mockGelfTcpCall(t *testing.T, expectedNetwork, expectedAddress string) func() {
+	return func() {
+		monkey.Patch(handler.GelfTCP, func(network, address string) logger.HandlerInterface {
+			assert.Equal(t, network, expectedNetwork)
+			assert.Equal(t, address, expectedAddress)
+			return logger.NopHandler
+		})
+	}
+}
+
+func mockGelfUdpCall(t *testing.T, expectedNetwork, expectedAddress string) func() {
+	return func() {
+		monkey.Patch(handler.GelfUDP, func(network, address string) logger.HandlerInterface {
+			assert.Equal(t, network, expectedNetwork)
+			assert.Equal(t, address, expectedAddress)
+			return logger.NopHandler
+		})
+	}
+}
+
+func TestGelf(t *testing.T) {
+	type args struct { network string; address string }
+	tests := []struct { name string; args args; asserts func() } {
+		// TCPs
+		{ name: `with_tcp_network`, args: args{ network: "tcp", address: "fake addr"}, asserts: mockGelfTcpCall(t, "tcp", "fake addr")},
+		{ name: `with_tcp4_network`, args: args{ network: "tcp4", address: "fake addr" }, asserts: mockGelfTcpCall(t, "tcp4", "fake addr")},
+		{ name: `with_tcp6_network`, args: args{ network: "tcp6", address: "fake addr" }, asserts: mockGelfTcpCall(t, "tcp6", "fake addr")},
+		// UDPs
+		{ name: `with_udp_network`, args: args{ network: "udp", address: "fake addr" }, asserts: mockGelfUdpCall(t, "udp", "fake addr")},
+		{ name: `with_udp4_network`, args: args{ network: "udp4", address: "fake addr" }, asserts: mockGelfUdpCall(t, "udp4", "fake addr")},
+		{ name: `with_udp6_network`, args: args{ network: "udp6", address: "fake addr" }, asserts: mockGelfUdpCall(t, "udp6", "fake addr")},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.asserts()
+			assert.NotNil(t, handler.Gelf(tt.args.network, tt.args.address))
+			monkey.UnpatchAll()
+		})
+	}
+}
+
+func TestGelf_withWrongNetwork(t *testing.T) {
+	assert.PanicsWithValue(t, "gelf protocol only supports udp and tcp connections", func () {
+		handler.Gelf("bad network", "fake addr")
+	})
+}
+
 func TestGelfTCP_Handle(t *testing.T) {
 	var TCPAddr *net.TCPAddr
 	var TCPConn *net.TCPConn
@@ -33,7 +80,7 @@ func TestGelfTCP_Handle(t *testing.T) {
 		return TCPConn, nil
 	})
 	monkey.PatchInstanceMethod(reflect.TypeOf(TCPConn), "Write", func(conn *net.TCPConn, b []byte) (n int, err error) {
-		assert.Equal(t, []uint8(`{"version":"1.1","host":"my_fake_hostname","level":4,"timestamp":513216000.000,"short_message":"test message","full_message":"<warning> test message"}`+"\x00"), b)
+		assert.Equal(t, []byte(`{"version":"1.1","host":"my_fake_hostname","level":4,"timestamp":513216000.000,"short_message":"test message","full_message":"<warning> test message"}`+"\x00"), b)
 		return 99, nil
 	})
 	monkey.Patch(time.Now, func() time.Time { return time.Unix(513216000, 0) })
@@ -68,11 +115,11 @@ func TestGelfUDP_Handle(t *testing.T) {
 		return CompressWriter
 	})
 	monkey.PatchInstanceMethod(reflect.TypeOf(CompressWriter), "Write", func(w *writer.CompressWriter, p []byte) (int, error) {
-		assert.Equal(t, []uint8(`{"version":"1.1","host":"my_fake_hostname","level":4,"timestamp":513216000.000,"short_message":"test message","full_message":"<warning> test message"}`+"\n"), p)
+		assert.Equal(t, []byte(`{"version":"1.1","host":"my_fake_hostname","level":4,"timestamp":513216000.000,"short_message":"test message","full_message":"<warning> test message"}`+"\n"), p)
 		return 99, nil
 	})
 	monkey.PatchInstanceMethod(reflect.TypeOf(UDPConn), "Write", func(conn *net.UDPConn, b []byte) (n int, err error) {
-		assert.Equal(t, []uint8(`{"version":"1.1","host":"my_fake_hostname","level":4,"timestamp":513216000.000,"short_message":"test message","full_message":"<warning> test message"}`+"\n"), b)
+		assert.Equal(t, []byte(`{"version":"1.1","host":"my_fake_hostname","level":4,"timestamp":513216000.000,"short_message":"test message","full_message":"<warning> test message"}`+"\n"), b)
 		return 99, nil
 	})
 	monkey.Patch(time.Now, func() time.Time { return time.Unix(513216000, 0) })
