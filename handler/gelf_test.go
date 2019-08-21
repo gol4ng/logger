@@ -20,19 +20,19 @@ import (
 
 func TestGelf(t *testing.T) {
 	tests := []struct {
-		name string
+		name    string
 		network string
 		address string
-		method func (network string, address string) logger.HandlerInterface
+		method  func(network string, address string) logger.HandlerInterface
 	}{
 		// TCPs
-		{ name: `with_tcp_network`, network: "tcp", address: "fake addr", method: handler.GelfTCP},
-		{ name: `with_tcp4_network`, network: "tcp4", address: "fake addr" , method: handler.GelfTCP},
-		{ name: `with_tcp6_network`, network: "tcp6", address: "fake addr" , method: handler.GelfTCP},
+		{name: `with_tcp_network`, network: "tcp", address: "fake addr", method: handler.GelfTCP},
+		{name: `with_tcp4_network`, network: "tcp4", address: "fake addr", method: handler.GelfTCP},
+		{name: `with_tcp6_network`, network: "tcp6", address: "fake addr", method: handler.GelfTCP},
 		// UDPs
-		{ name: `with_udp_network`, network: "udp", address: "fake addr" , method: handler.GelfUDP},
-		{ name: `with_udp4_network`, network: "udp4", address: "fake addr" , method: handler.GelfUDP},
-		{ name: `with_udp6_network`, network: "udp6", address: "fake addr" , method: handler.GelfUDP},
+		{name: `with_udp_network`, network: "udp", address: "fake addr", method: handler.GelfUDP},
+		{name: `with_udp4_network`, network: "udp4", address: "fake addr", method: handler.GelfUDP},
+		{name: `with_udp6_network`, network: "udp6", address: "fake addr", method: handler.GelfUDP},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -48,8 +48,46 @@ func TestGelf(t *testing.T) {
 }
 
 func TestGelf_withWrongNetwork(t *testing.T) {
-	assert.PanicsWithValue(t, "gelf protocol only supports udp and tcp connections", func () {
+	assert.PanicsWithValue(t, "gelf protocol only supports udp and tcp connections", func() {
 		handler.Gelf("bad network", "fake addr")
+	})
+}
+
+type WrongConn struct{}
+
+func (w *WrongConn) Read(b []byte) (n int, err error)   { return 0, nil }
+func (w *WrongConn) Write(b []byte) (n int, err error)  { return 0, nil }
+func (w *WrongConn) Close() error                       { return nil }
+func (w *WrongConn) LocalAddr() net.Addr                { return nil }
+func (w *WrongConn) RemoteAddr() net.Addr               { return nil }
+func (w *WrongConn) SetDeadline(t time.Time) error      { return nil }
+func (w *WrongConn) SetReadDeadline(t time.Time) error  { return nil }
+func (w *WrongConn) SetWriteDeadline(t time.Time) error { return nil }
+
+func TestGelfFromConnection(t *testing.T) {
+
+	t.Run("TestGelfFromConnection for TCPConn", func(t *testing.T) {
+		monkey.Patch(handler.GelfTCPFromConnection, func(c *net.TCPConn) logger.HandlerInterface {
+			//assert.Equal(t, conn, c)
+			return logger.NopHandler
+		})
+		assert.IsType(t, logger.NopHandler, handler.GelfFromConnection(&net.TCPConn{}))
+		monkey.UnpatchAll()
+	})
+
+	t.Run("TestGelfFromConnection for UDPConn", func(t *testing.T) {
+		monkey.Patch(handler.GelfUDPFromConnection, func(c *net.UDPConn) logger.HandlerInterface {
+			//assert.Equal(t, conn, c)
+			return logger.NopHandler
+		})
+		assert.IsType(t, logger.NopHandler, handler.GelfFromConnection(&net.UDPConn{}))
+		monkey.UnpatchAll()
+	})
+}
+
+func TestGelfFromConnection_withWrongConnection(t *testing.T) {
+	assert.PanicsWithValue(t, "gelf protocol only supports udp and tcp connections", func() {
+		handler.GelfFromConnection(&WrongConn{})
 	})
 }
 
