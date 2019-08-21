@@ -27,7 +27,7 @@ type GelfChunkWriter struct {
 	writer io.Writer
 }
 
-// Writer will split the data and pass it to the underlaying io.Writer
+// Writer will split the data and pass it to the underlying io.Writer
 func (w *GelfChunkWriter) Write(p []byte) (int, error) {
 	lenB := len(p)
 	chunkedNb := 1

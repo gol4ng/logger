@@ -2,11 +2,12 @@ package handler
 
 import (
 	"compress/gzip"
+	"net"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
 	"github.com/gol4ng/logger/socket"
 	"github.com/gol4ng/logger/writer"
-	"net"
 )
 
 // Gelf will send Entry into gelf writer(depending on network, address)
@@ -33,7 +34,7 @@ func GelfFromConnection(connection net.Conn) logger.HandlerInterface {
 
 // GelfTCP will send Entry into TCP gelf writer(depending on network, address)
 //
-// use Gelf func if you want to handle the connection error and Closure
+// use GelfTCPFromConnection func if you want to handle the connection error and Closure
 func GelfTCP(network string, address string) logger.HandlerInterface {
 	return GelfTCPFromConnection(socket.TCPConnection(network, address))
 }
@@ -48,9 +49,9 @@ func GelfTCPFromConnection(connection *net.TCPConn) logger.HandlerInterface {
 
 // GelfUDP will send Entry into UDP gelf writer(depending on network, address)
 //
-// use Gelf func if you want to handle the connection error and Closure
+// use GelfUDPFromConnection func if you want to handle the connection error and Closure
 //
-// CAUTION: Logstash only support Gzip compression
+// CAUTION: Logstash only supports Gzip compression
 // https://github.com/elastic/logstash/issues/2387
 func GelfUDP(network string, address string) logger.HandlerInterface {
 	return GelfUDPFromConnection(socket.UDPConnection(network, address))
