@@ -1,6 +1,7 @@
 package handler_test
 
 import (
+	"errors"
 	"os"
 	"reflect"
 	"testing"
@@ -14,6 +15,7 @@ import (
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/mocks"
+	"github.com/gol4ng/logger/writer"
 )
 
 func TestNewTimeRotateFileStream_Handle(t *testing.T) {
@@ -88,6 +90,17 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 	assert.Nil(t, h(logger.Entry{}))
 }
 
+func TestNewTimeRotateFileStream_Error(t *testing.T) {
+	mockFormatter := mocks.FormatterInterface{}
+	monkey.Patch(writer.NewTimeRotateFileWriter, func(provider writer.Provider, interval time.Duration) (*writer.TimeRotateWriter, error) {
+		return nil, errors.New("my_fake_error")
+	})
+	defer monkey.UnpatchAll()
+
+	_, err := handler.TimeRotateFileStream("fake_format_%s", "Mon Jan _2 2006 05", &mockFormatter, 10*time.Millisecond)
+	assert.EqualError(t, err, "my_fake_error")
+}
+
 func TestNewLogRotateFileStream_Handle(t *testing.T) {
 	var f *os.File
 	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Write", func(_ *os.File, p []byte) (n int, err error) {
@@ -121,4 +134,15 @@ func TestNewLogRotateFileStream_Handle(t *testing.T) {
 	assert.Nil(t, h(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
 	time.Sleep(200 * time.Millisecond)
 	assert.Nil(t, h(logger.Entry{Message: "test message", Level: logger.WarningLevel, Context: nil}))
+}
+
+func TestNewLogRotateFileStream_Error(t *testing.T) {
+	mockFormatter := mocks.FormatterInterface{}
+	monkey.Patch(writer.NewTimeRotateFileWriter, func(provider writer.Provider, interval time.Duration) (*writer.TimeRotateWriter, error) {
+		return nil, errors.New("my_fake_error")
+	})
+	defer monkey.UnpatchAll()
+
+	_, err := handler.LogRotateFileStream("test", "fake_format_%s", "Mon Jan _2 2006", &mockFormatter, 100*time.Millisecond)
+	assert.EqualError(t, err, "my_fake_error")
 }
