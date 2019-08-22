@@ -8,8 +8,10 @@ import (
 	"time"
 
 	"bou.ke/monkey"
-	"github.com/gol4ng/logger/writer/provider"
+
 	"github.com/stretchr/testify/assert"
+
+	"github.com/gol4ng/logger/writer/provider"
 )
 
 func TestLogFileProvider_RenameWithError(t *testing.T) {
