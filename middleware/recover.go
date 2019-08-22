@@ -19,6 +19,7 @@ func NewPanicError(message string, data interface{}) *PanicError {
 	return &PanicError{message: message, Data: data}
 }
 
+// Recover provide a middleware func that will handle panics that occur in the underlying handler
 func Recover() logger.MiddlewareInterface {
 	return func(handler logger.HandlerInterface) logger.HandlerInterface {
 		return func(entry logger.Entry) (e error) {
