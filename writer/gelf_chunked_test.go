@@ -69,3 +69,4 @@ func TestNewGelfChunkWriter_Multiple(t *testing.T) {
 	assert.Equal(t, 33*chunkedNb, i)
 	assert.Nil(t, err)
 }
+
