@@ -6,8 +6,10 @@ import (
 	"time"
 )
 
+// FieldType represents the type of a logger context field
 type FieldType uint8
 
+// list of available field types
 const (
 	// UnknownType is the default field type.
 	UnknownType FieldType = iota
@@ -34,10 +36,10 @@ const (
 	TimeType
 	DurationType
 	StringerType
-	//ArrayMarshalerType
-	//ObjectMarshalerType
 	// ReflectType indicates that the field carries an interface{}, which should be serialized using reflection.
 	ReflectType
+	// @TODO ArrayMarshalerType
+	// @TODO ObjectMarshalerType
 )
 
 // Field represents a contextual information
