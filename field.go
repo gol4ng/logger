@@ -8,6 +8,7 @@ import (
 
 type FieldType uint8
 
+// list of available field types
 const (
 	// UnknownType is the default field type.
 	UnknownType FieldType = iota
