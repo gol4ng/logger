@@ -8,29 +8,29 @@ import (
 	"github.com/gol4ng/logger"
 )
 
-// Json formatter will transform a logger entry into JSON
+// JSON formatter will transform a logger entry into JSON
 // it takes an encode function that allows you to encode the data
 //
 // the encode function is useful if you do not use the default provided logger implementation
-type Json struct {
+type JSON struct {
 	encode func(logger.Entry) ([]byte, error)
 }
 
 // Format will return Entry as json
-func (j *Json) Format(entry logger.Entry) string {
+func (j *JSON) Format(entry logger.Entry) string {
 	b, _ := j.encode(entry)
 	return string(b)
 }
 
-// NewJSONEncoder will create a new Json with default json encoder function
-func NewJSONEncoder() *Json {
+// NewJSONEncoder will create a new JSON with default json encoder function
+func NewJSONEncoder() *JSON {
 	return NewJSON(JSONEncoder)
 }
 
-// NewJSON will create a new Json with given json encoder
+// NewJSON will create a new JSON with given json encoder
 // it allow you tu use your own json encoder
-func NewJSON(encode func(logger.Entry) ([]byte, error)) *Json {
-	return &Json{encode: encode}
+func NewJSON(encode func(logger.Entry) ([]byte, error)) *JSON {
+	return &JSON{encode: encode}
 }
 
 // ContextToJSON will marshall the logger context into json
