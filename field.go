@@ -35,10 +35,10 @@ const (
 	TimeType
 	DurationType
 	StringerType
-	//ArrayMarshalerType
-	//ObjectMarshalerType
 	// ReflectType indicates that the field carries an interface{}, which should be serialized using reflection.
 	ReflectType
+	// @TODO ArrayMarshalerType
+	// @TODO ObjectMarshalerType
 )
 
 // Field represents a contextual information
