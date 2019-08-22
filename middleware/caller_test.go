@@ -3,9 +3,10 @@ package middleware_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/middleware"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCaller_Handle(t *testing.T) {
@@ -15,7 +16,7 @@ func TestCaller_Handle(t *testing.T) {
 		contextStr := entry.Context.String()
 		assert.Contains(t, contextStr, "<file:")
 		assert.Contains(t, contextStr, "caller_test.go")
-		assert.Contains(t, contextStr, "<line:30>")
+		assert.Contains(t, contextStr, "<line:31>")
 
 		return nil
 	}

@@ -7,10 +7,11 @@ import (
 
 	"bou.ke/monkey"
 
-	"github.com/gol4ng/logger/mocks"
-	"github.com/gol4ng/logger/writer"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	"github.com/gol4ng/logger/mocks"
+	"github.com/gol4ng/logger/writer"
 )
 
 func TestNewGelfChunkWriter_Simple(t *testing.T) {

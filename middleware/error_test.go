@@ -4,9 +4,10 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/middleware"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestError_PassThrought(t *testing.T) {
