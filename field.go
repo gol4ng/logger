@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// represents the type of a logger context field
+// FieldType represents the type of a logger context field
 type FieldType uint8
 
 // list of available field types
