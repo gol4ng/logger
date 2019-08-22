@@ -5,9 +5,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestJson_Format(t *testing.T) {
@@ -72,9 +73,9 @@ func TestMarshalContextTo(t *testing.T) {
 	}
 }
 
-/////////////////////
-// Examples
-/////////////////////
+// =====================================================================================================================
+// ================================================= EXAMPLES ==========================================================
+// =====================================================================================================================
 
 func ExampleJsonFormatter() {
 	jsonFormatter := formatter.NewJSONEncoder()

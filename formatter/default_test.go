@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestDefaultFormatter_Format(t *testing.T) {
@@ -28,9 +29,9 @@ func TestDefaultFormatter_Format(t *testing.T) {
 	}
 }
 
-/////////////////////
-// Examples
-/////////////////////
+// =====================================================================================================================
+// ================================================= EXAMPLES ==========================================================
+// =====================================================================================================================
 
 func ExampleDefaultFormatter() {
 	defaultFormatter := formatter.NewDefaultFormatter()

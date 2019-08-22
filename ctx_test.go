@@ -4,8 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/gol4ng/logger"
 	"gotest.tools/assert"
+
+	"github.com/gol4ng/logger"
 )
 
 func Test_FromContext_Empty(t *testing.T) {

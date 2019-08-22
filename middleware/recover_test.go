@@ -3,9 +3,10 @@ package middleware_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/middleware"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestRecover(t *testing.T) {

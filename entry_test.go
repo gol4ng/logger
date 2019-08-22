@@ -4,8 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gol4ng/logger"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/gol4ng/logger"
 )
 
 func TestEntry_String(t *testing.T) {

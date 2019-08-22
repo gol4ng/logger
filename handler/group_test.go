@@ -2,13 +2,15 @@ package handler_test
 
 import (
 	"errors"
-	"github.com/gol4ng/logger/formatter"
 	"os"
 	"testing"
 
+	"github.com/gol4ng/logger/formatter"
+
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/handler"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestGroup_Handle(t *testing.T) {
@@ -58,10 +60,9 @@ func TestGroup_HandleWithError(t *testing.T) {
 	assert.False(t, Bcalled)
 }
 
-
-/////////////////////
-// Examples
-/////////////////////
+// =====================================================================================================================
+// ================================================= EXAMPLES ==========================================================
+// =====================================================================================================================
 
 func ExampleGroup() {
 	lineFormatter := formatter.NewDefaultFormatter()
