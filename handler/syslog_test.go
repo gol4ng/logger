@@ -150,13 +150,13 @@ func ExampleSyslog() {
 		syslog.LOG_DEBUG,
 		"my_go_logger")
 
-	syslogHandler(logger.Entry{Message: "Log example", Level: logger.DebugLevel})
-	syslogHandler(logger.Entry{Message: "Log example", Level: logger.InfoLevel})
-	syslogHandler(logger.Entry{Message: "Log example", Level: logger.NoticeLevel})
-	syslogHandler(logger.Entry{Message: "Log example", Level: logger.WarningLevel})
-	syslogHandler(logger.Entry{Message: "Log example", Level: logger.ErrorLevel})
-	syslogHandler(logger.Entry{Message: "Log example", Level: logger.CriticalLevel})
-	syslogHandler(logger.Entry{Message: "Log example", Level: logger.AlertLevel})
-	syslogHandler(logger.Entry{Message: "Log example", Level: logger.EmergencyLevel})
+	_ = syslogHandler(logger.Entry{Message: "Log example", Level: logger.DebugLevel})
+	_ = syslogHandler(logger.Entry{Message: "Log example", Level: logger.InfoLevel})
+	_ = syslogHandler(logger.Entry{Message: "Log example", Level: logger.NoticeLevel})
+	_ = syslogHandler(logger.Entry{Message: "Log example", Level: logger.WarningLevel})
+	_ = syslogHandler(logger.Entry{Message: "Log example", Level: logger.ErrorLevel})
+	_ = syslogHandler(logger.Entry{Message: "Log example", Level: logger.CriticalLevel})
+	_ = syslogHandler(logger.Entry{Message: "Log example", Level: logger.AlertLevel})
+	_ = syslogHandler(logger.Entry{Message: "Log example", Level: logger.EmergencyLevel})
 	//Output:
 }

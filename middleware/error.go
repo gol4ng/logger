@@ -14,7 +14,7 @@ func Error(passThrough bool) logger.MiddlewareInterface {
 			err := handler(entry)
 			if err != nil {
 				fmt.Printf("[Error middleware] an error occured : %v\n", err)
-				if passThrough == true {
+				if passThrough {
 					return err
 				}
 			}
