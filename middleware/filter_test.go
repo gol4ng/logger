@@ -196,14 +196,14 @@ func ExampleMinLevelFilter() {
 	streamHandler := handler.Stream(os.Stdout, formatter.NewDefaultFormatter())
 
 	minLvlFilterHandler := middleware.MinLevelFilter(logger.WarningLevel)(streamHandler)
-	minLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.DebugLevel})
-	minLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.InfoLevel})
-	minLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.NoticeLevel})
-	minLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.WarningLevel})
-	minLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.ErrorLevel})
-	minLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.CriticalLevel})
-	minLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.AlertLevel})
-	minLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.EmergencyLevel})
+	_ = minLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.DebugLevel})
+	_ = minLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.InfoLevel})
+	_ = minLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.NoticeLevel})
+	_ = minLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.WarningLevel})
+	_ = minLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.ErrorLevel})
+	_ = minLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.CriticalLevel})
+	_ = minLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.AlertLevel})
+	_ = minLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.EmergencyLevel})
 
 	//Output:
 	//<warning> will be printed
@@ -218,14 +218,14 @@ func ExampleRangeLevelFilter() {
 
 	rangeLvlFilterHandler := middleware.RangeLevelFilter(logger.InfoLevel, logger.WarningLevel)(streamHandler)
 
-	rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.DebugLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.InfoLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.NoticeLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.WarningLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.ErrorLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.CriticalLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.AlertLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.EmergencyLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.DebugLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.InfoLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.NoticeLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.WarningLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.ErrorLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.CriticalLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.AlertLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.EmergencyLevel})
 
 	//Output:
 	//<info> will be printed
@@ -240,14 +240,14 @@ func ExampleCustomFilter() {
 		return e.Level == logger.InfoLevel || e.Level == logger.AlertLevel
 	})(streamHandler)
 
-	rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.DebugLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.InfoLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.NoticeLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.WarningLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.ErrorLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.CriticalLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.AlertLevel})
-	rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.EmergencyLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.DebugLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.InfoLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.NoticeLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.WarningLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.ErrorLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.CriticalLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be excluded", Level: logger.AlertLevel})
+	_ = rangeLvlFilterHandler(logger.Entry{Message: "will be printed", Level: logger.EmergencyLevel})
 
 	//Output:
 	//<debug> will be printed

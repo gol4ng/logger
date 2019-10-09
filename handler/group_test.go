@@ -73,7 +73,7 @@ func ExampleGroup() {
 
 	groupHandler := handler.Group(lineLogHandler, jsonLogHandler)
 
-	groupHandler(logger.Entry{Message: "Log example"})
+	_ = groupHandler(logger.Entry{Message: "Log example"})
 
 	//Output:
 	// <emergency> Log example

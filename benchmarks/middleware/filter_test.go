@@ -14,8 +14,8 @@ func BenchmarkMinLevelFilterHandler(b *testing.B) {
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		minLvlFilterHandler(logger.Entry{Message: "This log message is really logged.", Level: logger.InfoLevel})
-		minLvlFilterHandler(logger.Entry{Message: "This log message will be excluded.", Level: logger.DebugLevel})
+		_ = minLvlFilterHandler(logger.Entry{Message: "This log message is really logged.", Level: logger.InfoLevel})
+		_ = minLvlFilterHandler(logger.Entry{Message: "This log message will be excluded.", Level: logger.DebugLevel})
 	}
 }
 
@@ -26,9 +26,9 @@ func BenchmarkRangeLevelFilterHandler(b *testing.B) {
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		rangeLevelHandler(logger.Entry{Message: "This log message is really logged.", Level: logger.InfoLevel})
-		rangeLevelHandler(logger.Entry{Message: "This log message is really logged.", Level: logger.WarningLevel})
-		rangeLevelHandler(logger.Entry{Message: "This log message will be excluded.", Level: logger.DebugLevel})
-		rangeLevelHandler(logger.Entry{Message: "This log message will be excluded.", Level: logger.ErrorLevel})
+		_ = rangeLevelHandler(logger.Entry{Message: "This log message is really logged.", Level: logger.InfoLevel})
+		_ = rangeLevelHandler(logger.Entry{Message: "This log message is really logged.", Level: logger.WarningLevel})
+		_ = rangeLevelHandler(logger.Entry{Message: "This log message will be excluded.", Level: logger.DebugLevel})
+		_ = rangeLevelHandler(logger.Entry{Message: "This log message will be excluded.", Level: logger.ErrorLevel})
 	}
 }
