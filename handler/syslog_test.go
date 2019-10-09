@@ -2,16 +2,18 @@ package handler_test
 
 import (
 	"errors"
-	"github.com/gol4ng/logger/formatter"
 	"log/syslog"
 	"reflect"
 	"testing"
 
 	"bou.ke/monkey"
+
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/mocks"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSyslog_HandleWithDialError(t *testing.T) {
@@ -128,9 +130,9 @@ func TestSyslog_Handle(t *testing.T) {
 	}
 }
 
-/////////////////////
-// Examples
-/////////////////////
+// =====================================================================================================================
+// ================================================= EXAMPLES ==========================================================
+// =====================================================================================================================
 
 // You can run the command below to show syslog messages
 // syslog -F '$Time $Host $(Sender)[$(PID)] <$((Level)(str))>: $Message'

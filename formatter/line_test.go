@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestLine_Format(t *testing.T) {
@@ -41,9 +42,9 @@ func TestLine_Format(t *testing.T) {
 	}
 }
 
-/////////////////////
-// Examples
-/////////////////////
+// =====================================================================================================================
+// ================================================= EXAMPLES ==========================================================
+// =====================================================================================================================
 
 func ExampleLineFormatter() {
 	lineFormatter := formatter.NewLine("%s %s %s")

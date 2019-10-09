@@ -20,8 +20,8 @@ func TimeRotateFileStream(fileNameFormat string, timeFormat string, formatter lo
 
 // LogRotateFileStream will create a TimeRotateFileStream that create file rotator with a given format name and rotation interval
 // this handler will create one static file with the given name and backup file when rotate occurs over the time (with the given interval)
-func LogRotateFileStream(name string, format string, timeFormat string, formatter logger.FormatterInterface, interval time.Duration) (logger.HandlerInterface, error) {
-	w, err := writer.NewTimeRotateFileWriter(provider.LogFileProvider(name, format, timeFormat), interval)
+func LogRotateFileStream(fileNameFormat string, format string, timeFormat string, formatter logger.FormatterInterface, interval time.Duration) (logger.HandlerInterface, error) {
+	w, err := writer.NewTimeRotateFileWriter(provider.LogFileProvider(fileNameFormat, format, timeFormat), interval)
 	if err != nil {
 		return nil, err
 	}

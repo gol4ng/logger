@@ -2,14 +2,15 @@ package middleware_test
 
 import (
 	"fmt"
-	"github.com/gol4ng/logger/formatter"
-	"github.com/gol4ng/logger/handler"
 	"os"
 	"testing"
 
-	"github.com/gol4ng/logger"
-	"github.com/gol4ng/logger/middleware"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
+	"github.com/gol4ng/logger/handler"
+	"github.com/gol4ng/logger/middleware"
 )
 
 func TestFilter_HandleWithoutExclusion(t *testing.T) {
@@ -187,10 +188,9 @@ func TestNewRangeLevelFilter(t *testing.T) {
 }
 
 
-/////////////////////
-// Examples
-/////////////////////
-
+// =====================================================================================================================
+// ================================================= EXAMPLES ==========================================================
+// =====================================================================================================================
 
 func ExampleMinLevelFilter() {
 	streamHandler := handler.Stream(os.Stdout, formatter.NewDefaultFormatter())

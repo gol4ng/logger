@@ -1,5 +1,6 @@
 # Logger
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/gol4ng/logger)](https://goreportcard.com/report/github.com/gol4ng/logger)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a234f5fd2bcae54ed85e/maintainability)](https://codeclimate.com/github/gol4ng/logger/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a234f5fd2bcae54ed85e/test_coverage)](https://codeclimate.com/github/gol4ng/logger/test_coverage)
 [![Build Status](https://travis-ci.org/gol4ng/logger.svg?branch=master)](https://travis-ci.org/gol4ng/logger)

@@ -8,8 +8,10 @@ import (
 	"testing"
 
 	"bou.ke/monkey"
-	"github.com/gol4ng/logger/writer"
+
 	"github.com/stretchr/testify/assert"
+
+	"github.com/gol4ng/logger/writer"
 )
 
 func TestRotateIoWriter_Write(t *testing.T) {

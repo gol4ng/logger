@@ -7,11 +7,12 @@ import (
 	"testing"
 	"time"
 
-
 	"bou.ke/monkey"
+
+	"github.com/stretchr/testify/assert"
+
 	"github.com/gol4ng/logger/mocks"
 	"github.com/gol4ng/logger/writer"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestTimeRotateWriter_StartWithError(t *testing.T) {

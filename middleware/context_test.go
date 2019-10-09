@@ -1,14 +1,15 @@
 package middleware_test
 
 import (
-	"github.com/gol4ng/logger/formatter"
-	"github.com/gol4ng/logger/handler"
 	"os"
 	"testing"
 
-	"github.com/gol4ng/logger"
-	"github.com/gol4ng/logger/middleware"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
+	"github.com/gol4ng/logger/handler"
+	"github.com/gol4ng/logger/middleware"
 )
 
 func TestContext_Handle(t *testing.T) {
@@ -40,19 +41,16 @@ func TestContext_Handle(t *testing.T) {
 	assert.Nil(t, context(mockHandler)(logEntry))
 }
 
-/////////////////////
-// Examples
-/////////////////////
+// =====================================================================================================================
+// ================================================= EXAMPLES ==========================================================
+// =====================================================================================================================
 
 func ExampleContext() {
 	streamHandler := handler.Stream(os.Stdout, formatter.NewJSONEncoder())
-
 	contextHandler := middleware.Context(logger.Ctx("my_value_1", "value 1"))
 
 	myLogger := logger.NewLogger(handler.Group(contextHandler(streamHandler), streamHandler))
-
 	_ = myLogger.Debug("will be printed", logger.Ctx("my_value_1", "overwrited value 1"))
-
 	_ = myLogger.Debug("only context handler values will be printed", nil)
 
 	//Output:

@@ -1,8 +1,9 @@
 package middleware
 
 import (
-	"github.com/gol4ng/logger"
 	"strings"
+
+	"github.com/gol4ng/logger"
 )
 
 // Placeholder will replace message placeholder with context field
@@ -13,7 +14,7 @@ func Placeholder() logger.MiddlewareInterface {
 				msg := entry.Message
 				for n, f := range *entry.Context {
 					msg = strings.Replace(msg, "%"+n+"%", f.String(), -1)
-					if strings.Index(msg, "%") < 0 {
+					if !strings.Contains(msg, "%") {
 						break
 					}
 				}
