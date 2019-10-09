@@ -395,6 +395,32 @@ func ExampleLogger_groupHandler() {
 	//Output:
 }
 
+func ExampleLogger_placeholderMiddleware() {
+	output := &Output{}
+	myLogger := logger.NewLogger(
+		handler.Stream(output, formatter.NewLine("%[2]s %[1]s%.[3]s")),
+	)
+	myLogger.Wrap(middleware.Placeholder())
+
+	myLogger.Debug("Log %ctx_key% example", logger.Ctx("ctx_key", false))
+	myLogger.Info("Log %ctx_key% example", logger.Ctx("ctx_key", 1234))
+	myLogger.Warning("Log %ctx_key% example", logger.Ctx("ctx_key", 5 *time.Second))
+	myLogger.Error("Log %ctx_key% example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Alert("Log %ctx_key% example", logger.Ctx("ctx_key", struct{ attr string }{attr: "attrValue"}))
+	myLogger.Critical("Log %ctx_key% example another value %ctx_key2%", logger.Ctx("ctx_key", false).Add("ctx_key2", 1234))
+
+	output.Constains([]string{
+		`debug Log false example`,
+		`info Log 1234 example`,
+		`warning Log 5s example`,
+		`error Log ctx_value example`,
+		`alert Log {attrValue} example`,
+		`critical Log false example another value 1234`,
+	})
+
+	//Output:
+}
+
 func ExampleLogger_wrapHandler() {
 	output := &Output{}
 	myLogger := logger.NewLogger(
