@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"compress/zlib"
 	"io"
+	"sync"
 )
 
 // CompressType is the compress writer compression type
@@ -32,8 +33,8 @@ func (w *CompressWriter) Write(p []byte) (int, error) {
 
 	var compressWriter io.WriteCloser
 	var err error
-	// TODO create a pool buffer
-	buf := bytes.NewBuffer(make([]byte, 0, 1024))
+	buf := newBuffer()
+	defer bufPool.Put(buf)
 
 	switch w.compressionType {
 	case CompressGzip:
@@ -57,4 +58,20 @@ func (w *CompressWriter) Write(p []byte) (int, error) {
 // NewCompressWriter will return a new compress writer
 func NewCompressWriter(writer io.Writer, compressionType CompressType, compressionLevel int) *CompressWriter {
 	return &CompressWriter{Writer: writer, compressionType: compressionType, compressionLevel: compressionLevel}
+}
+
+// 1k bytes buffer by default
+var bufPool = sync.Pool{
+	New: func() interface{} {
+		return bytes.NewBuffer(make([]byte, 0, 1024))
+	},
+}
+
+func newBuffer() *bytes.Buffer {
+	b := bufPool.Get().(*bytes.Buffer)
+	if b != nil {
+		b.Reset()
+		return b
+	}
+	return bytes.NewBuffer(nil)
 }
