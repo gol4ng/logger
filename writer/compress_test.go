@@ -33,7 +33,7 @@ func TestCompressWriter_Write_CompressGzip(t *testing.T) {
 	w := writer.NewCompressWriter(buffer, writer.CompressGzip, 2)
 
 	i, err := w.Write([]byte("fake_data"))
-	assert.Equal(t, 9, i)
+	assert.Equal(t, 33, i)
 	assert.Nil(t, err)
 }
 
@@ -43,6 +43,6 @@ func TestCompressWriter_Write_CompressZlib(t *testing.T) {
 	w := writer.NewCompressWriter(buffer, writer.CompressZlib, 2)
 
 	i, err := w.Write([]byte("fake_data"))
-	assert.Equal(t, 9, i)
+	assert.Equal(t, 21, i)
 	assert.Nil(t, err)
 }
