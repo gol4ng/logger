@@ -2,6 +2,7 @@ package writer_test
 
 import (
 	"bytes"
+	"compress/flate"
 	"reflect"
 	"testing"
 
@@ -20,7 +21,7 @@ func TestCompressWriter_Write_CompressNone(t *testing.T) {
 	})
 	defer monkey.UnpatchAll()
 
-	w := writer.NewCompressWriter(buffer, writer.CompressNone, 46)
+	w := writer.NewCompressWriter(buffer)
 
 	i, err := w.Write([]byte("fake_data"))
 	assert.Equal(t, 99, i)
@@ -30,19 +31,19 @@ func TestCompressWriter_Write_CompressNone(t *testing.T) {
 func TestCompressWriter_Write_CompressGzip(t *testing.T) {
 	buffer := bytes.NewBuffer([]byte{})
 
-	w := writer.NewCompressWriter(buffer, writer.CompressGzip, 2)
+	w := writer.NewCompressWriter(buffer, writer.CompressionType(writer.CompressGzip), writer.CompressionLevel(flate.BestSpeed))
 
 	i, err := w.Write([]byte("fake_data"))
-	assert.Equal(t, 33, i)
+	assert.Equal(t, 37, i)
 	assert.Nil(t, err)
 }
 
 func TestCompressWriter_Write_CompressZlib(t *testing.T) {
 	buffer := bytes.NewBuffer([]byte{})
 
-	w := writer.NewCompressWriter(buffer, writer.CompressZlib, 2)
+	w := writer.NewCompressWriter(buffer, writer.CompressionType(writer.CompressZlib), writer.CompressionLevel(flate.BestSpeed))
 
 	i, err := w.Write([]byte("fake_data"))
-	assert.Equal(t, 21, i)
+	assert.Equal(t, 25, i)
 	assert.Nil(t, err)
 }

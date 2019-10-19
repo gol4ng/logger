@@ -60,7 +60,7 @@ func GelfUDP(network string, address string) logger.HandlerInterface {
 // GelfUDPFromConnection will return GelfUDP socket with the current TCPConn
 func GelfUDPFromConnection(connection *net.UDPConn) logger.HandlerInterface {
 	return Stream(
-		writer.NewCompressWriter(writer.NewGelfChunkWriter(connection), writer.CompressGzip, gzip.BestSpeed),
+		writer.NewCompressWriter(writer.NewGelfChunkWriter(connection), writer.CompressionType(writer.CompressGzip), writer.CompressionLevel(gzip.BestSpeed)),
 		formatter.NewGelf(),
 	)
 }

@@ -18,6 +18,20 @@ const (
 	CompressNone
 )
 
+type CompressOption func(*CompressWriter)
+
+func CompressionType(t CompressType) CompressOption {
+	return func(w *CompressWriter) {
+		w.compressionType = t
+	}
+}
+
+func CompressionLevel(level int) CompressOption {
+	return func(w *CompressWriter) {
+		w.compressionLevel = level
+	}
+}
+
 // CompressWriter will decorate io.Writer in order to compress the data
 type CompressWriter struct {
 	io.Writer
@@ -56,8 +70,12 @@ func (w *CompressWriter) Write(p []byte) (int, error) {
 }
 
 // NewCompressWriter will return a new compress writer
-func NewCompressWriter(writer io.Writer, compressionType CompressType, compressionLevel int) *CompressWriter {
-	return &CompressWriter{Writer: writer, compressionType: compressionType, compressionLevel: compressionLevel}
+func NewCompressWriter(writer io.Writer, options ...CompressOption) *CompressWriter {
+	w := &CompressWriter{Writer: writer, compressionType: CompressNone}
+	for _, option := range options {
+		option(w)
+	}
+	return w
 }
 
 // 1k bytes buffer by default
