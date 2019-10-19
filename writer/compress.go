@@ -18,14 +18,17 @@ const (
 	CompressNone
 )
 
+// CompressOption is compress writer option setter function
 type CompressOption func(*CompressWriter)
 
+// CompressionType set compression type on compress writer
 func CompressionType(t CompressType) CompressOption {
 	return func(w *CompressWriter) {
 		w.compressionType = t
 	}
 }
 
+// CompressionLevel set compression level on compress writer
 func CompressionLevel(level int) CompressOption {
 	return func(w *CompressWriter) {
 		w.compressionLevel = level
