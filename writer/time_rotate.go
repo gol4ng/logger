@@ -35,8 +35,8 @@ func NewTimeRotateWriter(writer RotateWriter, interval time.Duration) *TimeRotat
 	return w
 }
 
-// NewTimeRotateFileWriter will create a TimeRotateFileWriter that rotate an io.writer over the time with the given interval
-func NewTimeRotateFileWriter(provider Provider, interval time.Duration) (*TimeRotateWriter, error) {
+// NewTimeRotateFromProvider will create a TimeRotateFileWriter that rotate an io.writer over the time with the given interval
+func NewTimeRotateFromProvider(provider Provider, interval time.Duration) (*TimeRotateWriter, error) {
 	w, err := NewRotateIoWriter(provider)
 	return NewTimeRotateWriter(w, interval), err
 }

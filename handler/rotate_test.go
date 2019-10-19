@@ -92,7 +92,7 @@ func TestNewTimeRotateFileStream_Handle(t *testing.T) {
 
 func TestNewTimeRotateFileStream_Error(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
-	monkey.Patch(writer.NewTimeRotateFileWriter, func(provider writer.Provider, interval time.Duration) (*writer.TimeRotateWriter, error) {
+	monkey.Patch(writer.NewTimeRotateFromProvider, func(provider writer.Provider, interval time.Duration) (*writer.TimeRotateWriter, error) {
 		return nil, errors.New("my_fake_error")
 	})
 	defer monkey.UnpatchAll()
@@ -138,7 +138,7 @@ func TestNewLogRotateFileStream_Handle(t *testing.T) {
 
 func TestNewLogRotateFileStream_Error(t *testing.T) {
 	mockFormatter := mocks.FormatterInterface{}
-	monkey.Patch(writer.NewTimeRotateFileWriter, func(provider writer.Provider, interval time.Duration) (*writer.TimeRotateWriter, error) {
+	monkey.Patch(writer.NewTimeRotateFromProvider, func(provider writer.Provider, interval time.Duration) (*writer.TimeRotateWriter, error) {
 		return nil, errors.New("my_fake_error")
 	})
 	defer monkey.UnpatchAll()
