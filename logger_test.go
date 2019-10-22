@@ -23,6 +23,7 @@ func TestLevelString_Level(t *testing.T) {
 		levelString logger.LevelString
 		expected    logger.Level
 	}{
+		{levelString: "DEBUG", expected: logger.DebugLevel},
 		{levelString: "debug", expected: logger.DebugLevel},
 		{levelString: "info", expected: logger.InfoLevel},
 		{levelString: "notice", expected: logger.NoticeLevel},
