@@ -21,31 +21,48 @@ const (
 	DebugLevel
 )
 
-// Level represent log Entry level
+var stringToLevel = map[string]Level{
+	"emergency": EmergencyLevel,
+	"alert":     AlertLevel,
+	"critical":  CriticalLevel,
+	"error":     ErrorLevel,
+	"warning":   WarningLevel,
+	"notice":    NoticeLevel,
+	"info":      InfoLevel,
+	"debug":     DebugLevel,
+}
+
+var levelToString = map[Level]string{
+	EmergencyLevel: "emergency",
+	AlertLevel:     "alert",
+	CriticalLevel:  "critical",
+	ErrorLevel:     "error",
+	WarningLevel:   "warning",
+	NoticeLevel:    "notice",
+	InfoLevel:      "info",
+	DebugLevel:     "debug",
+}
+
+// LevelString represent log Entry level as string
+type LevelString string
+
+// Level will return log Level for string or DebugLevel if unknown value
+func (l LevelString) Level() Level {
+	if v, ok := stringToLevel[string(l)]; ok {
+		return v
+	}
+	return DebugLevel
+}
+
+// Level represent log Entry levelString
 type Level int8
 
 // String will return Level as string
 func (l Level) String() string {
-	switch l {
-	case DebugLevel:
-		return "debug"
-	case InfoLevel:
-		return "info"
-	case NoticeLevel:
-		return "notice"
-	case WarningLevel:
-		return "warning"
-	case ErrorLevel:
-		return "error"
-	case CriticalLevel:
-		return "critical"
-	case AlertLevel:
-		return "alert"
-	case EmergencyLevel:
-		return "emergency"
-	default:
-		return fmt.Sprintf("level(%d)", l)
+	if v, ok := levelToString[l]; ok {
+		return v
 	}
+	return fmt.Sprintf("level(%d)", l)
 }
 
 // LogInterface define simplest logger contract
