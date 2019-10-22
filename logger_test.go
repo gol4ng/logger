@@ -18,6 +18,27 @@ import (
 	"github.com/gol4ng/logger/middleware"
 )
 
+func TestLevelString_Level(t *testing.T) {
+	tests := []struct {
+		levelString logger.LevelString
+		expected    logger.Level
+	}{
+		{levelString: "debug", expected: logger.DebugLevel},
+		{levelString: "info", expected: logger.InfoLevel},
+		{levelString: "notice", expected: logger.NoticeLevel},
+		{levelString: "warning", expected: logger.WarningLevel},
+		{levelString: "error", expected: logger.ErrorLevel},
+		{levelString: "critical", expected: logger.CriticalLevel},
+		{levelString: "alert", expected: logger.AlertLevel},
+		{levelString: "emergency", expected: logger.EmergencyLevel},
+		{levelString: "anothervalue", expected: logger.DebugLevel},
+	}
+
+	for _, tt := range tests {
+		assert.Equal(t, tt.expected, tt.levelString.Level())
+	}
+}
+
 func TestLevel_String(t *testing.T) {
 	tests := []struct {
 		level    logger.Level
@@ -77,7 +98,7 @@ func TestLogger_Log(t *testing.T) {
 			level: logger.EmergencyLevel,
 		},
 		{
-			name:  "test Log(custom level)",
+			name:  "test Log(custom levelString)",
 			level: logger.Level(127),
 		},
 	}
