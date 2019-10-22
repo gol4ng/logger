@@ -3,6 +3,7 @@ package logger
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
 // Log Severity level
@@ -48,7 +49,7 @@ type LevelString string
 
 // Level will return log Level for string or DebugLevel if unknown value
 func (l LevelString) Level() Level {
-	if v, ok := stringToLevel[string(l)]; ok {
+	if v, ok := stringToLevel[strings.ToLower(string(l))]; ok {
 		return v
 	}
 	return DebugLevel
