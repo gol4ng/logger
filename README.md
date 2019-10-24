@@ -5,6 +5,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a234f5fd2bcae54ed85e/test_coverage)](https://codeclimate.com/github/gol4ng/logger/test_coverage)
 [![Build Status](https://travis-ci.org/gol4ng/logger.svg?branch=master)](https://travis-ci.org/gol4ng/logger)
 [![GoDoc](https://godoc.org/github.com/gol4ng/logger?status.svg)](https://godoc.org/github.com/gol4ng/logger)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgol4ng%2Flogger.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fgol4ng%2Flogger?ref=badge_shield)
 
 Gol4ng/Logger is another GO logger. The main line is to provide a friendly and fast API to send your log whenever you want. 
 
@@ -155,3 +156,7 @@ Available writer:
 
 - add shortcut to log time.now
 - log server with log routing
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fgol4ng%2Flogger.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fgol4ng%2Flogger?ref=badge_large)
