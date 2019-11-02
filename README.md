@@ -1,5 +1,7 @@
 # Logger
 
+<img src="logo.png" alt="gol4ng/logger: Golang logger" title="A new golang logger" align="right" width="200px">
+
 [![Go Report Card](https://goreportcard.com/badge/github.com/gol4ng/logger)](https://goreportcard.com/report/github.com/gol4ng/logger)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a234f5fd2bcae54ed85e/maintainability)](https://codeclimate.com/github/gol4ng/logger/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a234f5fd2bcae54ed85e/test_coverage)](https://codeclimate.com/github/gol4ng/logger/test_coverage)
