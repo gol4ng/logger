@@ -6,24 +6,24 @@ import (
 	"github.com/gol4ng/logger"
 )
 
+// Logger can be use in third party in order to do assertion on logged entry
 type Logger struct {
 	mu      sync.Mutex
 	entries []logger.Entry
 }
 
-func (l *Logger) lock() func() {
-	l.mu.Lock()
-	return func() { l.mu.Unlock() }
-}
-
+// CleanEntries will reset the in memory entries list
 func (l *Logger) CleanEntries() {
+	defer l.lock()()
 	l.entries = []logger.Entry{}
 }
 
+// GetEntries will return the in memory entries list
 func (l *Logger) GetEntries() []logger.Entry {
 	return l.entries
 }
 
+// GetAndCleanEntries will return and clean the in memory entries list
 func (l *Logger) GetAndCleanEntries() []logger.Entry {
 	defer l.lock()()
 	entries := l.GetEntries()
@@ -80,4 +80,9 @@ func (l *Logger) Log(message string, level logger.Level, context *logger.Context
 		Context: context,
 	})
 	return nil
+}
+
+func (l *Logger) lock() func() {
+	l.mu.Lock()
+	return func() { l.mu.Unlock() }
 }
