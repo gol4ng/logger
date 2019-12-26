@@ -341,7 +341,7 @@ func ExampleLogger_minLevelFilterHandler() {
 	output := &Output{}
 	myLogger := logger.NewLogger(
 		middleware.MinLevelFilter(logger.WarningLevel)(
-			handler.Stream(output, formatter.NewDefaultFormatter(formatter.WithContext)),
+			handler.Stream(output, formatter.NewDefaultFormatter(formatter.DisplayContext)),
 		),
 	)
 
@@ -371,7 +371,7 @@ func ExampleLogger_groupHandler() {
 	myLogger := logger.NewLogger(
 		handler.Group(
 			handler.Stream(output, formatter.NewJSONEncoder()),
-			handler.Stream(output2, formatter.NewDefaultFormatter(formatter.WithContext)),
+			handler.Stream(output2, formatter.NewDefaultFormatter(formatter.DisplayContext)),
 		),
 	)
 
@@ -438,7 +438,7 @@ func ExampleLogger_placeholderMiddleware() {
 func ExampleLogger_wrapHandler() {
 	output := &Output{}
 	myLogger := logger.NewLogger(
-		handler.Stream(output, formatter.NewDefaultFormatter(formatter.WithContext)),
+		handler.Stream(output, formatter.NewDefaultFormatter(formatter.DisplayContext)),
 	)
 	myLogger.Wrap(middleware.MinLevelFilter(logger.WarningLevel))
 
@@ -505,7 +505,7 @@ func ExampleLogger_logRotateHandler() {
 //Apr 26 12:22:06 hades my_go_logger[69302] <Emergency>: <emergency> Log example7 {"ctx_key":"ctx_value"}
 func ExampleLogger_syslogHandler() {
 	syslogHandler, _ := handler.Syslog(
-		formatter.NewDefaultFormatter(formatter.WithContext),
+		formatter.NewDefaultFormatter(formatter.DisplayContext),
 		"",
 		"",
 		syslog.LOG_DEBUG,
