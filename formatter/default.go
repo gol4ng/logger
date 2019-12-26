@@ -9,7 +9,7 @@ import (
 // DefaultFormatter is the default Entry formatter
 type DefaultFormatter struct {
 	colored bool
-	context bool
+	displayContext bool
 }
 
 // Format will return Entry as string
@@ -47,7 +47,7 @@ func (n *DefaultFormatter) Format(entry logger.Entry) string {
 		builder.WriteString(" ")
 		builder.WriteString(entry.Message)
 	}
-	if n.context && entry.Context != nil {
+	if n.displayContext && entry.Context != nil {
 		builder.WriteString(" ")
 		ContextToJSON(entry.Context, builder)
 	}
@@ -70,7 +70,7 @@ func EnableColor(formatter *DefaultFormatter) {
 	formatter.colored = true
 }
 
-// DisplayContext function will enable context printing
+// DisplayContext function will display context printing
 func DisplayContext(formatter *DefaultFormatter) {
-	formatter.context = true
+	formatter.displayContext = true
 }
