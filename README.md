@@ -30,7 +30,7 @@ import (
 
 func main(){
 	// logger will print on STDOUT with default line format
-	l := logger.NewLogger(handler.Stream(os.Stdout, formatter.NewDefaultFormatter()))
+	l := logger.NewLogger(handler.Stream(os.Stdout, formatter.NewDefaultFormatter(formatter.DisplayContext)))
 	
 	l.Debug("Go debug informations", logger.Ctx("go_os", runtime.GOOS).Add("go_arch", runtime.GOARCH))
 	// <debug> MyExample message {"go_arch":"amd64","go_os":"darwin"}
