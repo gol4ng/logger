@@ -46,6 +46,28 @@ func TestDefaultFormatter_Format(t *testing.T) {
 	}
 }
 
+func TestDefaultFormatter_Format_AllColor(t *testing.T) {
+	tests := []struct {
+		level    logger.Level
+		expected string
+	}{
+		{level: logger.EmergencyLevel, expected: "\x1b[1;37;41m<emergency>\x1b[m my message"},
+		{level: logger.AlertLevel, expected: "\x1b[1;30;43m<alert>\x1b[m my message"},
+		{level: logger.CriticalLevel, expected: "\x1b[1;30;47m<critical>\x1b[m my message"},
+		{level: logger.ErrorLevel, expected: "\x1b[1;31m<error>\x1b[m my message"},
+		{level: logger.WarningLevel, expected: "\x1b[1;33m<warning>\x1b[m my message"},
+		{level: logger.NoticeLevel, expected: "\x1b[1;34m<notice>\x1b[m my message"},
+		{level: logger.InfoLevel, expected: "\x1b[1;32m<info>\x1b[m my message"},
+		{level: logger.DebugLevel, expected: "\x1b[1;36m<debug>\x1b[m my message"},
+	}
+	formatter := formatter.NewDefaultFormatter(formatter.WithColor)
+	for _, tt := range tests {
+		t.Run(tt.level.String(), func(t *testing.T) {
+			assert.Equal(t, tt.expected, formatter.Format(logger.Entry{Level: tt.level, Message: "my message"}))
+		})
+	}
+}
+
 // =====================================================================================================================
 // ================================================= EXAMPLES ==========================================================
 // =====================================================================================================================

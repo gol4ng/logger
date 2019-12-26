@@ -43,7 +43,6 @@ func (n *DefaultFormatter) Format(entry logger.Entry) string {
 	if n.colored {
 		builder.WriteString("\x1b[m")
 	}
-
 	if entry.Message != "" {
 		builder.WriteString(" ")
 		builder.WriteString(entry.Message)
@@ -52,7 +51,6 @@ func (n *DefaultFormatter) Format(entry logger.Entry) string {
 		builder.WriteString(" ")
 		ContextToJSON(entry.Context, builder)
 	}
-
 	return builder.String()
 }
 
