@@ -8,7 +8,7 @@ import (
 
 // DefaultFormatter is the default Entry formatter
 type DefaultFormatter struct {
-	colored bool
+	colored        bool
 	displayContext bool
 }
 
