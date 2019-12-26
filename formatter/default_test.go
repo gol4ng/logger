@@ -17,9 +17,26 @@ func TestDefaultFormatter_Format(t *testing.T) {
 		entry     logger.Entry
 		expected  string
 	}{
-		{name: "test default formatter struct", formatter: &formatter.DefaultFormatter{}, entry: logger.Entry{}, expected: "<emergency> "},
-		{name: "test NewDefaultFormatter()", formatter: formatter.NewDefaultFormatter(), entry: logger.Entry{}, expected: "<emergency> "},
-		{name: "test NewDefaultFormatter()", formatter: formatter.NewDefaultFormatter(), entry: logger.Entry{Message: "my message", Level: logger.DebugLevel, Context: logger.Ctx("my_key", "my_value")}, expected: "<debug> my message {\"my_key\":\"my_value\"}"},
+		{name: "test default formatter struct", formatter: &formatter.DefaultFormatter{}, entry: logger.Entry{}, expected: "<emergency>"},
+		{name: "test NewDefaultFormatter()", formatter: formatter.NewDefaultFormatter(), entry: logger.Entry{}, expected: "<emergency>"},
+		{
+			name:      "test NewDefaultFormatter(formatter.WithContext)",
+			formatter: formatter.NewDefaultFormatter(formatter.WithContext),
+			entry:     logger.Entry{Message: "my message", Level: logger.DebugLevel, Context: logger.Ctx("my_key", "my_value")},
+			expected:  "<debug> my message {\"my_key\":\"my_value\"}",
+		},
+		{
+			name:      "test formatter.NewDefaultFormatter(formatter.WithColor)",
+			formatter: formatter.NewDefaultFormatter(formatter.WithColor),
+			entry:     logger.Entry{Message: "my message", Level: logger.DebugLevel, Context: logger.Ctx("my_key", "my_value")},
+			expected:  "\x1b[1;36m<debug>\x1b[m my message",
+		},
+		{
+			name:      "test formatter.NewDefaultFormatter(formatter.WithColor, formatter.WithContext)",
+			formatter: formatter.NewDefaultFormatter(formatter.WithColor, formatter.WithContext),
+			entry:     logger.Entry{Message: "my message", Level: logger.DebugLevel, Context: logger.Ctx("my_key", "my_value")},
+			expected:  "\x1b[1;36m<debug>\x1b[m my message {\"my_key\":\"my_value\"}",
+		},
 	}
 
 	for _, tt := range tests {
@@ -34,12 +51,12 @@ func TestDefaultFormatter_Format(t *testing.T) {
 // =====================================================================================================================
 
 func ExampleDefaultFormatter() {
-	defaultFormatter := formatter.NewDefaultFormatter()
+	defaultFormatter := formatter.NewDefaultFormatter(formatter.WithContext)
 
 	fmt.Println(defaultFormatter.Format(
 		logger.Entry{
 			Message: "My log message",
-			Level: logger.InfoLevel,
+			Level:   logger.InfoLevel,
 			Context: logger.NewContext().Add("my_key", "my_value"),
 		},
 	))
