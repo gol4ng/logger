@@ -20,15 +20,8 @@ func (l *Logger) CleanEntries() {
 
 // GetEntries will return the in memory entries list
 func (l *Logger) GetEntries() []logger.Entry {
-	return l.entries
-}
-
-// GetAndCleanEntries will return and clean the in memory entries list
-func (l *Logger) GetAndCleanEntries() []logger.Entry {
 	defer l.lock()()
-	entries := l.GetEntries()
-	l.CleanEntries()
-	return entries
+	return l.entries
 }
 
 // Debug will log a debug message
