@@ -181,67 +181,90 @@ func TestNewNilLogger_Log(t *testing.T) {
 }
 
 func TestNewLogger_Wrap(t *testing.T) {
+	i := 0
+
 	mockHandlerCalled := false
 	mockHandler := func(entry logger.Entry) error {
 		mockHandlerCalled = true
 		assert.Equal(t, "l message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
 		assert.Nil(t, entry.Context)
+		assert.Equal(t, 3, i)
 
+		i++
 		return nil
 	}
 
 	l := logger.NewLogger(mockHandler)
 
-	mockHandlerWrapperCalled := false
-	mockHandlerWrapper := func(entry logger.Entry) error {
-		mockHandlerWrapperCalled = true
-		return mockHandler(entry)
+	countingMiddleware := func(expectedI int) logger.MiddlewareInterface {
+		return func(h logger.HandlerInterface) logger.HandlerInterface {
+			return func(entry logger.Entry) error {
+				assert.Equal(t, expectedI, i)
+				i++
+				return h(entry)
+			}
+		}
 	}
 
-	l.Wrap(func(h logger.HandlerInterface) logger.HandlerInterface {
-		return mockHandlerWrapper
-	})
+	l.Wrap(
+		countingMiddleware(2),
+		countingMiddleware(1),
+		countingMiddleware(0),
+	)
 
 	assert.Nil(t, l.Debug("l message", nil))
 
 	assert.True(t, mockHandlerCalled)
-	assert.True(t, mockHandlerWrapperCalled)
+	assert.Equal(t, 4, i)
 }
 
 func TestNewLogger_WrapNew(t *testing.T) {
+	i := 0
+
 	mockHandlerCalled := false
+	mockHandlerExpectedI := 0
 	mockHandler := func(entry logger.Entry) error {
 		mockHandlerCalled = true
 		assert.Equal(t, "l message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
 		assert.Nil(t, entry.Context)
+		assert.Equal(t, mockHandlerExpectedI, i)
 
+		i++
 		return nil
 	}
 
 	l := logger.NewLogger(mockHandler)
 
-	mockHandlerWrapperCalled := false
-	mockHandlerWrapper := func(entry logger.Entry) error {
-		mockHandlerWrapperCalled = true
-		return mockHandler(entry)
+	countingMiddleware := func(expectedI int) logger.MiddlewareInterface {
+		return func(h logger.HandlerInterface) logger.HandlerInterface {
+			return func(entry logger.Entry) error {
+				assert.Equal(t, expectedI, i)
+				i++
+				return h(entry)
+			}
+		}
 	}
 
-	l2 := l.WrapNew(func(h logger.HandlerInterface) logger.HandlerInterface {
-		return mockHandlerWrapper
-	})
+	l2 := l.WrapNew(
+		countingMiddleware(2),
+		countingMiddleware(1),
+		countingMiddleware(0),
+	)
 
+	mockHandlerExpectedI = 0
 	assert.Nil(t, l.Debug("l message", nil))
 	assert.True(t, mockHandlerCalled)
-	assert.False(t, mockHandlerWrapperCalled)
+	assert.Equal(t, 1, i)
 
+	i = 0
 	mockHandlerCalled = false
-	mockHandlerWrapperCalled = false
+	mockHandlerExpectedI = 3
 
 	assert.Nil(t, l2.Debug("l message", nil))
 	assert.True(t, mockHandlerCalled)
-	assert.True(t, mockHandlerWrapperCalled)
+	assert.Equal(t, 4, i)
 }
 
 // =====================================================================================================================

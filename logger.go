@@ -89,9 +89,9 @@ type LoggerInterface interface {
 type WrappableLoggerInterface interface {
 	LoggerInterface
 	// Implementation should return the same logger after wrapping it
-	Wrap(middleware MiddlewareInterface) LoggerInterface
+	Wrap(middlewares ...MiddlewareInterface) LoggerInterface
 	// Implementation should return a new decorated logger
-	WrapNew(middleware MiddlewareInterface) LoggerInterface
+	WrapNew(middlewares ...MiddlewareInterface) LoggerInterface
 }
 
 // Logger is basic implementation of WrappableLoggerInterface
@@ -145,14 +145,20 @@ func (l *Logger) Log(message string, level Level, context *Context) error {
 }
 
 // Wrap will return the logger after decorate his handler with given middleware
-func (l *Logger) Wrap(middleware MiddlewareInterface) LoggerInterface {
-	l.handler = middleware(l.handler)
+func (l *Logger) Wrap(middlewares ...MiddlewareInterface) LoggerInterface {
+	for _, middleware := range middlewares {
+		l.handler = middleware(l.handler)
+	}
 	return l
 }
 
 // WrapNew will return a new logger after wrap his handler with given middleware
-func (l *Logger) WrapNew(middleware MiddlewareInterface) LoggerInterface {
-	return &Logger{handler: middleware(l.handler)}
+func (l *Logger) WrapNew(middlewares ...MiddlewareInterface) LoggerInterface {
+	handler := l.handler
+	for _, middleware := range middlewares {
+		handler = middleware(handler)
+	}
+	return &Logger{handler: handler}
 }
 
 // NewNopLogger will create a new no operating logger that log nowhere
