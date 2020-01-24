@@ -36,7 +36,6 @@ func (s *inMemoryEntriesStore) GetEntries() []logger.Entry {
 
 // GetAndCleanEntries will return and clean the in memory entries list
 func (s *inMemoryEntriesStore) GetAndCleanEntries() []logger.Entry {
-	defer s.lock()()
 	entries := s.GetEntries()
 	s.CleanEntries()
 	return entries
