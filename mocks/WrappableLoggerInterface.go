@@ -136,13 +136,19 @@ func (_m *WrappableLoggerInterface) Warning(message string, context *logger.Cont
 	return r0
 }
 
-// Wrap provides a mock function with given fields: middleware
-func (_m *WrappableLoggerInterface) Wrap(middleware logger.MiddlewareInterface) logger.LoggerInterface {
-	ret := _m.Called(middleware)
+// Wrap provides a mock function with given fields: middlewares
+func (_m *WrappableLoggerInterface) Wrap(middlewares ...logger.MiddlewareInterface) logger.LoggerInterface {
+	_va := make([]interface{}, len(middlewares))
+	for _i := range middlewares {
+		_va[_i] = middlewares[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
 
 	var r0 logger.LoggerInterface
-	if rf, ok := ret.Get(0).(func(logger.MiddlewareInterface) logger.LoggerInterface); ok {
-		r0 = rf(middleware)
+	if rf, ok := ret.Get(0).(func(...logger.MiddlewareInterface) logger.LoggerInterface); ok {
+		r0 = rf(middlewares...)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(logger.LoggerInterface)
@@ -152,13 +158,19 @@ func (_m *WrappableLoggerInterface) Wrap(middleware logger.MiddlewareInterface) 
 	return r0
 }
 
-// WrapNew provides a mock function with given fields: middleware
-func (_m *WrappableLoggerInterface) WrapNew(middleware logger.MiddlewareInterface) logger.LoggerInterface {
-	ret := _m.Called(middleware)
+// WrapNew provides a mock function with given fields: middlewares
+func (_m *WrappableLoggerInterface) WrapNew(middlewares ...logger.MiddlewareInterface) logger.LoggerInterface {
+	_va := make([]interface{}, len(middlewares))
+	for _i := range middlewares {
+		_va[_i] = middlewares[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
 
 	var r0 logger.LoggerInterface
-	if rf, ok := ret.Get(0).(func(logger.MiddlewareInterface) logger.LoggerInterface); ok {
-		r0 = rf(middleware)
+	if rf, ok := ret.Get(0).(func(...logger.MiddlewareInterface) logger.LoggerInterface); ok {
+		r0 = rf(middlewares...)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(logger.LoggerInterface)
