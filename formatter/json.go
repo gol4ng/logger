@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gol4ng/logger"
 )
@@ -66,6 +67,10 @@ func EntryToJSON(entry logger.Entry, builder *strings.Builder) {
 	builder.WriteRune(',')
 	builder.WriteString("\"Level\":")
 	builder.WriteString(strconv.Itoa(int(entry.Level)))
+
+	builder.WriteRune(',')
+	builder.WriteString("\"Timestamp\":")
+	builder.WriteString(strconv.FormatFloat(float64(time.Now().UnixNano())/1e9, 'f', 3, 64))
 
 	builder.WriteRune(',')
 	builder.WriteString("\"Context\":")
