@@ -10,56 +10,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gol4ng/logger/mocks"
+	testing2 "github.com/gol4ng/logger/testing"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/middleware"
 )
-
-func TestLevelString_Level(t *testing.T) {
-	tests := []struct {
-		levelString logger.LevelString
-		expected    logger.Level
-	}{
-		{levelString: "DEBUG", expected: logger.DebugLevel},
-		{levelString: "debug", expected: logger.DebugLevel},
-		{levelString: "info", expected: logger.InfoLevel},
-		{levelString: "notice", expected: logger.NoticeLevel},
-		{levelString: "warning", expected: logger.WarningLevel},
-		{levelString: "error", expected: logger.ErrorLevel},
-		{levelString: "critical", expected: logger.CriticalLevel},
-		{levelString: "alert", expected: logger.AlertLevel},
-		{levelString: "emergency", expected: logger.EmergencyLevel},
-		{levelString: "anothervalue", expected: logger.DebugLevel},
-	}
-
-	for _, tt := range tests {
-		assert.Equal(t, tt.expected, tt.levelString.Level())
-	}
-}
-
-func TestLevel_String(t *testing.T) {
-	tests := []struct {
-		level    logger.Level
-		expected string
-	}{
-		{level: logger.DebugLevel, expected: "debug"},
-		{level: logger.InfoLevel, expected: "info"},
-		{level: logger.NoticeLevel, expected: "notice"},
-		{level: logger.WarningLevel, expected: "warning"},
-		{level: logger.ErrorLevel, expected: "error"},
-		{level: logger.CriticalLevel, expected: "critical"},
-		{level: logger.AlertLevel, expected: "alert"},
-		{level: logger.EmergencyLevel, expected: "emergency"},
-		{level: 123, expected: "level(123)"},
-	}
-
-	for _, tt := range tests {
-		assert.Equal(t, tt.expected, tt.level.String())
-	}
-}
 
 func TestLogger_Log(t *testing.T) {
 	tests := []struct {
@@ -109,33 +69,32 @@ func TestLogger_Log(t *testing.T) {
 			l := logger.NewLogger(func(entry logger.Entry) error {
 				assert.Equal(t, "l message", entry.Message)
 				assert.Equal(t, tt.level, entry.Level)
-				assert.Nil(t, entry.Context)
+				assert.Equal(t, logger.Context{}, *entry.Context)
 
 				return nil
 			})
+			l.ErrorHandler = testing2.AssertErrorHandlerNotCalled(t)
 
-			var err error
 			switch tt.level {
 			case logger.DebugLevel:
-				err = l.Debug("l message", nil)
+				l.Debug("l message")
 			case logger.InfoLevel:
-				err = l.Info("l message", nil)
+				l.Info("l message")
 			case logger.NoticeLevel:
-				err = l.Notice("l message", nil)
+				l.Notice("l message")
 			case logger.WarningLevel:
-				err = l.Warning("l message", nil)
+				l.Warning("l message")
 			case logger.ErrorLevel:
-				err = l.Error("l message", nil)
+				l.Error("l message")
 			case logger.CriticalLevel:
-				err = l.Critical("l message", nil)
+				l.Critical("l message")
 			case logger.AlertLevel:
-				err = l.Alert("l message", nil)
+				l.Alert("l message")
 			case logger.EmergencyLevel:
-				err = l.Emergency("l message", nil)
+				l.Emergency("l message")
 			default:
-				err = l.Log("l message", tt.level, nil)
+				l.Log("l message", tt.level)
 			}
-			assert.Nil(t, err)
 		})
 	}
 }
@@ -155,29 +114,38 @@ func TestNewLogger_LogWithError(t *testing.T) {
 		return err
 	})
 
-	assert.Equal(t, err, l.Debug("l message", nil))
-	assert.Equal(t, err, l.Info("l message", nil))
-	assert.Equal(t, err, l.Notice("l message", nil))
-	assert.Equal(t, err, l.Warning("l message", nil))
-	assert.Equal(t, err, l.Error("l message", nil))
-	assert.Equal(t, err, l.Critical("l message", nil))
-	assert.Equal(t, err, l.Alert("l message", nil))
-	assert.Equal(t, err, l.Emergency("l message", nil))
-	assert.Equal(t, err, l.Log("l message", logger.Level(127), nil))
+	errorHandler := mocks.ErrorHandler{}
+	l.ErrorHandler = errorHandler.HandleError
+	errorHandler.On("HandleError", err, mock.AnythingOfType("logger.Entry"))
+
+	l.Debug("l message")
+	l.Info("l message")
+	l.Notice("l message")
+	l.Warning("l message")
+	l.Error("l message")
+	l.Critical("l message")
+	l.Alert("l message")
+	l.Emergency("l message")
+	l.Log("l message", logger.Level(127))
+
+	errorHandler.AssertCalled(t, "HandleError", err, mock.AnythingOfType("logger.Entry"))
+	errorHandler.AssertExpectations(t)
 }
 
 func TestNewNilLogger_Log(t *testing.T) {
 	l := logger.NewNopLogger()
 
-	assert.Nil(t, l.Debug("l message", nil))
-	assert.Nil(t, l.Info("l message", nil))
-	assert.Nil(t, l.Notice("l message", nil))
-	assert.Nil(t, l.Warning("l message", nil))
-	assert.Nil(t, l.Error("l message", nil))
-	assert.Nil(t, l.Critical("l message", nil))
-	assert.Nil(t, l.Alert("l message", nil))
-	assert.Nil(t, l.Emergency("l message", nil))
-	assert.Nil(t, l.Log("l message", logger.Level(127), nil))
+	l.Debug("l message")
+	l.Info("l message")
+	l.Notice("l message")
+	l.Warning("l message")
+	l.Error("l message")
+	l.Critical("l message")
+	l.Alert("l message")
+	l.Emergency("l message")
+	l.Log("l message", logger.Level(127))
+
+	l.ErrorHandler = testing2.AssertErrorHandlerNotCalled(t)
 }
 
 func TestNewLogger_Wrap(t *testing.T) {
@@ -188,7 +156,7 @@ func TestNewLogger_Wrap(t *testing.T) {
 		mockHandlerCalled = true
 		assert.Equal(t, "l message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
-		assert.Nil(t, entry.Context)
+		assert.Equal(t, logger.Context{}, *entry.Context)
 		assert.Equal(t, 3, i)
 
 		i++
@@ -196,6 +164,7 @@ func TestNewLogger_Wrap(t *testing.T) {
 	}
 
 	l := logger.NewLogger(mockHandler)
+	l.ErrorHandler = testing2.AssertErrorHandlerNotCalled(t)
 
 	countingMiddleware := func(expectedI int) logger.MiddlewareInterface {
 		return func(h logger.HandlerInterface) logger.HandlerInterface {
@@ -213,7 +182,7 @@ func TestNewLogger_Wrap(t *testing.T) {
 		countingMiddleware(0),
 	)
 
-	assert.Nil(t, l.Debug("l message", nil))
+	l.Debug("l message")
 
 	assert.True(t, mockHandlerCalled)
 	assert.Equal(t, 4, i)
@@ -228,7 +197,7 @@ func TestNewLogger_WrapNew(t *testing.T) {
 		mockHandlerCalled = true
 		assert.Equal(t, "l message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
-		assert.Nil(t, entry.Context)
+		assert.Equal(t, logger.Context{}, *entry.Context)
 		assert.Equal(t, mockHandlerExpectedI, i)
 
 		i++
@@ -236,6 +205,7 @@ func TestNewLogger_WrapNew(t *testing.T) {
 	}
 
 	l := logger.NewLogger(mockHandler)
+	l.ErrorHandler = testing2.AssertErrorHandlerNotCalled(t)
 
 	countingMiddleware := func(expectedI int) logger.MiddlewareInterface {
 		return func(h logger.HandlerInterface) logger.HandlerInterface {
@@ -254,7 +224,7 @@ func TestNewLogger_WrapNew(t *testing.T) {
 	)
 
 	mockHandlerExpectedI = 0
-	assert.Nil(t, l.Debug("l message", nil))
+	l.Debug("l message")
 	assert.True(t, mockHandlerCalled)
 	assert.Equal(t, 1, i)
 
@@ -262,7 +232,7 @@ func TestNewLogger_WrapNew(t *testing.T) {
 	mockHandlerCalled = false
 	mockHandlerExpectedI = 3
 
-	assert.Nil(t, l2.Debug("l message", nil))
+	l2.Debug("l message")
 	assert.True(t, mockHandlerCalled)
 	assert.Equal(t, 4, i)
 }
@@ -279,14 +249,14 @@ func ExampleLogger_callerHandler() {
 		),
 	)
 
-	_ = myLogger.Debug("Log example", nil)
-	_ = myLogger.Info("Log example", nil)
-	_ = myLogger.Notice("Log example", nil)
-	_ = myLogger.Warning("Log example", nil)
-	_ = myLogger.Error("Log example", nil)
-	_ = myLogger.Critical("Log example", nil)
-	_ = myLogger.Alert("Log example", nil)
-	_ = myLogger.Emergency("Log example", nil)
+	myLogger.Debug("Log example")
+	myLogger.Info("Log example")
+	myLogger.Notice("Log example")
+	myLogger.Warning("Log example")
+	myLogger.Error("Log example")
+	myLogger.Critical("Log example")
+	myLogger.Alert("Log example")
+	myLogger.Emergency("Log example")
 
 	output.Constains([]string{
 		"lvl: debug | msg: Log example | ctx:", "<file:/", "<line:",
@@ -308,14 +278,14 @@ func ExampleLogger_lineFormatter() {
 		handler.Stream(output, formatter.NewLine("lvl: %[2]s | msg: %[1]s | ctx: %[3]v")),
 	)
 
-	_ = myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Info("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Notice("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Warning("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Error("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Critical("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Alert("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Debug("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Info("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Notice("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Warning("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Error("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Critical("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Alert("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Emergency("Log example", logger.Any("my_key", "my_value"))
 
 	output.Constains([]string{
 		"lvl: debug | msg: Log example | ctx: <my_key:my_value>",
@@ -337,14 +307,14 @@ func ExampleLogger_jsonFormatter() {
 		handler.Stream(output, formatter.NewJSONEncoder()),
 	)
 
-	_ = myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Info("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Notice("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Warning("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Error("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Critical("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Alert("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Debug("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Info("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Notice("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Warning("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Error("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Critical("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Alert("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Emergency("Log example", logger.Any("my_key", "my_value"))
 
 	output.Constains([]string{
 		`{"Message":"Log example","Level":7,"Context":{"my_key":"my_value"}}`,
@@ -368,14 +338,14 @@ func ExampleLogger_minLevelFilterHandler() {
 		),
 	)
 
-	_ = myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Info("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Notice("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Warning("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Error("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Critical("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Alert("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Debug("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Info("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Notice("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Warning("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Error("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Critical("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Alert("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Emergency("Log example", logger.Any("my_key", "my_value"))
 
 	output.Constains([]string{
 		`<warning> Log example {"my_key":"my_value"}`,
@@ -398,14 +368,14 @@ func ExampleLogger_groupHandler() {
 		),
 	)
 
-	_ = myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Info("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Notice("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Warning("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Error("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Critical("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Alert("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Debug("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Info("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Notice("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Warning("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Error("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Critical("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Alert("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Emergency("Log example", logger.Any("my_key", "my_value"))
 
 	output.Constains([]string{
 		`{"Message":"Log example","Level":7,"Context":{"my_key":"my_value"}}`,
@@ -439,12 +409,12 @@ func ExampleLogger_placeholderMiddleware() {
 	)
 	myLogger.Wrap(middleware.Placeholder())
 
-	_ = myLogger.Debug("Log %ctx_key% example", logger.Ctx("ctx_key", false))
-	_ = myLogger.Info("Log %ctx_key% example", logger.Ctx("ctx_key", 1234))
-	_ = myLogger.Warning("Log %ctx_key% example", logger.Ctx("ctx_key", 5*time.Second))
-	_ = myLogger.Error("Log %ctx_key% example", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Alert("Log %ctx_key% example", logger.Ctx("ctx_key", struct{ attr string }{attr: "attrValue"}))
-	_ = myLogger.Critical("Log %ctx_key% example another value %ctx_key2%", logger.Ctx("ctx_key", false).Add("ctx_key2", 1234))
+	myLogger.Debug("Log %ctx_key% example", logger.Any("ctx_key", false))
+	myLogger.Info("Log %ctx_key% example", logger.Any("ctx_key", 1234))
+	myLogger.Warning("Log %ctx_key% example", logger.Any("ctx_key", 5*time.Second))
+	myLogger.Error("Log %ctx_key% example", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Alert("Log %ctx_key% example", logger.Any("ctx_key", struct{ attr string }{attr: "attrValue"}))
+	myLogger.Critical("Log %ctx_key% example another value %ctx_key2%", logger.Any("ctx_key", false), logger.Any("ctx_key2", 1234))
 
 	output.Constains([]string{
 		`debug Log false example`,
@@ -465,14 +435,14 @@ func ExampleLogger_wrapHandler() {
 	)
 	myLogger.Wrap(middleware.MinLevelFilter(logger.WarningLevel))
 
-	_ = myLogger.Debug("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Info("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Notice("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Warning("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Error("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Critical("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Alert("Log example", logger.Ctx("my_key", "my_value"))
-	_ = myLogger.Emergency("Log example", logger.Ctx("my_key", "my_value"))
+	myLogger.Debug("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Info("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Notice("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Warning("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Error("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Critical("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Alert("Log example", logger.Any("my_key", "my_value"))
+	myLogger.Emergency("Log example", logger.Any("my_key", "my_value"))
 	output.Constains([]string{
 		`<warning> Log example {"my_key":"my_value"}`,
 		`<error> Log example {"my_key":"my_value"}`,
@@ -490,13 +460,13 @@ func ExampleLogger_timeRotateHandler() {
 	rotateLogHandler, _ := handler.TimeRotateFileStream(os.TempDir()+"/%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
-	_ = myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Info("Log example", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Warning("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Debug("Log example", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Info("Log example", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Warning("Log example", logger.Any("ctx_key", "ctx_value"))
 	time.Sleep(1 * time.Second)
-	_ = myLogger.Error("Log example", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Alert("Log example", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Critical("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Error("Log example", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Alert("Log example", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Critical("Log example", logger.Any("ctx_key", "ctx_value"))
 
 	//Output:
 }
@@ -507,13 +477,13 @@ func ExampleLogger_logRotateHandler() {
 	rotateLogHandler, _ := handler.LogRotateFileStream("test", os.TempDir()+"/%s.log", time.Stamp, lineFormatter, 1*time.Second)
 	myLogger := logger.NewLogger(rotateLogHandler)
 
-	_ = myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Info("Log example", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Warning("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Debug("Log example", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Info("Log example", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Warning("Log example", logger.Any("ctx_key", "ctx_value"))
 	time.Sleep(1 * time.Second)
-	_ = myLogger.Error("Log example", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Alert("Log example", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Critical("Log example", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Error("Log example", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Alert("Log example", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Critical("Log example", logger.Any("ctx_key", "ctx_value"))
 
 	//Output:
 }
@@ -535,14 +505,14 @@ func ExampleLogger_syslogHandler() {
 		"my_go_logger")
 	myLogger := logger.NewLogger(syslogHandler)
 
-	_ = myLogger.Debug("Log example", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Info("Log example1", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Notice("Log example2", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Warning("Log example3", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Error("Log example4", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Critical("Log example5", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Alert("Log example6", logger.Ctx("ctx_key", "ctx_value"))
-	_ = myLogger.Emergency("Log example7", logger.Ctx("ctx_key", "ctx_value"))
+	myLogger.Debug("Log example", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Info("Log example1", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Notice("Log example2", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Warning("Log example3", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Error("Log example4", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Critical("Log example5", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Alert("Log example6", logger.Any("ctx_key", "ctx_value"))
+	myLogger.Emergency("Log example7", logger.Any("ctx_key", "ctx_value"))
 
 	//Output:
 }

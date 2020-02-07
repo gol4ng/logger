@@ -10,12 +10,12 @@ import (
 
 func TestContext_Merge(t *testing.T) {
 	context1 := logger.Context(map[string]logger.Field{
-		"my_key":                  logger.Field{Value: "my_value"},
-		"key_gonna_be_overwrited": logger.Field{Value: "my_initial_value"},
+		"my_key":                  logger.Field{Name: "my_key", Value: "my_value"},
+		"key_gonna_be_overwrited": logger.Field{Name: "key_gonna_be_overwrited", Value: "my_initial_value"},
 	})
 	context2 := logger.Context(map[string]logger.Field{
-		"key_gonna_be_overwrited": logger.Field{Value: 2},
-		"new_key":                 logger.Field{Value: "my_new_value"},
+		"key_gonna_be_overwrited": logger.Field{Name: "key_gonna_be_overwrited", Value: 2},
+		"new_key":                 logger.Field{Name: "new_key", Value: "my_new_value"},
 	})
 
 	(&context1).Merge(context2)
@@ -25,19 +25,9 @@ func TestContext_Merge(t *testing.T) {
 	assert.Equal(t, "my_new_value", context1["new_key"].Value)
 }
 
-func TestContext_Set(t *testing.T) {
-	context1 := logger.Context(map[string]logger.Field{
-		"my_key": logger.Field{Value: "my_value"},
-	})
-
-	context1.Set("my_key", logger.Field{Value: 2})
-
-	assert.Equal(t, 2, context1["my_key"].Value)
-}
-
 func TestContext_Has(t *testing.T) {
 	context1 := logger.Context(map[string]logger.Field{
-		"my_key": logger.Field{Value: "my_value"},
+		"my_key": logger.Field{Name: "my_key", Value: "my_value"},
 	})
 
 	assert.True(t, context1.Has("my_key"))
@@ -46,7 +36,7 @@ func TestContext_Has(t *testing.T) {
 
 func TestContext_Get(t *testing.T) {
 	context := logger.Context(map[string]logger.Field{
-		"my_key": logger.Field{Value: "my_value"},
+		"my_key": logger.Field{Name: "my_key", Value: "my_value"},
 	})
 
 	defaultValue := &logger.Field{}

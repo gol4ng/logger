@@ -50,8 +50,8 @@ func ExampleContext() {
 	contextHandler := middleware.Context(logger.Ctx("my_value_1", "value 1"))
 
 	myLogger := logger.NewLogger(handler.Group(contextHandler(streamHandler), streamHandler))
-	_ = myLogger.Debug("will be printed", logger.Ctx("my_value_1", "overwrited value 1"))
-	_ = myLogger.Debug("only context handler values will be printed", nil)
+	myLogger.Debug("will be printed", logger.Any("my_value_1", "overwrited value 1"))
+	myLogger.Debug("only context handler values will be printed")
 
 	//Output:
 	//{"Message":"will be printed","Level":7,"Context":{"my_value_1":"overwrited value 1"}}

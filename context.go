@@ -11,15 +11,17 @@ type Context map[string]Field
 
 // Merge and overwrite context data with the given one
 func (c *Context) Merge(context Context) *Context {
-	for name, field := range context {
-		c.Set(name, field)
+	for _, field := range context {
+		c.SetField(field)
 	}
 	return c
 }
 
 // Set will add a new context field
-func (c *Context) Set(name string, value Field) *Context {
-	(*c)[name] = value
+func (c *Context) SetField(fields ...Field) *Context {
+	for _, field := range fields {
+		(*c)[field.Name] = field
+	}
 	return c
 }
 
@@ -39,22 +41,22 @@ func (c *Context) Get(name string, defaultField *Field) Field {
 
 // Add will guess and add value to the context
 func (c *Context) Add(name string, value interface{}) *Context {
-	return c.Set(name, Any(value))
+	return c.SetField(Any(name, value))
 }
 
 // Skip will add skip field to context
 func (c *Context) Skip(name string, value string) *Context {
-	return c.Set(name, Skip(value))
+	return c.SetField(Skip(name, value))
 }
 
 // Binary will add binary field to context
 func (c *Context) Binary(name string, value []byte) *Context {
-	return c.Set(name, Binary(value))
+	return c.SetField(Binary(name, value))
 }
 
 // ByteString will add byteString field to context
 func (c *Context) ByteString(name string, value []byte) *Context {
-	return c.Set(name, ByteString(value))
+	return c.SetField(ByteString(name, value))
 }
 
 func (c *Context) stringTo(builder *strings.Builder) *Context {
@@ -103,6 +105,10 @@ func Ctx(name string, value interface{}) *Context {
 }
 
 // NewContext will create a new context
-func NewContext() *Context {
-	return &Context{}
+func NewContext(fields ...Field) *Context {
+	c := &Context{}
+	if len(fields) == 0 {
+		return c
+	}
+	return c.SetField(fields...)
 }

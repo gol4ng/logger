@@ -13,14 +13,14 @@ import (
 func TestNewLogger(t *testing.T) {
 	myLogger, store := testing_logger.NewLogger()
 
-	_ = myLogger.Debug("test Debug", nil)
-	_ = myLogger.Info("test Info", logger.Ctx("my_ctx_value", "value"))
+	myLogger.Debug("test Debug")
+	myLogger.Info("test Info", logger.Any("my_ctx_value", "value"))
 
 	entries := store.GetEntries()
 	assert.Len(t, entries, 2)
 
 	entry1 := entries[0]
-	assert.Nil(t, entry1.Context)
+	assert.Equal(t, logger.Context{}, *entry1.Context)
 	assert.Equal(t, logger.DebugLevel, entry1.Level)
 	assert.Equal(t, "test Debug", entry1.Message)
 
@@ -34,8 +34,8 @@ func TestNewLogger(t *testing.T) {
 func TestNewLogger_GetEntries(t *testing.T) {
 	myLogger, store := testing_logger.NewLogger()
 
-	_ = myLogger.Debug("test Debug", nil)
-	_ = myLogger.Info("test Info", logger.Ctx("my_ctx_value", "value"))
+	myLogger.Debug("test Debug")
+	myLogger.Info("test Info", logger.Any("my_ctx_value", "value"))
 
 	entries := store.GetEntries()
 	assert.Len(t, entries, 2)
@@ -44,8 +44,8 @@ func TestNewLogger_GetEntries(t *testing.T) {
 func TestNewLogger_CleanEntries(t *testing.T) {
 	myLogger, store := testing_logger.NewLogger()
 
-	_ = myLogger.Debug("test Debug", nil)
-	_ = myLogger.Info("test Info", logger.Ctx("my_ctx_value", "value"))
+	myLogger.Debug("test Debug")
+	myLogger.Info("test Info", logger.Any("my_ctx_value", "value"))
 
 	entries := store.GetEntries()
 	assert.Len(t, entries, 2)
@@ -58,8 +58,8 @@ func TestNewLogger_CleanEntries(t *testing.T) {
 func TestNewLogger_GetAndCleanEntries(t *testing.T) {
 	myLogger, store := testing_logger.NewLogger()
 
-	_ = myLogger.Debug("test Debug", nil)
-	_ = myLogger.Info("test Info", logger.Ctx("my_ctx_value", "value"))
+	myLogger.Debug("test Debug")
+	myLogger.Info("test Info", logger.Any("my_ctx_value", "value"))
 
 	entries := store.GetAndCleanEntries()
 	assert.Len(t, entries, 2)
@@ -71,8 +71,8 @@ func TestNewLogger_Wrap(t *testing.T) {
 	myLogger, store := testing_logger.NewLogger()
 
 	myLogger.Wrap(middleware.Context(logger.Ctx("my_ctx_value", "value")))
-	_ = myLogger.Debug("test Debug", nil)
-	_ = myLogger.Info("test Info", nil)
+	myLogger.Debug("test Debug")
+	myLogger.Info("test Info")
 
 	entries := store.GetEntries()
 	assert.Len(t, entries, 2)
@@ -98,22 +98,22 @@ func TestNewLogger_WrapNew(t *testing.T) {
 	})
 	myLogger2 := myLogger.WrapNew(middleware.Context(&defaultContext))
 
-	_ = myLogger.Debug("test Debug", nil)
-	_ = myLogger.Info("test Info", nil)
+	myLogger.Debug("test Debug")
+	myLogger.Info("test Info")
 
-	_ = myLogger2.Debug("test wrapped Debug", nil)
-	_ = myLogger2.Info("test wrapped Info", nil)
+	myLogger2.Debug("test wrapped Debug")
+	myLogger2.Info("test wrapped Info")
 
 	entries := store.GetEntries()
 	assert.Len(t, entries, 4)
 
 	entry1 := entries[0]
-	assert.Nil(t, entry1.Context)
+	assert.Equal(t, logger.Context{}, *entry1.Context)
 	assert.Equal(t, logger.DebugLevel, entry1.Level)
 	assert.Equal(t, "test Debug", entry1.Message)
 
 	entry2 := entries[1]
-	assert.Nil(t, entry2.Context)
+	assert.Equal(t, logger.Context{}, *entry2.Context)
 	assert.Equal(t, logger.InfoLevel, entry2.Level)
 	assert.Equal(t, "test Info", entry2.Message)
 
