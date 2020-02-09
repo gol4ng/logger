@@ -45,7 +45,7 @@ const (
 // Field represents a contextual information
 // this data was carry by Context struct
 type Field struct {
-	Name string
+	Name  string
 	Type  FieldType
 	Value interface{}
 }
