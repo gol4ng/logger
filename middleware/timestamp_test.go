@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTimestampable_Handle(t *testing.T) {
+func TestTimestamp_Handle(t *testing.T) {
 	mockHandler := func(entry logger.Entry) error {
 		assert.Equal(t, "my_log_message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
