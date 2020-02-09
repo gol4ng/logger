@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"log"
 	"log/syslog"
 	"os"
 	"strings"
@@ -20,6 +21,19 @@ import (
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/middleware"
 )
+
+func TestLogger_ErrorHandler(t *testing.T) {
+	buffer := bytes.NewBuffer([]byte{})
+	log.SetOutput(buffer)
+
+	err := errors.New("my error")
+	l := logger.NewLogger(func(entry logger.Entry) error {
+		return err
+	})
+	l.Debug("my_fake_message")
+
+	assert.Regexp(t, ".* my error {my_fake_message debug <nil>}\n", buffer.String())
+}
 
 func TestLogger_Log(t *testing.T) {
 	tests := []struct {
@@ -334,7 +348,7 @@ func ExampleLogger_minLevelFilterHandler() {
 	output := &Output{}
 	myLogger := logger.NewLogger(
 		middleware.MinLevelFilter(logger.WarningLevel)(
-			handler.Stream(output, formatter.NewDefaultFormatter(formatter.DisplayContext)),
+			handler.Stream(output, formatter.NewDefaultFormatter(formatter.WithContext(true))),
 		),
 	)
 
@@ -364,7 +378,7 @@ func ExampleLogger_groupHandler() {
 	myLogger := logger.NewLogger(
 		handler.Group(
 			handler.Stream(output, formatter.NewJSONEncoder()),
-			handler.Stream(output2, formatter.NewDefaultFormatter(formatter.DisplayContext)),
+			handler.Stream(output2, formatter.NewDefaultFormatter(formatter.WithContext(true))),
 		),
 	)
 
@@ -431,7 +445,7 @@ func ExampleLogger_placeholderMiddleware() {
 func ExampleLogger_wrapHandler() {
 	output := &Output{}
 	myLogger := logger.NewLogger(
-		handler.Stream(output, formatter.NewDefaultFormatter(formatter.DisplayContext)),
+		handler.Stream(output, formatter.NewDefaultFormatter(formatter.WithContext(true))),
 	)
 	myLogger.Wrap(middleware.MinLevelFilter(logger.WarningLevel))
 
@@ -498,7 +512,7 @@ func ExampleLogger_logRotateHandler() {
 //Apr 26 12:22:06 hades my_go_logger[69302] <Emergency>: <emergency> Log example7 {"ctx_key":"ctx_value"}
 func ExampleLogger_syslogHandler() {
 	syslogHandler, _ := handler.Syslog(
-		formatter.NewDefaultFormatter(formatter.DisplayContext),
+		formatter.NewDefaultFormatter(formatter.WithContext(true)),
 		"",
 		"",
 		syslog.LOG_DEBUG,

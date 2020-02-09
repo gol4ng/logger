@@ -5,11 +5,8 @@ import (
 	"log"
 )
 
-type ErrorHandler interface {
-	HandleError(error error, entry Entry)
-}
-
-func Errorhandler(error error, entry Entry) {
+// ErrorHandler will print error and entry when logging error occured
+func ErrorHandler(error error, entry Entry) {
 	log.Println(error, entry)
 }
 
@@ -127,5 +124,5 @@ func NewLogger(handler HandlerInterface) *Logger {
 	if handler == nil {
 		panic(errors.New("handler must not be <nil>"))
 	}
-	return &Logger{handler: handler, ErrorHandler: Errorhandler}
+	return &Logger{handler: handler, ErrorHandler: ErrorHandler}
 }

@@ -20,20 +20,20 @@ func TestDefaultFormatter_Format(t *testing.T) {
 		{name: "test default formatter struct", formatter: &formatter.DefaultFormatter{}, entry: logger.Entry{}, expected: "<emergency>"},
 		{name: "test NewDefaultFormatter()", formatter: formatter.NewDefaultFormatter(), entry: logger.Entry{}, expected: "<emergency>"},
 		{
-			name:      "test NewDefaultFormatter(formatter.DisplayContext)",
-			formatter: formatter.NewDefaultFormatter(formatter.DisplayContext),
+			name:      "test NewDefaultFormatter(formatter.WithContext(true)",
+			formatter: formatter.NewDefaultFormatter(formatter.WithContext(true)),
 			entry:     logger.Entry{Message: "my message", Level: logger.DebugLevel, Context: logger.Ctx("my_key", "my_value")},
 			expected:  "<debug> my message {\"my_key\":\"my_value\"}",
 		},
 		{
-			name:      "test formatter.NewDefaultFormatter(formatter.EnableColor)",
-			formatter: formatter.NewDefaultFormatter(formatter.EnableColor),
+			name:      "test formatter.NewDefaultFormatter(formatter.WithColor(true))",
+			formatter: formatter.NewDefaultFormatter(formatter.WithContext(true)),
 			entry:     logger.Entry{Message: "my message", Level: logger.DebugLevel, Context: logger.Ctx("my_key", "my_value")},
 			expected:  "\x1b[1;36m<debug>\x1b[m my message",
 		},
 		{
-			name:      "test formatter.NewDefaultFormatter(formatter.EnableColor, formatter.DisplayContext)",
-			formatter: formatter.NewDefaultFormatter(formatter.EnableColor, formatter.DisplayContext),
+			name:      "test formatter.NewDefaultFormatter(formatter.WithColor(true), formatter.WithContext(true)",
+			formatter: formatter.NewDefaultFormatter(formatter.WithColor(true), formatter.WithContext(true)),
 			entry:     logger.Entry{Message: "my message", Level: logger.DebugLevel, Context: logger.Ctx("my_key", "my_value")},
 			expected:  "\x1b[1;36m<debug>\x1b[m my message {\"my_key\":\"my_value\"}",
 		},
@@ -60,7 +60,7 @@ func TestDefaultFormatter_Format_AllColor(t *testing.T) {
 		{level: logger.InfoLevel, expected: "\x1b[1;32m<info>\x1b[m my message"},
 		{level: logger.DebugLevel, expected: "\x1b[1;36m<debug>\x1b[m my message"},
 	}
-	formatter := formatter.NewDefaultFormatter(formatter.EnableColor)
+	formatter := formatter.NewDefaultFormatter(formatter.WithColor(true))
 	for _, tt := range tests {
 		t.Run(tt.level.String(), func(t *testing.T) {
 			assert.Equal(t, tt.expected, formatter.Format(logger.Entry{Level: tt.level, Message: "my message"}))
@@ -73,7 +73,7 @@ func TestDefaultFormatter_Format_AllColor(t *testing.T) {
 // =====================================================================================================================
 
 func ExampleDefaultFormatter() {
-	defaultFormatter := formatter.NewDefaultFormatter(formatter.DisplayContext)
+	defaultFormatter := formatter.NewDefaultFormatter(formatter.WithContext(true))
 
 	fmt.Println(defaultFormatter.Format(
 		logger.Entry{

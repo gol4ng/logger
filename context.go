@@ -17,7 +17,7 @@ func (c *Context) Merge(context Context) *Context {
 	return c
 }
 
-// Set will add a new context field
+// SetField will add a new context field
 func (c *Context) SetField(fields ...Field) *Context {
 	for _, field := range fields {
 		(*c)[field.Name] = field
@@ -104,11 +104,7 @@ func Ctx(name string, value interface{}) *Context {
 	return NewContext().Add(name, value)
 }
 
-// NewContext will create a new context
+// NewContext will create a new context with optional fields
 func NewContext(fields ...Field) *Context {
-	c := &Context{}
-	if len(fields) == 0 {
-		return c
-	}
-	return c.SetField(fields...)
+	return (&Context{}).SetField(fields...)
 }
