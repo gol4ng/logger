@@ -19,7 +19,7 @@ func TestTimestampable_Handle(t *testing.T) {
 		return nil
 	}
 
-	caller := middleware.Timestampable()
+	caller := middleware.Timestamp()
 
 	logEntry := logger.Entry{
 		Message: "my_log_message",

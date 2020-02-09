@@ -6,7 +6,8 @@ import (
 	"github.com/gol4ng/logger"
 )
 
-func Timestampable() logger.MiddlewareInterface {
+// Timestamp middleware will add the timestamp to the log context
+func Timestamp() logger.MiddlewareInterface {
 	return func(handler logger.HandlerInterface) logger.HandlerInterface {
 		return func(entry logger.Entry) error {
 			if entry.Context == nil {
