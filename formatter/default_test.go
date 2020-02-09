@@ -27,7 +27,7 @@ func TestDefaultFormatter_Format(t *testing.T) {
 		},
 		{
 			name:      "test formatter.NewDefaultFormatter(formatter.WithColor(true))",
-			formatter: formatter.NewDefaultFormatter(formatter.WithContext(true)),
+			formatter: formatter.NewDefaultFormatter(formatter.WithColor(true)),
 			entry:     logger.Entry{Message: "my message", Level: logger.DebugLevel, Context: logger.Ctx("my_key", "my_value")},
 			expected:  "\x1b[1;36m<debug>\x1b[m my message",
 		},
