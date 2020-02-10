@@ -78,13 +78,3 @@ func WithContext(enable bool) option {
 		formatter.displayContext = enable
 	}
 }
-
-// EnableColor function will enable ANSI colored formatting
-func EnableColor(formatter *DefaultFormatter) {
-	formatter.colored = true
-}
-
-// DisplayContext function will display context printing
-func DisplayContext(formatter *DefaultFormatter) {
-	formatter.displayContext = true
-}
