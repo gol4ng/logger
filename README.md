@@ -30,12 +30,12 @@ import (
 
 func main(){
 	// logger will print on STDOUT with default line format
-	l := logger.NewLogger(handler.Stream(os.Stdout, formatter.NewDefaultFormatter(formatter.DisplayContext)))
+	l := logger.NewLogger(handler.Stream(os.Stdout, formatter.NewDefaultFormatter(formatter.WithContext(true))))
 	
-	l.Debug("Go debug informations", logger.Ctx("go_os", runtime.GOOS).Add("go_arch", runtime.GOARCH))
+	l.Debug("Go debug informations", logger.String("go_os", runtime.GOOS), logger.String("go_arch", runtime.GOARCH))
 	// <debug> MyExample message {"go_arch":"amd64","go_os":"darwin"}
 	
-	l.Info("Another", nil)
+	l.Info("Another")
     //<info> Another
 }
 ```
@@ -47,7 +47,7 @@ This library expose some quite simple interfaces.
 Simplest one
 ```go
 type LogInterface interface {
-	Log(message string, level Level, context *Context) error
+	Log(message string, level Level, field ...Field)
 }
 ```
 
@@ -55,14 +55,14 @@ The friendly one
 ```go
 type LoggerInterface interface {
 	LogInterface
-	Debug(message string, context *Context) error
-	Info(message string, context *Context) error
-	Notice(message string, context *Context) error
-	Warning(message string, context *Context) error
-	Error(message string, context *Context) error
-	Critical(message string, context *Context) error
-	Alert(message string, context *Context) error
-	Emergency(message string, context *Context) error
+	Debug(message string, field ...Field)
+	Info(message string, field ...Field)
+	Notice(message string, field ...Field)
+	Warning(message string, field ...Field)
+	Error(message string, field ...Field)
+	Critical(message string, field ...Field)
+	Alert(message string, field ...Field)
+	Emergency(message string, field ...Field)
 }
 ```
 
@@ -101,6 +101,7 @@ Available middleware:
 - **filter** _it will permit to filter log entry_ level filter are available or you can use your own callback filter
 - **placeholder** _it will replace log message placeholder with contextual value_
 - **recover** _it will convert handler panic to error_
+- **timestamp** _it will add timestamp to log context_
 
 ## Writers
 
