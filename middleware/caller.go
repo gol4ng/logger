@@ -20,7 +20,7 @@ func Caller(skip int) logger.MiddlewareInterface {
 					entry.Context = &logger.Context{}
 				}
 				entry.Context.
-					Add("file", file).
+					SetField(logger.String("file", file)).
 					Add("line", line)
 			}
 			return handler(entry)
