@@ -65,12 +65,16 @@ func NewDefaultFormatter(options ...option) *DefaultFormatter {
 
 type option func(*DefaultFormatter)
 
-// EnableColor function will enable ANSI colored formatting
-func EnableColor(formatter *DefaultFormatter) {
-	formatter.colored = true
+// WithColor function will enable ANSI colored formatting
+func WithColor(enable bool) option {
+	return func(formatter *DefaultFormatter) {
+		formatter.colored = enable
+	}
 }
 
-// DisplayContext function will display context printing
-func DisplayContext(formatter *DefaultFormatter) {
-	formatter.displayContext = true
+// WithContext function will display context printing
+func WithContext(enable bool) option {
+	return func(formatter *DefaultFormatter) {
+		formatter.displayContext = enable
+	}
 }

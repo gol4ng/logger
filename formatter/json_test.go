@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 
@@ -58,6 +59,11 @@ func TestMarshalContextTo(t *testing.T) {
 			name:            "test multiple message with context",
 			context:         logger.NewContext().Add("my_key", "my_value").Add("my_key2", "my_value2"),
 			expectedStrings: []string{`my_key":"my_value"`, `"my_key2":"my_value2"`},
+		},
+		{
+			name:            "test time message with context",
+			context:         logger.NewContext().Add("my_key", time.Date(2020, 1, 2, 3, 4, 5, 6, time.UTC)),
+			expectedStrings: []string{`my_key":"2020-01-02T03:04:05.000000006Z"`},
 		},
 	}
 

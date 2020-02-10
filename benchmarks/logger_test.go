@@ -22,7 +22,7 @@ func BenchmarkNopLogger(b *testing.B) {
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		_ = myLogger.Info("This log message go anywhere.", nil)
+		myLogger.Info("This log message go anywhere.")
 	}
 }
 
@@ -35,7 +35,7 @@ func BenchmarkLoggerLineFormatter(b *testing.B) {
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		_ = myLogger.Info("Log example", nil)
+		myLogger.Info("Log example")
 	}
 }
 
@@ -48,7 +48,7 @@ func BenchmarkLoggerJsonFormatter(b *testing.B) {
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		_ = myLogger.Info("Log example", nil)
+		myLogger.Info("Log example")
 	}
 }
 
@@ -61,8 +61,8 @@ func BenchmarkLoggerMinLevelFilterHandler(b *testing.B) {
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		_ = myLogger.Debug("Log example", nil)
-		_ = myLogger.Info("Log example", nil)
+		myLogger.Debug("Log example")
+		myLogger.Info("Log example")
 	}
 }
 
@@ -76,6 +76,6 @@ func BenchmarkLoggerGroupHandler(b *testing.B) {
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		_ = myLogger.Debug("Log example", nil)
+		myLogger.Debug("Log example")
 	}
 }

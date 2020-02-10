@@ -13,7 +13,7 @@ func Timestamp() logger.MiddlewareInterface {
 			if entry.Context == nil {
 				entry.Context = &logger.Context{}
 			}
-			entry.Context.Set("timestamp", logger.Time(time.Now()))
+			entry.Context.SetField(logger.Time("timestamp", time.Now()))
 			return handler(entry)
 		}
 	}

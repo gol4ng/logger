@@ -45,6 +45,7 @@ const (
 // Field represents a contextual information
 // this data was carry by Context struct
 type Field struct {
+	Name  string
 	Type  FieldType
 	Value interface{}
 }
@@ -105,166 +106,166 @@ func (f *Field) String() string {
 }
 
 // Skip will create Skip Field
-func Skip(value string) Field {
-	return Field{Type: SkipType, Value: value}
+func Skip(name string, value string) Field {
+	return Field{Name: name, Type: SkipType, Value: value}
 }
 
 // Bool will create Bool Field
-func Bool(value bool) Field {
-	return Field{Type: BoolType, Value: value}
+func Bool(name string, value bool) Field {
+	return Field{Name: name, Type: BoolType, Value: value}
 }
 
 // Int8 will create Int8 Field
-func Int8(value int8) Field {
-	return Field{Type: Int8Type, Value: value}
+func Int8(name string, value int8) Field {
+	return Field{Name: name, Type: Int8Type, Value: value}
 }
 
 // Int16 will create Int16 Field
-func Int16(value int16) Field {
-	return Field{Type: Int16Type, Value: value}
+func Int16(name string, value int16) Field {
+	return Field{Name: name, Type: Int16Type, Value: value}
 }
 
 // Int32 will create Int32 Field
-func Int32(value int32) Field {
-	return Field{Type: Int32Type, Value: value}
+func Int32(name string, value int32) Field {
+	return Field{Name: name, Type: Int32Type, Value: value}
 }
 
 // Int64 will create Int64 Field
-func Int64(value int64) Field {
-	return Field{Type: Int64Type, Value: value}
+func Int64(name string, value int64) Field {
+	return Field{Name: name, Type: Int64Type, Value: value}
 }
 
 // Uint8 will create Uint8 Field
-func Uint8(value uint8) Field {
-	return Field{Type: Uint8Type, Value: value}
+func Uint8(name string, value uint8) Field {
+	return Field{Name: name, Type: Uint8Type, Value: value}
 }
 
 // Uint16 will create Uint16 Field
-func Uint16(value uint16) Field {
-	return Field{Type: Uint16Type, Value: value}
+func Uint16(name string, value uint16) Field {
+	return Field{Name: name, Type: Uint16Type, Value: value}
 }
 
 // Uint32 will create Uint32 Field
-func Uint32(value uint32) Field {
-	return Field{Type: Uint32Type, Value: value}
+func Uint32(name string, value uint32) Field {
+	return Field{Name: name, Type: Uint32Type, Value: value}
 }
 
 // Uint64 will create Uint64 Field
-func Uint64(value uint64) Field {
-	return Field{Type: Uint64Type, Value: value}
+func Uint64(name string, value uint64) Field {
+	return Field{Name: name, Type: Uint64Type, Value: value}
 }
 
 // Uintptr will create Uintptr Field
-func Uintptr(value uintptr) Field {
-	return Field{Type: UintptrType, Value: value}
+func Uintptr(name string, value uintptr) Field {
+	return Field{Name: name, Type: UintptrType, Value: value}
 }
 
 // Float32 will create Float32 Field
-func Float32(value float32) Field {
-	return Field{Type: Float32Type, Value: value}
+func Float32(name string, value float32) Field {
+	return Field{Name: name, Type: Float32Type, Value: value}
 }
 
 // Float64 will create Float64 Field
-func Float64(value float64) Field {
-	return Field{Type: Float64Type, Value: value}
+func Float64(name string, value float64) Field {
+	return Field{Name: name, Type: Float64Type, Value: value}
 }
 
 // Complex64 will create Complex64 Field
-func Complex64(value complex64) Field {
-	return Field{Type: Complex64Type, Value: value}
+func Complex64(name string, value complex64) Field {
+	return Field{Name: name, Type: Complex64Type, Value: value}
 }
 
 // Complex128 will create Complex128 Field
-func Complex128(value complex128) Field {
-	return Field{Type: Complex128Type, Value: value}
+func Complex128(name string, value complex128) Field {
+	return Field{Name: name, Type: Complex128Type, Value: value}
 }
 
 // String will create String Field
-func String(value string) Field {
-	return Field{Type: StringType, Value: value}
+func String(name string, value string) Field {
+	return Field{Name: name, Type: StringType, Value: value}
 }
 
 // Binary will create Binary Field
-func Binary(value []byte) Field {
-	return Field{Type: BinaryType, Value: value}
+func Binary(name string, value []byte) Field {
+	return Field{Name: name, Type: BinaryType, Value: value}
 }
 
 // ByteString will create ByteString Field
-func ByteString(value []byte) Field {
-	return Field{Type: ByteStringType, Value: value}
+func ByteString(name string, value []byte) Field {
+	return Field{Name: name, Type: ByteStringType, Value: value}
 }
 
 // Error will create Error Field
-func Error(value error) Field {
-	return Field{Type: ErrorType, Value: value}
+func Error(name string, value error) Field {
+	return Field{Name: name, Type: ErrorType, Value: value}
 }
 
 // Stringer will create Stringer Field
-func Stringer(value fmt.Stringer) Field {
-	return Field{Type: StringerType, Value: value}
+func Stringer(name string, value fmt.Stringer) Field {
+	return Field{Name: name, Type: StringerType, Value: value}
 }
 
 // Time will create Time Field
-func Time(value time.Time) Field {
-	return Field{Type: TimeType, Value: value}
+func Time(name string, value time.Time) Field {
+	return Field{Name: name, Type: TimeType, Value: value}
 }
 
 // Duration will create Duration Field
-func Duration(value time.Duration) Field {
-	return Field{Type: DurationType, Value: value}
+func Duration(name string, value time.Duration) Field {
+	return Field{Name: name, Type: DurationType, Value: value}
 }
 
 // Reflect will create Reflect Field
-func Reflect(value interface{}) Field {
-	return Field{Type: ReflectType, Value: value}
+func Reflect(name string, value interface{}) Field {
+	return Field{Name: name, Type: ReflectType, Value: value}
 }
 
 // Any will guess and create Field with givan value
-func Any(value interface{}) Field {
+func Any(name string, value interface{}) Field {
 	switch val := value.(type) {
 	case bool:
-		return Bool(val)
+		return Bool(name, val)
 	case int:
-		return Int64(int64(val))
+		return Int64(name, int64(val))
 	case int8:
-		return Int8(val)
+		return Int8(name, val)
 	case int16:
-		return Int16(val)
+		return Int16(name, val)
 	case int32:
-		return Int32(val)
+		return Int32(name, val)
 	case int64:
-		return Int64(val)
+		return Int64(name, val)
 	case uint8:
-		return Uint8(val)
+		return Uint8(name, val)
 	case uint16:
-		return Uint16(val)
+		return Uint16(name, val)
 	case uint32:
-		return Uint32(val)
+		return Uint32(name, val)
 	case uint64:
-		return Uint64(val)
+		return Uint64(name, val)
 	case uintptr:
-		return Uintptr(val)
+		return Uintptr(name, val)
 	case float32:
-		return Float32(val)
+		return Float32(name, val)
 	case float64:
-		return Float64(val)
+		return Float64(name, val)
 	case complex64:
-		return Complex64(val)
+		return Complex64(name, val)
 	case complex128:
-		return Complex128(val)
+		return Complex128(name, val)
 	case string:
-		return String(val)
+		return String(name, val)
 	case []byte:
-		return Binary(val)
+		return Binary(name, val)
 	case error:
-		return Error(val)
+		return Error(name, val)
 	case time.Time:
-		return Time(val)
+		return Time(name, val)
 	case time.Duration:
-		return Duration(val)
+		return Duration(name, val)
 	case fmt.Stringer:
-		return Stringer(val)
+		return Stringer(name, val)
 	default:
-		return Reflect(val)
+		return Reflect(name, val)
 	}
 }
