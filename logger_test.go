@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/gol4ng/logger/mocks"
-	testing2 "github.com/gol4ng/logger/testing"
+	testing_logger "github.com/gol4ng/logger/testing"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
@@ -87,7 +87,7 @@ func TestLogger_Log(t *testing.T) {
 
 				return nil
 			})
-			l.ErrorHandler = testing2.AssertErrorHandlerNotCalled(t)
+			l.ErrorHandler = testing_logger.AssertErrorHandlerNotCalled(t)
 
 			switch tt.level {
 			case logger.DebugLevel:
@@ -159,7 +159,7 @@ func TestNewNilLogger_Log(t *testing.T) {
 	l.Emergency("l message")
 	l.Log("l message", logger.Level(127))
 
-	l.ErrorHandler = testing2.AssertErrorHandlerNotCalled(t)
+	l.ErrorHandler = testing_logger.AssertErrorHandlerNotCalled(t)
 }
 
 func TestNewLogger_Wrap(t *testing.T) {
@@ -178,7 +178,7 @@ func TestNewLogger_Wrap(t *testing.T) {
 	}
 
 	l := logger.NewLogger(mockHandler)
-	l.ErrorHandler = testing2.AssertErrorHandlerNotCalled(t)
+	l.ErrorHandler = testing_logger.AssertErrorHandlerNotCalled(t)
 
 	countingMiddleware := func(expectedI int) logger.MiddlewareInterface {
 		return func(h logger.HandlerInterface) logger.HandlerInterface {
@@ -219,7 +219,7 @@ func TestNewLogger_WrapNew(t *testing.T) {
 	}
 
 	l := logger.NewLogger(mockHandler)
-	l.ErrorHandler = testing2.AssertErrorHandlerNotCalled(t)
+	l.ErrorHandler = testing_logger.AssertErrorHandlerNotCalled(t)
 
 	countingMiddleware := func(expectedI int) logger.MiddlewareInterface {
 		return func(h logger.HandlerInterface) logger.HandlerInterface {
