@@ -10,6 +10,11 @@
 
 Gol4ng/Logger is another GO logger. The main line is to provide a friendly and fast API to send your log whenever you want. 
 
+## Why another one?
+
+When i start GO i searched a logger that can be **simple to use**, **efficient**, **multi output**, **multi formats** and quite easy to **extend**. 
+That's why i created this logger with built-in [handlers](#Handlers)(process a log), [formatters](#formatters)(format log in another representation), [middlewares](#middlewares)(log modification before handler)
+
 ## Installation
 
 `go get -u github.com/gol4ng/logger`
@@ -111,11 +116,10 @@ Available writer:
 - **compress** _it will compress log to gzip/zlib_
 - **gelf_chunked** _it will chunked log entry into gelf chunk_
 - **rotate** _it will write in io.Writer and rotate writer on demand_
-- **time rotate** _it's a rotate writer that rorate with `time.Ticker`_
+- **time_rotate** _it's a rotate writer that rorate with `time.Ticker`_
 
 ### Todo
 - benchmark
-- improve err handling
 - Implement all the handler
     - SSE http endpoint
     - websocket server 
@@ -156,5 +160,4 @@ Available writer:
  
 ### Idea
 
-- add shortcut to log time.now
 - log server with log routing
