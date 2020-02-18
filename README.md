@@ -116,7 +116,7 @@ Available writer:
 - **compress** _it will compress log to gzip/zlib_
 - **gelf_chunked** _it will chunked log entry into gelf chunk_
 - **rotate** _it will write in io.Writer and rotate writer on demand_
-- **time_rotate** _it's a rotate writer that rorate with `time.Ticker`_
+- **time_rotate** _it's a rotate writer that rotate with `time.Ticker`_
 
 ### Todo
 - benchmark
