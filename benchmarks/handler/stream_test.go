@@ -9,7 +9,7 @@ import (
 
 type NopWriter struct{}
 
-func (w *NopWriter) Write(p []byte) (n int, err error) {
+func (w *NopWriter) Write(_ []byte) (n int, err error) {
 	return 0, nil
 }
 
@@ -20,6 +20,6 @@ func BenchmarkStdoutStreamHandler(b *testing.B) {
 
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		streamHandler(logger.Entry{Message: "This log message goes nowhere.", Level: logger.InfoLevel})
+		_ = streamHandler(logger.Entry{Message: "This log message goes nowhere.", Level: logger.InfoLevel})
 	}
 }

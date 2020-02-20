@@ -54,14 +54,14 @@ func TestGelf_withWrongNetwork(t *testing.T) {
 
 type WrongConn struct{}
 
-func (w *WrongConn) Read(b []byte) (n int, err error)   { return 0, nil }
-func (w *WrongConn) Write(b []byte) (n int, err error)  { return 0, nil }
+func (w *WrongConn) Read(_ []byte) (n int, err error)   { return 0, nil }
+func (w *WrongConn) Write(_ []byte) (n int, err error)  { return 0, nil }
 func (w *WrongConn) Close() error                       { return nil }
 func (w *WrongConn) LocalAddr() net.Addr                { return nil }
-func (w *WrongConn) RemoteAddr() net.Addr               { return nil }
-func (w *WrongConn) SetDeadline(t time.Time) error      { return nil }
-func (w *WrongConn) SetReadDeadline(t time.Time) error  { return nil }
-func (w *WrongConn) SetWriteDeadline(t time.Time) error { return nil }
+func (w *WrongConn) RemoteAddr() net.Addr              { return nil }
+func (w *WrongConn) SetDeadline(_ time.Time) error     { return nil }
+func (w *WrongConn) SetReadDeadline(_ time.Time) error { return nil }
+func (w *WrongConn) SetWriteDeadline(_ time.Time) error { return nil }
 
 func TestGelfFromConnection(t *testing.T) {
 

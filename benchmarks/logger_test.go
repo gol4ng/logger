@@ -11,7 +11,7 @@ import (
 
 type NopWriter struct{}
 
-func (w *NopWriter) Write(p []byte) (n int, err error) {
+func (w *NopWriter) Write(_ []byte) (n int, err error) {
 	return 0, nil
 }
 

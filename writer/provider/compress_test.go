@@ -13,13 +13,13 @@ import (
 )
 
 func TestCompressProvider_WithError(t *testing.T) {
-	var writer io.Writer
+	var writer1 io.Writer
 	var MyProvider = func(w io.Writer) (io.Writer, error) {
-		assert.Equal(t, writer, w)
+		assert.Equal(t, writer1, w)
 		return w, errors.New("my_fake_provider_error")
 	}
 	w := provider.CompressProvider(MyProvider)
-	file, err := w(writer)
+	file, err := w(writer1)
 	assert.Nil(t, file)
 	assert.EqualError(t, err, "my_fake_provider_error")
 }

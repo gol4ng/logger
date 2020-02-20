@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-// ErrorHandler will print error and entry when logging error occured
+// ErrorHandler will print error and entry when logging error occurred
 func ErrorHandler(error error, entry Entry) {
 	log.Println(error, entry)
 }

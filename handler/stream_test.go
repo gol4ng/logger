@@ -3,11 +3,11 @@ package handler_test
 import (
 	"bytes"
 	"errors"
-	"github.com/gol4ng/logger/formatter"
 	"os"
 	"testing"
 
 	"github.com/gol4ng/logger"
+	"github.com/gol4ng/logger/formatter"
 	"github.com/gol4ng/logger/handler"
 	"github.com/gol4ng/logger/mocks"
 	"github.com/stretchr/testify/assert"
@@ -40,7 +40,7 @@ type WriterError struct {
 	Error  error
 }
 
-func (w *WriterError) Write(p []byte) (n int, err error) {
+func (w *WriterError) Write(_ []byte) (n int, err error) {
 	return w.Number, w.Error
 }
 
@@ -51,7 +51,7 @@ func (w *WriterError) Write(p []byte) (n int, err error) {
 func ExampleStream() {
 	lineFormatter := formatter.NewDefaultFormatter()
 	lineLogHandler := handler.Stream(os.Stdout, lineFormatter)
-	lineLogHandler(logger.Entry{Message: "Log example"})
+	_ = lineLogHandler(logger.Entry{Message: "Log example"})
 
 	//Output:
 	//<emergency> Log example

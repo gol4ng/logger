@@ -55,7 +55,7 @@ func (n *DefaultFormatter) Format(entry logger.Entry) string {
 }
 
 // NewDefaultFormatter will create a new DefaultFormatter
-func NewDefaultFormatter(options ...option) *DefaultFormatter {
+func NewDefaultFormatter(options ...Option) *DefaultFormatter {
 	f := &DefaultFormatter{}
 	for _, option := range options {
 		option(f)
@@ -63,17 +63,17 @@ func NewDefaultFormatter(options ...option) *DefaultFormatter {
 	return f
 }
 
-type option func(*DefaultFormatter)
+type Option func(*DefaultFormatter)
 
 // WithColor function will enable ANSI colored formatting
-func WithColor(enable bool) option {
+func WithColor(enable bool) Option {
 	return func(formatter *DefaultFormatter) {
 		formatter.colored = enable
 	}
 }
 
 // WithContext function will display context printing
-func WithContext(enable bool) option {
+func WithContext(enable bool) Option {
 	return func(formatter *DefaultFormatter) {
 		formatter.displayContext = enable
 	}

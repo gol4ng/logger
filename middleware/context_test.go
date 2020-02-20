@@ -17,7 +17,7 @@ func TestContext_Handle(t *testing.T) {
 		assert.Equal(t, "my_log_message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
 		contextStr := entry.Context.String()
-		assert.Contains(t, contextStr, "<my_key:my_overwrited_value>")
+		assert.Contains(t, contextStr, "<my_key:my_overwritten_value>")
 		assert.Contains(t, contextStr, "<my_entry_key:my_entry_value>")
 
 		return nil
@@ -30,7 +30,7 @@ func TestContext_Handle(t *testing.T) {
 	context := middleware.Context(&defaultContext)
 
 	entryContext := logger.Context(map[string]logger.Field{
-		"my_key":       {Value: "my_overwrited_value"},
+		"my_key":       {Value: "my_overwritten_value"},
 		"my_entry_key": {Value: "my_entry_value"},
 	})
 	logEntry := logger.Entry{
@@ -50,12 +50,12 @@ func ExampleContext() {
 	contextHandler := middleware.Context(logger.Ctx("my_value_1", "value 1"))
 
 	myLogger := logger.NewLogger(handler.Group(contextHandler(streamHandler), streamHandler))
-	myLogger.Debug("will be printed", logger.Any("my_value_1", "overwrited value 1"))
+	myLogger.Debug("will be printed", logger.Any("my_value_1", "overwritten value 1"))
 	myLogger.Debug("only context handler values will be printed")
 
 	//Output:
-	//{"Message":"will be printed","Level":7,"Context":{"my_value_1":"overwrited value 1"}}
-	//{"Message":"will be printed","Level":7,"Context":{"my_value_1":"overwrited value 1"}}
+	//{"Message":"will be printed","Level":7,"Context":{"my_value_1":"overwritten value 1"}}
+	//{"Message":"will be printed","Level":7,"Context":{"my_value_1":"overwritten value 1"}}
 	//{"Message":"only context handler values will be printed","Level":7,"Context":{"my_value_1":"value 1"}}
 	//{"Message":"only context handler values will be printed","Level":7,"Context":null}
 }

@@ -20,7 +20,7 @@ func (w *RotateIoWriter) Write(output []byte) (int, error) {
 	return w.writer.Write(output)
 }
 
-// Rotate will ask the provider to change the underlaing io.writer with a new one
+// Rotate will ask the provider to change the underlying io.writer with a new one
 func (w *RotateIoWriter) Rotate() (err error) {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
