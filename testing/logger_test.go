@@ -31,6 +31,18 @@ func TestNewLogger(t *testing.T) {
 	assert.Equal(t, "test Info", entry2.Message)
 }
 
+func TestNewLoggerRace(t *testing.T) {
+	myLogger, store := testing_logger.NewLogger()
+
+	go func() {
+		myLogger.Debug("test Debug")
+	}()
+
+	go func() {
+		store.GetEntries()
+	}()
+}
+
 func TestNewLogger_GetEntries(t *testing.T) {
 	myLogger, store := testing_logger.NewLogger()
 
