@@ -86,7 +86,7 @@ func TestField_Any(t *testing.T) {
 		{name: "my float64", value: float64(123), expectedType: logger.Float64Type, expectedMallocs: 1, expectedTotalAlloc: 16},
 		{name: "my complex64", value: complex64(123), expectedType: logger.Complex64Type, expectedMallocs: 1, expectedTotalAlloc: 16},
 		{name: "my complex128", value: complex128(123), expectedType: logger.Complex128Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my strings", value: "my strings", expectedType: logger.StringType, expectedMallocs: 1, expectedTotalAlloc: 16},
+		{name: "my string", value: "my string", expectedType: logger.StringType, expectedMallocs: 1, expectedTotalAlloc: 16},
 		{name: "my binary", value: []byte{1, 2, 3}, expectedType: logger.BinaryType, expectedMallocs: 1, expectedTotalAlloc: 32},
 		{name: "my error", value: errors.New("my error message"), expectedType: logger.ErrorType, expectedMallocs: 0, expectedTotalAlloc: 0},
 		{name: "my time", value: time.Now(), expectedType: logger.TimeType, expectedMallocs: 1, expectedTotalAlloc: 32},

@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -103,6 +104,21 @@ func (f *Field) String() string {
 	default:
 		return fmt.Sprintf("%v", f.Value)
 	}
+}
+
+// GoString was called by fmt.Printf("%#v", Fields)
+// fmt GoStringer interface
+func (f *Field) GoString() string {
+	builder := &strings.Builder{}
+	builder.WriteString("logger.Field{Name: ")
+	builder.WriteString(f.Name)
+	builder.WriteString(", Value: ")
+	builder.WriteString(f.String())
+	builder.WriteString(", Type: ")
+	builder.WriteString(strconv.FormatUint(uint64(f.Type), 10))
+	builder.WriteString("}")
+	return builder.String()
+
 }
 
 // Skip will create Skip Field
