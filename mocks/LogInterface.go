@@ -10,16 +10,14 @@ type LogInterface struct {
 	mock.Mock
 }
 
-// Log provides a mock function with given fields: message, level, context
-func (_m *LogInterface) Log(message string, level logger.Level, context *logger.Context) error {
-	ret := _m.Called(message, level, context)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string, logger.Level, *logger.Context) error); ok {
-		r0 = rf(message, level, context)
-	} else {
-		r0 = ret.Error(0)
+// Log provides a mock function with given fields: message, level, field
+func (_m *LogInterface) Log(message string, level logger.Level, field ...logger.Field) {
+	_va := make([]interface{}, len(field))
+	for _i := range field {
+		_va[_i] = field[_i]
 	}
-
-	return r0
+	var _ca []interface{}
+	_ca = append(_ca, message, level)
+	_ca = append(_ca, _va...)
+	_m.Called(_ca...)
 }
