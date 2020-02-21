@@ -39,8 +39,8 @@ const (
 	StringerType
 	// ReflectType indicates that the field carries an interface{}, which should be serialized using reflection.
 	ReflectType
-	// @TODO ArrayMarshalerType
-	// @TODO ObjectMarshalerType
+	// @TODO ArrayMarshallerType
+	// @TODO ObjectMarshallerType
 )
 
 // Field represents a contextual information
@@ -62,23 +62,23 @@ func (f *Field) String() string {
 		}
 		return "false"
 	case Int8Type:
-		return strconv.Itoa(int(f.Value.(int8)))
+		return strconv.FormatInt(int64(f.Value.(int8)), 10)
 	case Int16Type:
-		return strconv.Itoa(int(f.Value.(int16)))
+		return strconv.FormatInt(int64(f.Value.(int16)), 10)
 	case Int32Type:
-		return strconv.Itoa(int(f.Value.(int32)))
+		return strconv.FormatInt(int64(f.Value.(int32)), 10)
 	case Int64Type:
-		return strconv.Itoa(int(f.Value.(int64)))
+		return strconv.FormatInt(f.Value.(int64), 10)
 	case Uint8Type:
-		return strconv.Itoa(int(f.Value.(uint8)))
+		return strconv.FormatUint(uint64(f.Value.(uint8)), 10)
 	case Uint16Type:
-		return strconv.Itoa(int(f.Value.(uint16)))
+		return strconv.FormatUint(uint64(f.Value.(uint16)), 10)
 	case Uint32Type:
-		return strconv.Itoa(int(f.Value.(uint32)))
+		return strconv.FormatUint(uint64(f.Value.(uint32)), 10)
 	case Uint64Type:
-		return strconv.Itoa(int(f.Value.(uint64)))
+		return strconv.FormatUint(f.Value.(uint64), 10)
 	case UintptrType:
-		return strconv.Itoa(int(f.Value.(uintptr)))
+		return strconv.FormatUint(uint64(f.Value.(uintptr)), 10)
 	case Float32Type:
 		return strconv.FormatFloat(float64(f.Value.(float32)), 'g', 10, 64)
 	case Float64Type:
@@ -236,7 +236,7 @@ func Reflect(name string, value interface{}) Field {
 	return Field{Name: name, Type: ReflectType, Value: value}
 }
 
-// Any will guess and create Field with givan value
+// Any will guess and create Field for given value
 func Any(name string, value interface{}) Field {
 	switch val := value.(type) {
 	case bool:

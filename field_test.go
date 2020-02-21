@@ -20,7 +20,7 @@ func (s MyStringer) String() string {
 
 func TestField(t *testing.T) {
 	now := time.Now()
-	error := errors.New("my_value")
+	err := errors.New("my_value")
 
 	tests := []struct {
 		name          string
@@ -47,7 +47,7 @@ func TestField(t *testing.T) {
 		{field: logger.String("String field", "my_value"), expectedValue: "my_value", expectedType: logger.StringType},
 		{field: logger.Binary("Binary field", []byte("my_value")), expectedValue: []byte("my_value"), expectedType: logger.BinaryType},
 		{field: logger.ByteString("ByteString field", []byte("my_value")), expectedValue: []byte("my_value"), expectedType: logger.ByteStringType},
-		{field: logger.Error("Error field", error), expectedValue: error, expectedType: logger.ErrorType},
+		{field: logger.Error("Error field", err), expectedValue: err, expectedType: logger.ErrorType},
 		{field: logger.Time("Time field", now), expectedValue: now, expectedType: logger.TimeType},
 		{field: logger.Duration("Duration field", 5 * time.Second), expectedValue: 5 * time.Second, expectedType: logger.DurationType},
 		{field: logger.Stringer("Stringer field", MyStringer{}), expectedValue: MyStringer{}, expectedType: logger.StringerType},
@@ -67,32 +67,30 @@ func TestField_Any(t *testing.T) {
 		name               string
 		value              interface{}
 		expectedType       logger.FieldType
-		expectedMallocs    uint64
-		expectedTotalAlloc uint64
 	}{
-		{name: "my bool", value: true, expectedType: logger.BoolType, expectedMallocs: 0, expectedTotalAlloc: 0},
-		{name: "my bool", value: false, expectedType: logger.BoolType, expectedMallocs: 0, expectedTotalAlloc: 0},
-		{name: "my int", value: 123, expectedType: logger.Int64Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my int8", value: int8(123), expectedType: logger.Int8Type, expectedMallocs: 0, expectedTotalAlloc: 0},
-		{name: "my int16", value: int16(123), expectedType: logger.Int16Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my int32", value: int32(123), expectedType: logger.Int32Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my int64", value: int64(123), expectedType: logger.Int64Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my uint8", value: uint8(123), expectedType: logger.Uint8Type, expectedMallocs: 0, expectedTotalAlloc: 0},
-		{name: "my uint16", value: uint16(123), expectedType: logger.Uint16Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my uint32", value: uint32(123), expectedType: logger.Uint32Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my uint64", value: uint64(123), expectedType: logger.Uint64Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my uintptr", value: uintptr(123), expectedType: logger.UintptrType, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my float32", value: float32(123), expectedType: logger.Float32Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my float64", value: float64(123), expectedType: logger.Float64Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my complex64", value: complex64(123), expectedType: logger.Complex64Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my complex128", value: complex128(123), expectedType: logger.Complex128Type, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my string", value: "my string", expectedType: logger.StringType, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my binary", value: []byte{1, 2, 3}, expectedType: logger.BinaryType, expectedMallocs: 1, expectedTotalAlloc: 32},
-		{name: "my error", value: errors.New("my error message"), expectedType: logger.ErrorType, expectedMallocs: 0, expectedTotalAlloc: 0},
-		{name: "my time", value: time.Now(), expectedType: logger.TimeType, expectedMallocs: 1, expectedTotalAlloc: 32},
-		{name: "my duration", value: time.Second, expectedType: logger.DurationType, expectedMallocs: 1, expectedTotalAlloc: 16},
-		{name: "my stringer", value: MyStringer{}, expectedType: logger.StringerType, expectedMallocs: 0, expectedTotalAlloc: 0},
-		{name: "my reflect", value: struct{}{}, expectedType: logger.ReflectType, expectedMallocs: 0, expectedTotalAlloc: 0},
+		{name: "my bool", value: true, expectedType: logger.BoolType},
+		{name: "my bool", value: false, expectedType: logger.BoolType},
+		{name: "my int", value: 123, expectedType: logger.Int64Type},
+		{name: "my int8", value: int8(123), expectedType: logger.Int8Type},
+		{name: "my int16", value: int16(123), expectedType: logger.Int16Type},
+		{name: "my int32", value: int32(123), expectedType: logger.Int32Type},
+		{name: "my int64", value: int64(123), expectedType: logger.Int64Type},
+		{name: "my uint8", value: uint8(123), expectedType: logger.Uint8Type},
+		{name: "my uint16", value: uint16(123), expectedType: logger.Uint16Type},
+		{name: "my uint32", value: uint32(123), expectedType: logger.Uint32Type},
+		{name: "my uint64", value: uint64(123), expectedType: logger.Uint64Type},
+		{name: "my uintptr", value: uintptr(123), expectedType: logger.UintptrType},
+		{name: "my float32", value: float32(123), expectedType: logger.Float32Type},
+		{name: "my float64", value: float64(123), expectedType: logger.Float64Type},
+		{name: "my complex64", value: complex64(123), expectedType: logger.Complex64Type},
+		{name: "my complex128", value: complex128(123), expectedType: logger.Complex128Type},
+		{name: "my strings", value: "my strings", expectedType: logger.StringType},
+		{name: "my binary", value: []byte{1, 2, 3}, expectedType: logger.BinaryType},
+		{name: "my error", value: errors.New("my error message"), expectedType: logger.ErrorType},
+		{name: "my time", value: time.Now(), expectedType: logger.TimeType},
+		{name: "my duration", value: time.Second, expectedType: logger.DurationType},
+		{name: "my stringer", value: MyStringer{}, expectedType: logger.StringerType},
+		{name: "my reflect", value: struct{}{}, expectedType: logger.ReflectType},
 	}
 
 	for _, tt := range tests {
@@ -105,7 +103,7 @@ func TestField_Any(t *testing.T) {
 
 func TestField_String(t *testing.T) {
 	now := time.Now()
-	error := errors.New("my_error_value")
+	err := errors.New("my_error_value")
 
 	tests := []struct {
 		name           string
@@ -131,7 +129,7 @@ func TestField_String(t *testing.T) {
 		{field: logger.String("String field", "my_value"), expectedString: "my_value"},
 		{field: logger.Binary("Binary field", []byte{1, 2, 3}), expectedString: "\x01\x02\x03"},
 		{field: logger.ByteString("ByteString field", []byte("my_value")), expectedString: "my_value"},
-		{field: logger.Error("Error field", error), expectedString: "my_error_value"},
+		{field: logger.Error("Error field", err), expectedString: "my_error_value"},
 		{field: logger.Time("Time field", now), expectedString: now.String()},
 		{field: logger.Duration("Duration field", 5 * time.Second), expectedString: "5s"},
 		{field: logger.Stringer("Stringer field", MyStringer{}), expectedString: "my_stringer"},

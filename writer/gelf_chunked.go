@@ -41,12 +41,14 @@ func (w *GelfChunkWriter) Write(p []byte) (int, error) {
 
 	if chunkedNb > 1 {
 		messageID := make([]byte, 8)
-		if n, err := io.ReadFull(rand.Reader, messageID); err != nil || n != 8 {
-			return 0, fmt.Errorf("message id can not be generated : %s", err.Error())
+		if n, err := io.ReadFull(rand.Reader, messageID); err != nil {
+			return 0, fmt.Errorf("message id can not be generated : %w", err)
+		} else if n != 8 {
+			return 0, fmt.Errorf("message id can not be generated : cannot write 8 bytes (only %d)", n)
 		}
 		buffer := bytes.NewBuffer(make([]byte, 0, chunkSize))
 		bytesLeft := lenB
-		writedBytes := 0
+		writtenBytes := 0
 		for i := 0; i < chunkedNb; i++ {
 			off := i * chunkDataSize
 			chunkLen := chunkDataSize
@@ -62,13 +64,13 @@ func (w *GelfChunkWriter) Write(p []byte) (int, error) {
 			buffer.Write(p[off : off+chunkLen])
 
 			n, err := w.writer.Write(buffer.Bytes())
-			writedBytes += n
+			writtenBytes += n
 			if err != nil {
-				return writedBytes, err
+				return writtenBytes, err
 			}
 			bytesLeft -= chunkLen
 		}
-		return writedBytes, nil
+		return writtenBytes, nil
 	}
 	return w.writer.Write(p)
 }

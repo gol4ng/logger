@@ -10,7 +10,7 @@ import (
 	"github.com/gol4ng/logger/middleware"
 )
 
-func TestError_PassThrought(t *testing.T) {
+func TestError_PassThrough(t *testing.T) {
 	logEntry := logger.Entry{}
 	e := errors.New("my_fake_error")
 

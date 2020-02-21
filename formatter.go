@@ -10,7 +10,7 @@ type FormatterInterface interface {
 type NopFormatter struct{}
 
 // Format will return empty string
-func (n *NopFormatter) Format(entry Entry) string {
+func (n *NopFormatter) Format(_ Entry) string {
 	return ""
 }
 

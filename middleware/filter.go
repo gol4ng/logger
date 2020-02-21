@@ -4,7 +4,7 @@ import (
 	"github.com/gol4ng/logger"
 )
 
-// Filter will exclude some Entry for the underlaying handler with the given filter function
+// Filter will exclude some Entry for the underlying handler with the given filter function
 // eg: allows you to only treat the logs that have a specific level
 func Filter(filterFn func(logger.Entry) bool) logger.MiddlewareInterface {
 	return func(handler logger.HandlerInterface) logger.HandlerInterface {

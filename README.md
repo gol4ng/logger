@@ -37,7 +37,7 @@ func main(){
 	// logger will print on STDOUT with default line format
 	l := logger.NewLogger(handler.Stream(os.Stdout, formatter.NewDefaultFormatter(formatter.WithContext(true))))
 	
-	l.Debug("Go debug informations", logger.String("go_os", runtime.GOOS), logger.String("go_arch", runtime.GOARCH))
+	l.Debug("Go debug information", logger.String("go_os", runtime.GOOS), logger.String("go_arch", runtime.GOARCH))
 	// <debug> MyExample message {"go_arch":"amd64","go_os":"darwin"}
 	
 	l.Info("Another")
@@ -97,11 +97,11 @@ Available formatters:
 
 ## Middlewares
 
-The middleware are handler decorator/wrapper. It will allow you to do some process arround child handler 
+The middleware are handler decorator/wrapper. It will allow you to do some process around child handler 
 
 Available middleware:
 - **caller** _it will add caller file/line to context_ `<file:/my/example/path/file> <line:31>`
-- **context** _it permit to have a default context value_ usefull when you want to set global context value
+- **context** _it permit to have a default context value_ useful when you want to set global context value
 - **error** _it will print provided handler error_ (can be configure to silent it)
 - **filter** _it will permit to filter log entry_ level filter are available or you can use your own callback filter
 - **placeholder** _it will replace log message placeholder with contextual value_
@@ -126,7 +126,7 @@ Available writer:
     - socket server
     - https://craig.is/writing/chrome-logger
     - fingercross
-    - grpc / protobuff
+    - grpc / protobuf
     - curl
     - Mail
     - Slack

@@ -42,7 +42,7 @@ type CompressWriter struct {
 	compressionLevel int
 }
 
-// Write will compress data and pass it to the underlaying io.Writer
+// Write will compress data and pass it to the underlying io.Writer
 func (w *CompressWriter) Write(p []byte) (int, error) {
 	if w.compressionType == CompressNone {
 		return w.Writer.Write(p)
@@ -64,10 +64,10 @@ func (w *CompressWriter) Write(p []byte) (int, error) {
 	}
 
 	if n, err := compressWriter.Write(p); err != nil {
-		compressWriter.Close()
+		_ = compressWriter.Close()
 		return n, err
 	}
-	compressWriter.Close()
+	_ = compressWriter.Close()
 
 	return w.Writer.Write(buf.Bytes())
 }

@@ -272,7 +272,7 @@ func ExampleLogger_callerHandler() {
 	myLogger.Alert("Log example")
 	myLogger.Emergency("Log example")
 
-	output.Constains([]string{
+	output.Contains([]string{
 		"lvl: debug | msg: Log example | ctx:", "<file:/", "<line:",
 		"lvl: info | msg: Log example | ctx:", "<file:/", "<line:",
 		"lvl: notice | msg: Log example | ctx:", "<file:/", "<line:",
@@ -301,7 +301,7 @@ func ExampleLogger_lineFormatter() {
 	myLogger.Alert("Log example", logger.Any("my_key", "my_value"))
 	myLogger.Emergency("Log example", logger.Any("my_key", "my_value"))
 
-	output.Constains([]string{
+	output.Contains([]string{
 		"lvl: debug | msg: Log example | ctx: <my_key:my_value>",
 		"lvl: info | msg: Log example | ctx: <my_key:my_value>",
 		"lvl: notice | msg: Log example | ctx: <my_key:my_value>",
@@ -330,7 +330,7 @@ func ExampleLogger_jsonFormatter() {
 	myLogger.Alert("Log example", logger.Any("my_key", "my_value"))
 	myLogger.Emergency("Log example", logger.Any("my_key", "my_value"))
 
-	output.Constains([]string{
+	output.Contains([]string{
 		`{"Message":"Log example","Level":7,"Context":{"my_key":"my_value"}}`,
 		`{"Message":"Log example","Level":6,"Context":{"my_key":"my_value"}}`,
 		`{"Message":"Log example","Level":5,"Context":{"my_key":"my_value"}}`,
@@ -361,7 +361,7 @@ func ExampleLogger_minLevelFilterHandler() {
 	myLogger.Alert("Log example", logger.Any("my_key", "my_value"))
 	myLogger.Emergency("Log example", logger.Any("my_key", "my_value"))
 
-	output.Constains([]string{
+	output.Contains([]string{
 		`<warning> Log example {"my_key":"my_value"}`,
 		`<error> Log example {"my_key":"my_value"}`,
 		`<critical> Log example {"my_key":"my_value"}`,
@@ -391,7 +391,7 @@ func ExampleLogger_groupHandler() {
 	myLogger.Alert("Log example", logger.Any("my_key", "my_value"))
 	myLogger.Emergency("Log example", logger.Any("my_key", "my_value"))
 
-	output.Constains([]string{
+	output.Contains([]string{
 		`{"Message":"Log example","Level":7,"Context":{"my_key":"my_value"}}`,
 		`{"Message":"Log example","Level":6,"Context":{"my_key":"my_value"}}`,
 		`{"Message":"Log example","Level":5,"Context":{"my_key":"my_value"}}`,
@@ -402,7 +402,7 @@ func ExampleLogger_groupHandler() {
 		`{"Message":"Log example","Level":0,"Context":{"my_key":"my_value"}}`,
 	})
 
-	output2.Constains([]string{
+	output2.Contains([]string{
 		`<debug> Log example {"my_key":"my_value"}`,
 		`<info> Log example {"my_key":"my_value"}`,
 		`<notice> Log example {"my_key":"my_value"}`,
@@ -430,7 +430,7 @@ func ExampleLogger_placeholderMiddleware() {
 	myLogger.Alert("Log %ctx_key% example", logger.Any("ctx_key", struct{ attr string }{attr: "attrValue"}))
 	myLogger.Critical("Log %ctx_key% example another value %ctx_key2%", logger.Any("ctx_key", false), logger.Any("ctx_key2", 1234))
 
-	output.Constains([]string{
+	output.Contains([]string{
 		`debug Log false example`,
 		`info Log 1234 example`,
 		`warning Log 5s example`,
@@ -457,7 +457,7 @@ func ExampleLogger_wrapHandler() {
 	myLogger.Critical("Log example", logger.Any("my_key", "my_value"))
 	myLogger.Alert("Log example", logger.Any("my_key", "my_value"))
 	myLogger.Emergency("Log example", logger.Any("my_key", "my_value"))
-	output.Constains([]string{
+	output.Contains([]string{
 		`<warning> Log example {"my_key":"my_value"}`,
 		`<error> Log example {"my_key":"my_value"}`,
 		`<critical> Log example {"my_key":"my_value"}`,
@@ -535,7 +535,7 @@ type Output struct {
 	bytes.Buffer
 }
 
-func (o *Output) Constains(str []string) {
+func (o *Output) Contains(str []string) {
 	b := o.String()
 	for _, s := range str {
 		if strings.Contains(b, s) != true {

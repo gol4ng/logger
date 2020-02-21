@@ -18,7 +18,7 @@ func TestFilter_HandleWithoutExclusion(t *testing.T) {
 		assert.Equal(t, "my_log_message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
 		contextStr := entry.Context.String()
-		assert.Contains(t, contextStr, "<my_key:my_overwrited_value>")
+		assert.Contains(t, contextStr, "<my_key:my_overwritten_value>")
 		assert.Contains(t, contextStr, "<my_entry_key:my_entry_value>")
 
 		return nil

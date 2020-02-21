@@ -3,7 +3,7 @@ package logger
 import "strings"
 
 // Entry represents a log in its entirety
-// it is composed of a level, a message and context
+// it is composed of a level, a message and a context
 type Entry struct {
 	Message string
 	Level   Level

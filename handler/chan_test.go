@@ -14,7 +14,7 @@ func TestChan_Handle(t *testing.T) {
 	chanHandler := handler.Chan(entryChan)
 
 	entryContext := logger.Context(map[string]logger.Field{
-		"my_key":       {Value: "my_overwrited_value"},
+		"my_key":       {Value: "my_overwritten_value"},
 		"my_entry_key": {Value: "my_entry_value"},
 	})
 	logEntry := logger.Entry{

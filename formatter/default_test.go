@@ -60,10 +60,10 @@ func TestDefaultFormatter_Format_AllColor(t *testing.T) {
 		{level: logger.InfoLevel, expected: "\x1b[1;32m<info>\x1b[m my message"},
 		{level: logger.DebugLevel, expected: "\x1b[1;36m<debug>\x1b[m my message"},
 	}
-	formatter := formatter.NewDefaultFormatter(formatter.WithColor(true))
+	defaultFormatter := formatter.NewDefaultFormatter(formatter.WithColor(true))
 	for _, tt := range tests {
 		t.Run(tt.level.String(), func(t *testing.T) {
-			assert.Equal(t, tt.expected, formatter.Format(logger.Entry{Level: tt.level, Message: "my message"}))
+			assert.Equal(t, tt.expected, defaultFormatter.Format(logger.Entry{Level: tt.level, Message: "my message"}))
 		})
 	}
 }

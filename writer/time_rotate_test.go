@@ -39,7 +39,7 @@ func TestTimeRotateWriter_StartWithError(t *testing.T) {
 	tr.Start()
 	mockRotateWriter.AssertNotCalled(t, "Rotate")
 	tickerChan <- time.Now()
-	time.Sleep(1 * time.Millisecond) //we have to wait a bit to be shure Rotate call has been made
+	time.Sleep(1 * time.Millisecond) //we have to wait a bit to be sure Rotate call has been made
 	mockRotateWriter.AssertCalled(t, "Rotate")
 }
 
