@@ -31,13 +31,15 @@ func (s *inMemoryEntriesStore) CleanEntries() {
 
 // GetEntries will return the in memory entries list
 func (s *inMemoryEntriesStore) GetEntries() []logger.Entry {
+	defer s.lock()()
 	return s.entries
 }
 
 // GetAndCleanEntries will return and clean the in memory entries list
 func (s *inMemoryEntriesStore) GetAndCleanEntries() []logger.Entry {
-	entries := s.GetEntries()
-	s.CleanEntries()
+	defer s.lock()()
+	entries := s.entries
+	s.entries = []logger.Entry{}
 	return entries
 }
 
