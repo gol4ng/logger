@@ -63,6 +63,7 @@ func NewDefaultFormatter(options ...Option) *DefaultFormatter {
 	return f
 }
 
+// Option is the option pattern interface for the DefaultFormatter
 type Option func(*DefaultFormatter)
 
 // WithColor function will enable ANSI colored formatting
