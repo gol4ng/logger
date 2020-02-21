@@ -79,7 +79,16 @@ func (c *Context) stringTo(builder *strings.Builder) *Context {
 	return c
 }
 
-// String will return context as string
+// Slice will return fields as *Fields
+func (c *Context) Slice() *Fields {
+	slice := Fields{}
+	for _, field := range *c {
+		slice = append(slice, field)
+	}
+	return &slice
+}
+
+// String will return fields as string
 func (c *Context) String() string {
 	if c == nil || len(*c) == 0 {
 		return "<nil>"

@@ -45,7 +45,7 @@ func TestContext_Get(t *testing.T) {
 }
 
 func TestContext_Add(t *testing.T) {
-	context := logger.Context(map[string]logger.Field{})
+	context := logger.Context{}
 	context.
 		Add("my_key", "my_value").
 		Add("my_key", int8(2))
@@ -54,7 +54,7 @@ func TestContext_Add(t *testing.T) {
 }
 
 func TestContext_Skip(t *testing.T) {
-	context := logger.Context(map[string]logger.Field{})
+	context := logger.Context{}
 	context.Skip("my_key", "my_value")
 	field := context.Get("my_key", nil)
 	assert.Equal(t, "my_value", field.Value)
@@ -62,7 +62,7 @@ func TestContext_Skip(t *testing.T) {
 }
 
 func TestContext_Binary(t *testing.T) {
-	context := logger.Context(map[string]logger.Field{})
+	context := logger.Context{}
 	context.Binary("my_key", []byte{1, 2, 3})
 	field := context.Get("my_key", nil)
 	assert.Equal(t, []byte{1, 2, 3}, field.Value)
@@ -70,7 +70,7 @@ func TestContext_Binary(t *testing.T) {
 }
 
 func TestContext_ByteString(t *testing.T) {
-	context := logger.Context(map[string]logger.Field{})
+	context := logger.Context{}
 	context.ByteString("my_key", []byte("my_value"))
 	field := context.Get("my_key", nil)
 	assert.Equal(t, []byte("my_value"), field.Value)
@@ -81,6 +81,14 @@ func TestContext_Ctx(t *testing.T) {
 	context := logger.Ctx("my_key", "my_value")
 
 	assert.Equal(t, "my_value", (*context)["my_key"].Value)
+}
+
+func TestContext_Slice(t *testing.T) {
+	context := logger.Context{}
+	context.Add("my_key", "my_value")
+	slice := *context.Slice()
+	assert.Equal(t, "my_key", slice[0].Name)
+	assert.Equal(t, "my_value", slice[0].Value)
 }
 
 func TestContext_String(t *testing.T) {
