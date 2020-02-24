@@ -51,46 +51,50 @@ func (l *Logger) onError(error error, entry Entry) {
 
 // Debug will log a debug message
 func (l *Logger) Debug(message string, fields ...Field) {
-	l.Log(message, DebugLevel, fields...)
+	l.log(message, DebugLevel, fields...)
 }
 
 // Info will log a info message
 func (l *Logger) Info(message string, fields ...Field) {
-	l.Log(message, InfoLevel, fields...)
+	l.log(message, InfoLevel, fields...)
 }
 
 // Notice will log a notice message
 func (l *Logger) Notice(message string, fields ...Field) {
-	l.Log(message, NoticeLevel, fields...)
+	l.log(message, NoticeLevel, fields...)
 }
 
 // Warning will log a warning message
 func (l *Logger) Warning(message string, fields ...Field) {
-	l.Log(message, WarningLevel, fields...)
+	l.log(message, WarningLevel, fields...)
 }
 
 // Error will log a message
 func (l *Logger) Error(message string, fields ...Field) {
-	l.Log(message, ErrorLevel, fields...)
+	l.log(message, ErrorLevel, fields...)
 }
 
 // Critical will log a critical message
 func (l *Logger) Critical(message string, fields ...Field) {
-	l.Log(message, CriticalLevel, fields...)
+	l.log(message, CriticalLevel, fields...)
 }
 
 // Alert will log a alert message
 func (l *Logger) Alert(message string, fields ...Field) {
-	l.Log(message, AlertLevel, fields...)
+	l.log(message, AlertLevel, fields...)
 }
 
 // Emergency will log a emergency message
 func (l *Logger) Emergency(message string, fields ...Field) {
-	l.Log(message, EmergencyLevel, fields...)
+	l.log(message, EmergencyLevel, fields...)
 }
 
 // Log will log a message with a given level
 func (l *Logger) Log(message string, level Level, fields ...Field) {
+	l.log(message, level, fields...)
+}
+
+func (l *Logger) log(message string, level Level, fields ...Field) {
 	entry := Entry{message, level, NewContext(fields...)}
 	if err := l.handler(entry); err != nil {
 		l.onError(err, entry)
