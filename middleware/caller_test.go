@@ -17,7 +17,7 @@ func TestCaller_Handle(t *testing.T) {
 		contextStr := entry.Context.String()
 		assert.Contains(t, contextStr, "<file:")
 		assert.Contains(t, contextStr, "caller_test.go")
-		assert.Contains(t, contextStr, "<line:31>")
+		assert.Contains(t, contextStr, "<line:32>")
 
 		return nil
 	}
