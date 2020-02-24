@@ -11,7 +11,7 @@ import (
 func TestMemory_Handle(t *testing.T) {
 	entry := logger.Entry{}
 
-	h := &handler.Memory{}
+	h := handler.NewMemory()
 
 	err := h.Handle(entry)
 	assert.NoError(t, err)
@@ -23,7 +23,7 @@ func TestMemory_Handle(t *testing.T) {
 }
 
 func TestMemory_HandleRace(t *testing.T) {
-	h := &handler.Memory{}
+	h := handler.NewMemory()
 
 	go func() {
 		err := h.Handle(logger.Entry{})
@@ -38,7 +38,7 @@ func TestMemory_HandleRace(t *testing.T) {
 func TestNewLogger_CleanEntries(t *testing.T) {
 	entry := logger.Entry{}
 
-	h := &handler.Memory{}
+	h := handler.NewMemory()
 
 	err := h.Handle(entry)
 	assert.NoError(t, err)
@@ -56,7 +56,7 @@ func TestNewLogger_CleanEntries(t *testing.T) {
 func TestNewLogger_GetAndCleanEntries(t *testing.T) {
 	entry := logger.Entry{}
 
-	h := &handler.Memory{}
+	h := handler.NewMemory()
 
 	err := h.Handle(entry)
 	assert.NoError(t, err)
