@@ -1,7 +1,6 @@
 package formatter
 
 import (
-	"encoding/json"
 	"strconv"
 	"strings"
 
@@ -47,8 +46,8 @@ func ContextToJSON(context *logger.Context, builder *strings.Builder) {
 			builder.WriteRune('"')
 			builder.WriteString(name)
 			builder.WriteString("\":")
-			d, _ := json.Marshal(field.Value)
-			builder.WriteString(string(d))
+			d, _ := field.MarshalJSON()
+			builder.Write(d)
 			i++
 		}
 		builder.WriteString("}")

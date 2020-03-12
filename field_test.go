@@ -49,7 +49,7 @@ func TestField(t *testing.T) {
 		{field: logger.ByteString("ByteString field", []byte("my_value")), expectedValue: []byte("my_value"), expectedType: logger.ByteStringType},
 		{field: logger.Error("Error field", err), expectedValue: err, expectedType: logger.ErrorType},
 		{field: logger.Time("Time field", now), expectedValue: now, expectedType: logger.TimeType},
-		{field: logger.Duration("Duration field", 5 * time.Second), expectedValue: 5 * time.Second, expectedType: logger.DurationType},
+		{field: logger.Duration("Duration field", 5*time.Second), expectedValue: 5 * time.Second, expectedType: logger.DurationType},
 		{field: logger.Stringer("Stringer field", MyStringer{}), expectedValue: MyStringer{}, expectedType: logger.StringerType},
 		{field: logger.Reflect("Reflect field", struct{}{}), expectedValue: struct{}{}, expectedType: logger.ReflectType},
 	}
@@ -64,9 +64,9 @@ func TestField(t *testing.T) {
 
 func TestField_Any(t *testing.T) {
 	tests := []struct {
-		name               string
-		value              interface{}
-		expectedType       logger.FieldType
+		name         string
+		value        interface{}
+		expectedType logger.FieldType
 	}{
 		{name: "my bool", value: true, expectedType: logger.BoolType},
 		{name: "my bool", value: false, expectedType: logger.BoolType},
@@ -124,14 +124,14 @@ func TestField_String(t *testing.T) {
 		{field: logger.Uintptr("Uintptr field", 123), expectedString: "123"},
 		{field: logger.Float32("Float32 field", 1.23456789), expectedString: "1.234567881"},
 		{field: logger.Float64("Float64 field", 123.4567891011), expectedString: "123.4567891"},
-		{field: logger.Complex64("Complex64 field", 6 + 7i), expectedString: "(6+7i)"},
-		{field: logger.Complex128("Complex128 field", 6 + 7i), expectedString: "(6+7i)"},
+		{field: logger.Complex64("Complex64 field", 6+7i), expectedString: "(6+7i)"},
+		{field: logger.Complex128("Complex128 field", 6+7i), expectedString: "(6+7i)"},
 		{field: logger.String("String field", "my_value"), expectedString: "my_value"},
 		{field: logger.Binary("Binary field", []byte{1, 2, 3}), expectedString: "\x01\x02\x03"},
 		{field: logger.ByteString("ByteString field", []byte("my_value")), expectedString: "my_value"},
 		{field: logger.Error("Error field", err), expectedString: "my_error_value"},
 		{field: logger.Time("Time field", now), expectedString: now.String()},
-		{field: logger.Duration("Duration field", 5 * time.Second), expectedString: "5s"},
+		{field: logger.Duration("Duration field", 5*time.Second), expectedString: "5s"},
 		{field: logger.Stringer("Stringer field", MyStringer{}), expectedString: "my_stringer"},
 		{field: logger.Reflect("Reflect field", struct{}{}), expectedString: "{}"},
 	}
@@ -139,6 +139,51 @@ func TestField_String(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.field.Name, func(t *testing.T) {
 			assert.Equal(t, tt.expectedString, tt.field.String())
+		})
+	}
+}
+
+func TestField_MarshalJSON(t *testing.T) {
+	now := time.Now()
+	nowMarshalled, _ := now.MarshalJSON()
+	err := errors.New("my_error_value")
+
+	tests := []struct {
+		name           string
+		field          logger.Field
+		expectedString string
+	}{
+		{field: logger.Skip("Skip field", "my_value"), expectedString: `"<skipped>"`},
+		{field: logger.Bool("Bool field", true), expectedString: "true"},
+		{field: logger.Bool("Bool field", false), expectedString: "false"},
+		{field: logger.Int8("Int8 field", 123), expectedString: "123"},
+		{field: logger.Int16("Int16 field", 123), expectedString: "123"},
+		{field: logger.Int32("Int32 field", 123), expectedString: "123"},
+		{field: logger.Int64("Int64 field", 123), expectedString: "123"},
+		{field: logger.Uint8("Uint8 field", 123), expectedString: "123"},
+		{field: logger.Uint16("Uint16 field", 123), expectedString: "123"},
+		{field: logger.Uint32("Uint32 field", 123), expectedString: "123"},
+		{field: logger.Uint64("Uint64 field", 123), expectedString: "123"},
+		{field: logger.Uintptr("Uintptr field", 123), expectedString: "123"},
+		{field: logger.Float32("Float32 field", 1.23456789), expectedString: "1.234567881"},
+		{field: logger.Float64("Float64 field", 123.4567891011), expectedString: "123.4567891"},
+		{field: logger.Complex64("Complex64 field", 6+7i), expectedString: `"(6+7i)"`},
+		{field: logger.Complex128("Complex128 field", 6+7i), expectedString: `"(6+7i)"`},
+		{field: logger.String("String field", "my_value"), expectedString: `"my_value"`},
+		{field: logger.Binary("Binary field", []byte{1, 2, 3}), expectedString: `"\x01\x02\x03"`},
+		{field: logger.ByteString("ByteString field", []byte("my_value")), expectedString: `"my_value"`},
+		{field: logger.Error("Error field", err), expectedString: `"my_error_value"`},
+		{field: logger.Time("Time field", now), expectedString: string(nowMarshalled)},
+		{field: logger.Duration("Duration field", 5*time.Second), expectedString: `"5s"`},
+		{field: logger.Stringer("Stringer field", MyStringer{}), expectedString: `"my_stringer"`},
+		{field: logger.Reflect("Reflect field", struct{}{}), expectedString: "{}"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.field.Name, func(t *testing.T) {
+			result, err := tt.field.MarshalJSON()
+			assert.NoError(t, err)
+			assert.Equal(t, tt.expectedString, string(result))
 		})
 	}
 }
@@ -166,14 +211,14 @@ func TestField_GoString(t *testing.T) {
 		{field: logger.Uintptr("Uintptr field", 123), expectedGoString: "logger.Field{Name: Uintptr field, Value: 123, Type: 11}"},
 		{field: logger.Float32("Float32 field", 1.23456789), expectedGoString: "logger.Field{Name: Float32 field, Value: 1.234567881, Type: 12}"},
 		{field: logger.Float64("Float64 field", 123.4567891011), expectedGoString: "logger.Field{Name: Float64 field, Value: 123.4567891, Type: 13}"},
-		{field: logger.Complex64("Complex64 field", 6 + 7i), expectedGoString: "logger.Field{Name: Complex64 field, Value: (6+7i), Type: 14}"},
-		{field: logger.Complex128("Complex128 field", 6 + 7i), expectedGoString: "logger.Field{Name: Complex128 field, Value: (6+7i), Type: 15}"},
+		{field: logger.Complex64("Complex64 field", 6+7i), expectedGoString: "logger.Field{Name: Complex64 field, Value: (6+7i), Type: 14}"},
+		{field: logger.Complex128("Complex128 field", 6+7i), expectedGoString: "logger.Field{Name: Complex128 field, Value: (6+7i), Type: 15}"},
 		{field: logger.String("String field", "my_value"), expectedGoString: "logger.Field{Name: String field, Value: my_value, Type: 16}"},
 		{field: logger.Binary("Binary field", []byte{1, 2, 3}), expectedGoString: "logger.Field{Name: Binary field, Value: \x01\x02\x03, Type: 17}"},
 		{field: logger.ByteString("ByteString field", []byte("my_value")), expectedGoString: "logger.Field{Name: ByteString field, Value: my_value, Type: 18}"},
 		{field: logger.Error("Error field", error), expectedGoString: "logger.Field{Name: Error field, Value: my_error_value, Type: 19}"},
-		{field: logger.Time("Time field", now), expectedGoString: "logger.Field{Name: Time field, Value: "+now.String()+", Type: 20}"},
-		{field: logger.Duration("Duration field", 5 * time.Second), expectedGoString: "logger.Field{Name: Duration field, Value: 5s, Type: 21}"},
+		{field: logger.Time("Time field", now), expectedGoString: "logger.Field{Name: Time field, Value: " + now.String() + ", Type: 20}"},
+		{field: logger.Duration("Duration field", 5*time.Second), expectedGoString: "logger.Field{Name: Duration field, Value: 5s, Type: 21}"},
 		{field: logger.Stringer("Stringer field", MyStringer{}), expectedGoString: "logger.Field{Name: Stringer field, Value: my_stringer, Type: 22}"},
 		{field: logger.Reflect("Reflect field", struct{}{}), expectedGoString: "logger.Field{Name: Reflect field, Value: {}, Type: 23}"},
 	}

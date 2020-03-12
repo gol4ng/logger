@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -106,6 +107,22 @@ func (f *Field) String() string {
 	}
 }
 
+// MarshalJSON was called by json.Marshal(field)
+// json Marshaller interface
+func (f *Field) MarshalJSON() ([]byte, error) {
+	if marshallable, ok := f.Value.(json.Marshaler); ok {
+		return marshallable.MarshalJSON()
+	}
+	switch f.Type {
+	case BoolType, Int8Type, Int16Type, Int32Type, Int64Type, Uint8Type, Uint16Type, Uint32Type, Uint64Type, UintptrType, Float32Type, Float64Type:
+		return []byte(f.String()), nil
+	case SkipType, Complex64Type, Complex128Type, StringType, BinaryType, ByteStringType, ErrorType, TimeType, DurationType, StringerType:
+		return strconv.AppendQuote([]byte{}, f.String()), nil
+	default:
+		return json.Marshal(f.Value)
+	}
+}
+
 // GoString was called by fmt.Printf("%#v", Fields)
 // fmt GoStringer interface
 func (f *Field) GoString() string {
@@ -118,7 +135,6 @@ func (f *Field) GoString() string {
 	builder.WriteString(strconv.FormatUint(uint64(f.Type), 10))
 	builder.WriteString("}")
 	return builder.String()
-
 }
 
 // Skip will create Skip Field

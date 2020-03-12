@@ -1,6 +1,7 @@
 package formatter_test
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"testing"
@@ -64,6 +65,11 @@ func TestMarshalContextTo(t *testing.T) {
 			name:            "test time message with context",
 			context:         logger.NewContext().Add("my_key", time.Date(2020, 1, 2, 3, 4, 5, 6, time.UTC)),
 			expectedStrings: []string{`my_key":"2020-01-02T03:04:05.000000006Z"`},
+		},
+		{
+			name:            "test time message with context",
+			context:         logger.NewContext().Add("my_key", errors.New("my error message")),
+			expectedStrings: []string{`my_key":"my error message"`},
 		},
 	}
 
