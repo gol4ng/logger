@@ -46,7 +46,6 @@ func ContextToJSON(context *logger.Context, builder *strings.Builder) {
 			builder.WriteRune('"')
 			builder.WriteString(name)
 			builder.WriteString("\":")
-			//d, _ := json.Marshal(field)
 			d, _ := field.MarshalJSON()
 			builder.Write(d)
 			i++
