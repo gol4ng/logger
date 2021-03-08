@@ -68,6 +68,54 @@ func TestDefaultFormatter_Format_AllColor(t *testing.T) {
 	}
 }
 
+func TestDefaultFormatter_Format_ConditionalColor(t *testing.T) {
+	tests := []struct {
+		level    logger.Level
+		expected string
+	}{
+		{level: logger.EmergencyLevel, expected: "\x1b[1;37;41m<emergency>\x1b[m my message"},
+		{level: logger.AlertLevel, expected: "\x1b[1;30;43m<alert>\x1b[m my message"},
+		{level: logger.CriticalLevel, expected: "\x1b[1;30;47m<critical>\x1b[m my message"},
+		{level: logger.ErrorLevel, expected: "\x1b[1;31m<error>\x1b[m my message"},
+		{level: logger.WarningLevel, expected: "\x1b[1;33m<warning>\x1b[m my message"},
+		{level: logger.NoticeLevel, expected: "<notice> my message"},
+		{level: logger.InfoLevel, expected: "<info> my message"},
+		{level: logger.DebugLevel, expected: "<debug> my message"},
+	}
+	defaultFormatter := formatter.NewDefaultFormatter(formatter.WithConditionalColor(func(e logger.Entry) bool {
+		return e.Level <= logger.WarningLevel
+	}))
+	for _, tt := range tests {
+		t.Run(tt.level.String(), func(t *testing.T) {
+			assert.Equal(t, tt.expected, defaultFormatter.Format(logger.Entry{Level: tt.level, Message: "my message"}))
+		})
+	}
+}
+
+func TestDefaultFormatter_Format_ConditionalContext(t *testing.T) {
+	tests := []struct {
+		level    logger.Level
+		expected string
+	}{
+		{level: logger.EmergencyLevel, expected: `<emergency> my message {"my_name":"my value"}`},
+		{level: logger.AlertLevel, expected: `<alert> my message {"my_name":"my value"}`},
+		{level: logger.CriticalLevel, expected: `<critical> my message {"my_name":"my value"}`},
+		{level: logger.ErrorLevel, expected: `<error> my message {"my_name":"my value"}`},
+		{level: logger.WarningLevel, expected: `<warning> my message {"my_name":"my value"}`},
+		{level: logger.NoticeLevel, expected: "<notice> my message"},
+		{level: logger.InfoLevel, expected: "<info> my message"},
+		{level: logger.DebugLevel, expected: "<debug> my message"},
+	}
+	defaultFormatter := formatter.NewDefaultFormatter(formatter.WithConditionalContext(func(e logger.Entry) bool {
+		return e.Level <= logger.WarningLevel
+	}))
+	for _, tt := range tests {
+		t.Run(tt.level.String(), func(t *testing.T) {
+			assert.Equal(t, tt.expected, defaultFormatter.Format(logger.Entry{Level: tt.level, Message: "my message", Context: logger.Ctx("my_name", "my value")}))
+		})
+	}
+}
+
 // =====================================================================================================================
 // ================================================= EXAMPLES ==========================================================
 // =====================================================================================================================
