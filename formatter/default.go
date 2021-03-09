@@ -6,17 +6,23 @@ import (
 	"github.com/gol4ng/logger"
 )
 
+var falseCondition = func(entry logger.Entry) bool {
+	return false
+}
+
 // DefaultFormatter is the default Entry formatter
 type DefaultFormatter struct {
-	colored        bool
-	displayContext bool
+	colored        func(entry logger.Entry) bool
+	displayContext func(entry logger.Entry) bool
 }
 
 // Format will return Entry as string
 func (n *DefaultFormatter) Format(entry logger.Entry) string {
+	n.init()
 	builder := &strings.Builder{}
 
-	if n.colored {
+	colored := n.colored(entry)
+	if colored {
 		switch entry.Level {
 		case logger.DebugLevel:
 			builder.WriteString("\x1b[1;36m")
@@ -40,18 +46,27 @@ func (n *DefaultFormatter) Format(entry logger.Entry) string {
 	builder.WriteString("<")
 	builder.WriteString(entry.Level.String())
 	builder.WriteString(">")
-	if n.colored {
+	if colored {
 		builder.WriteString("\x1b[m")
 	}
 	if entry.Message != "" {
 		builder.WriteString(" ")
 		builder.WriteString(entry.Message)
 	}
-	if n.displayContext && entry.Context != nil {
+	if entry.Context != nil && n.displayContext(entry) {
 		builder.WriteString(" ")
 		ContextToJSON(entry.Context, builder)
 	}
 	return builder.String()
+}
+
+func (n *DefaultFormatter) init() {
+	if n.colored == nil {
+		n.colored = falseCondition
+	}
+	if n.displayContext == nil {
+		n.displayContext = falseCondition
+	}
 }
 
 // NewDefaultFormatter will create a new DefaultFormatter
@@ -68,14 +83,28 @@ type Option func(*DefaultFormatter)
 
 // WithColor function will enable ANSI colored formatting
 func WithColor(enable bool) Option {
+	return WithConditionalColor(func(_ logger.Entry) bool {
+		return enable
+	})
+}
+
+// WithConditionalColor function will enable ANSI colored formatting
+func WithConditionalColor(conditional func(_ logger.Entry) bool) Option {
 	return func(formatter *DefaultFormatter) {
-		formatter.colored = enable
+		formatter.colored = conditional
 	}
 }
 
 // WithContext function will display context printing
 func WithContext(enable bool) Option {
+	return WithConditionalContext(func(_ logger.Entry) bool {
+		return enable
+	})
+}
+
+// WithConditionalContext function will display context printing
+func WithConditionalContext(conditional func(_ logger.Entry) bool) Option {
 	return func(formatter *DefaultFormatter) {
-		formatter.displayContext = enable
+		formatter.displayContext = conditional
 	}
 }
