@@ -6,6 +6,10 @@ import (
 	"github.com/gol4ng/logger"
 )
 
+var falseCondition = func(entry logger.Entry) bool {
+	return false
+}
+
 // DefaultFormatter is the default Entry formatter
 type DefaultFormatter struct {
 	colored        func(entry logger.Entry) bool
@@ -14,6 +18,7 @@ type DefaultFormatter struct {
 
 // Format will return Entry as string
 func (n *DefaultFormatter) Format(entry logger.Entry) string {
+	n.init()
 	builder := &strings.Builder{}
 
 	colored := n.colored(entry)
@@ -55,15 +60,18 @@ func (n *DefaultFormatter) Format(entry logger.Entry) string {
 	return builder.String()
 }
 
+func (n *DefaultFormatter) init() {
+	if n.colored == nil {
+		n.colored = falseCondition
+	}
+	if n.displayContext == nil {
+		n.displayContext = falseCondition
+	}
+}
+
 // NewDefaultFormatter will create a new DefaultFormatter
 func NewDefaultFormatter(options ...Option) *DefaultFormatter {
-	condition := func(entry logger.Entry) bool {
-		return false
-	}
-	f := &DefaultFormatter{
-		colored:        condition,
-		displayContext: condition,
-	}
+	f := &DefaultFormatter{}
 	for _, option := range options {
 		option(f)
 	}
