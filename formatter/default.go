@@ -55,7 +55,7 @@ func (n *DefaultFormatter) Format(entry logger.Entry) string {
 	}
 	if entry.Context != nil && n.displayContext(entry) {
 		builder.WriteString(" ")
-		ContextToJSON(entry.Context, builder)
+		ContextToJSON(entry.Context, builder, &JSONOptions{})
 	}
 	return builder.String()
 }

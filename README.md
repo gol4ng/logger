@@ -94,6 +94,8 @@ Available formatters:
 - **line** _it's just a `fmt.Sprintf` facade_ format:`%s %s %s` will produce `My log message info <my_key:my_value>`
 - **gelf** _format log entry to gelf_ `{"version":"1.1","host":"my_fake_hostname","level":6,"timestamp":513216000.000,"short_message":"My log message","full_message":"<info> My log message [ <my key:my_value> ]","_my_key":"my_value"}`
 - **json** _format log entry to json_ `{"Message":"My log message","Level":6,"Context":{"my_key":"my_value"}}`
+  - `WithJSONFlattenContext()`: Allows to put keys on a flatten way (not under `Context` key)
+  - `WithJSONLevelAsString()`: Allows to write the level entry as string: `notice`, `debug`, ...
 
 ## Middlewares
 
