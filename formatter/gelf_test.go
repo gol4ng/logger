@@ -7,24 +7,25 @@ import (
 	"testing"
 	"time"
 
-	"bou.ke/monkey"
-
-	"github.com/stretchr/testify/assert"
-
+	"github.com/agiledragon/gomonkey/v2"
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewGelf_WillPanic(t *testing.T) {
 	err := errors.New("my_hostname_error")
-	monkey.Patch(os.Hostname, func() (string, error) { return "", err })
+	patch := gomonkey.NewPatches()
+	patch.ApplyFunc(os.Hostname, func() (string, error) { return "", err })
+	defer patch.Reset()
 	assert.PanicsWithValue(t, err, func() { formatter.NewGelf() })
 }
 
 func TestGelf_Format(t *testing.T) {
-	monkey.Patch(time.Now, func() time.Time { return time.Unix(513216000, 0) })
-	monkey.Patch(os.Hostname, func() (string, error) { return "my_fake_hostname", nil })
-	defer monkey.UnpatchAll()
+	patch := gomonkey.NewPatches()
+	patch.ApplyFunc(time.Now, func() time.Time { return time.Unix(513216000, 0) })
+	patch.ApplyFunc(os.Hostname, func() (string, error) { return "my_fake_hostname", nil })
+	defer patch.Reset()
 
 	gelf := formatter.NewGelf()
 
@@ -36,9 +37,10 @@ func TestGelf_Format(t *testing.T) {
 }
 
 func TestGelfTCP_Format(t *testing.T) {
-	monkey.Patch(time.Now, func() time.Time { return time.Unix(513216000, 0) })
-	monkey.Patch(os.Hostname, func() (string, error) { return "my_fake_hostname", nil })
-	defer monkey.UnpatchAll()
+	patch := gomonkey.NewPatches()
+	patch.ApplyFunc(time.Now, func() time.Time { return time.Unix(513216000, 0) })
+	patch.ApplyFunc(os.Hostname, func() (string, error) { return "my_fake_hostname", nil })
+	defer patch.Reset()
 
 	gelf := formatter.NewGelfTCP()
 
@@ -54,9 +56,10 @@ func TestGelfTCP_Format(t *testing.T) {
 // =====================================================================================================================
 
 func ExampleGelf_Format() {
-	monkey.Patch(time.Now, func() time.Time { return time.Unix(513216000, 0) })
-	monkey.Patch(os.Hostname, func() (string, error) { return "my_fake_hostname", nil })
-	defer monkey.UnpatchAll()
+	patch := gomonkey.NewPatches()
+	patch.ApplyFunc(time.Now, func() time.Time { return time.Unix(513216000, 0) })
+	patch.ApplyFunc(os.Hostname, func() (string, error) { return "my_fake_hostname", nil })
+	defer patch.Reset()
 
 	gelfFormatter := formatter.NewGelf()
 

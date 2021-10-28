@@ -4,11 +4,10 @@ package handler_test
 
 import (
 	"errors"
+	"github.com/agiledragon/gomonkey/v2"
 	"log/syslog"
 	"reflect"
 	"testing"
-
-	"bou.ke/monkey"
 
 	"github.com/stretchr/testify/assert"
 
@@ -19,14 +18,15 @@ import (
 )
 
 func TestSyslog_HandleWithDialError(t *testing.T) {
-	monkey.Patch(syslog.Dial, func(network, raddr string, priority syslog.Priority, tag string) (*syslog.Writer, error) {
+	patch := gomonkey.NewPatches()
+	patch.ApplyFunc(syslog.Dial, func(network, raddr string, priority syslog.Priority, tag string) (*syslog.Writer, error) {
 		assert.Equal(t, "fake_network", network)
 		assert.Equal(t, "fake_raddr", raddr)
 		assert.Equal(t, syslog.LOG_DEBUG, priority)
 		assert.Equal(t, "fake_tag", tag)
 		return nil, errors.New("fake_syslog_dial_error")
 	})
-	defer monkey.UnpatchAll()
+	defer patch.Reset()
 
 	logEntry := logger.Entry{Level: -1}
 
@@ -41,19 +41,19 @@ func TestSyslog_HandleWithDialError(t *testing.T) {
 
 func TestSyslog_HandleWithWriteError(t *testing.T) {
 	var w *syslog.Writer // Has to be a pointer to because `Dial` has a pointer receiver
-
-	monkey.Patch(syslog.Dial, func(network, raddr string, priority syslog.Priority, tag string) (*syslog.Writer, error) {
+	patch := gomonkey.NewPatches()
+	patch.ApplyFunc(syslog.Dial, func(network, raddr string, priority syslog.Priority, tag string) (*syslog.Writer, error) {
 		assert.Equal(t, "fake_network", network)
 		assert.Equal(t, "fake_raddr", raddr)
 		assert.Equal(t, syslog.LOG_DEBUG, priority)
 		assert.Equal(t, "fake_tag", tag)
 		return w, nil
 	})
-	monkey.PatchInstanceMethod(reflect.TypeOf(w), "Write", func(_ *syslog.Writer, m []byte) (int, error) {
+	patch.ApplyMethod(reflect.TypeOf(w), "Write", func(_ *syslog.Writer, m []byte) (int, error) {
 		assert.Equal(t, []byte("fake_syslog_message"), m)
 		return 0, errors.New("fake_syslog_write_error")
 	})
-	defer monkey.UnpatchAll()
+	defer patch.Reset()
 
 	logEntry := logger.Entry{Level: -1}
 
@@ -95,8 +95,8 @@ func TestSyslog_Handle(t *testing.T) {
 		t.Run("test syslog "+test.level.String(), func(t *testing.T) {
 			syslogMsg := "this is a test " + test.level.String() + " syslog message"
 			var w *syslog.Writer // Has to be a pointer to because `Dial` has a pointer receiver
-
-			monkey.Patch(syslog.Dial, func(network, raddr string, priority syslog.Priority, tag string) (*syslog.Writer, error) {
+			patch := gomonkey.NewPatches()
+			patch.ApplyFunc(syslog.Dial, func(network, raddr string, priority syslog.Priority, tag string) (*syslog.Writer, error) {
 				assert.Equal(t, "fake_network", network)
 				assert.Equal(t, "fake_raddr", raddr)
 				assert.Equal(t, syslog.LOG_DEBUG, priority)
@@ -106,18 +106,18 @@ func TestSyslog_Handle(t *testing.T) {
 
 			for l, syslogMethod := range syslogMethods {
 				if test.level != l {
-					monkey.PatchInstanceMethod(reflect.TypeOf(w), syslogMethod, func(_ *syslog.Writer, m string) error {
+					patch.ApplyMethod(reflect.TypeOf(w), syslogMethod, func(_ *syslog.Writer, m string) error {
 						t.Fatal("method syslog.Writer::" + syslogMethod + " was not expected to be called")
 						return nil
 					})
 					continue
 				}
-				monkey.PatchInstanceMethod(reflect.TypeOf(w), syslogMethod, func(_ *syslog.Writer, m string) error {
+				patch.ApplyMethod(reflect.TypeOf(w), syslogMethod, func(_ *syslog.Writer, m string) error {
 					assert.Equal(t, syslogMsg, m)
 					return nil
 				})
 			}
-			defer monkey.UnpatchAll()
+			defer patch.Reset()
 
 			//LOG DEBUG HERE
 			logEntry := logger.Entry{Level: test.level}
