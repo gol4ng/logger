@@ -68,7 +68,7 @@ func getEntries() []logger.Entry {
 	}
 }
 
-func BenchmarkMiddleware(b *testing.B) {
+func BenchmarkLoggerWithMiddleware(b *testing.B) {
 	for _, entry := range getEntries() {
 		for _, m := range loggersToBench() {
 			b.Run(m.name+"_"+entry.Message, func(b *testing.B) {

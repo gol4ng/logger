@@ -3,8 +3,8 @@ package logger
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/valyala/bytebufferpool"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -126,15 +126,17 @@ func (f *Field) MarshalJSON() ([]byte, error) {
 // GoString was called by fmt.Printf("%#v", Fields)
 // fmt GoStringer interface
 func (f *Field) GoString() string {
-	builder := &strings.Builder{}
-	builder.WriteString("logger.Field{Name: ")
-	builder.WriteString(f.Name)
-	builder.WriteString(", Value: ")
-	builder.WriteString(f.String())
-	builder.WriteString(", Type: ")
-	builder.WriteString(strconv.FormatUint(uint64(f.Type), 10))
-	builder.WriteString("}")
-	return builder.String()
+	byteBuffer := bytebufferpool.Get()
+	defer bytebufferpool.Put(byteBuffer)
+
+	byteBuffer.WriteString("logger.Field{Name: ")
+	byteBuffer.WriteString(f.Name)
+	byteBuffer.WriteString(", Value: ")
+	byteBuffer.WriteString(f.String())
+	byteBuffer.WriteString(", Type: ")
+	byteBuffer.WriteString(strconv.FormatUint(uint64(f.Type), 10))
+	byteBuffer.WriteString("}")
+	return byteBuffer.String()
 }
 
 // Skip will create Skip Field

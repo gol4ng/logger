@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"strings"
+	"github.com/valyala/bytebufferpool"
 )
 
 // Entry represents a log in its entirety
@@ -14,20 +14,22 @@ type Entry struct {
 
 // String will return Entry as string
 func (e *Entry) String() string {
-	builder := &strings.Builder{}
-	EntryToString(*e, builder)
-	return builder.String()
+	byteBuffer := bytebufferpool.Get()
+	defer bytebufferpool.Put(byteBuffer)
+
+	EntryToString(*e, byteBuffer)
+	return byteBuffer.String()
 }
 
-// EntryToString will write entry as string in builder
-func EntryToString(entry Entry, builder *strings.Builder) {
-	builder.WriteString("<")
-	builder.WriteString(entry.Level.String())
-	builder.WriteString("> ")
-	builder.WriteString(entry.Message)
+// EntryToString will write entry as string in byteBuffer
+func EntryToString(entry Entry, byteBuffer *bytebufferpool.ByteBuffer) {
+	byteBuffer.WriteString(`<`)
+	entry.Level.StringTo(byteBuffer)
+	byteBuffer.WriteString(`> `)
+	byteBuffer.WriteString(entry.Message)
 	if entry.Context != nil {
-		builder.WriteString(" [ ")
-		builder.WriteString(entry.Context.String())
-		builder.WriteString(" ]")
+		byteBuffer.WriteString(` [ `)
+		entry.Context.StringTo(byteBuffer)
+		byteBuffer.WriteString(` ]`)
 	}
 }

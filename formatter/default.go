@@ -1,9 +1,8 @@
 package formatter
 
 import (
-	"strings"
-
 	"github.com/gol4ng/logger"
+	"github.com/valyala/bytebufferpool"
 )
 
 var falseCondition = func(entry logger.Entry) bool {
@@ -18,60 +17,54 @@ type DefaultFormatter struct {
 
 // Format will return Entry as string
 func (n *DefaultFormatter) Format(entry logger.Entry) string {
-	n.init()
-	builder := &strings.Builder{}
+	byteBuffer := bytebufferpool.Get()
+	defer bytebufferpool.Put(byteBuffer)
 
 	colored := n.colored(entry)
 	if colored {
 		switch entry.Level {
 		case logger.DebugLevel:
-			builder.WriteString("\x1b[1;36m")
+			byteBuffer.WriteString("\x1b[1;36m")
 		case logger.InfoLevel:
-			builder.WriteString("\x1b[1;32m")
+			byteBuffer.WriteString("\x1b[1;32m")
 		case logger.NoticeLevel:
-			builder.WriteString("\x1b[1;34m")
+			byteBuffer.WriteString("\x1b[1;34m")
 		case logger.WarningLevel:
-			builder.WriteString("\x1b[1;33m")
+			byteBuffer.WriteString("\x1b[1;33m")
 		case logger.ErrorLevel:
-			builder.WriteString("\x1b[1;31m")
+			byteBuffer.WriteString("\x1b[1;31m")
 		case logger.CriticalLevel:
-			builder.WriteString("\x1b[1;30;47m")
+			byteBuffer.WriteString("\x1b[1;30;47m")
 		case logger.AlertLevel:
-			builder.WriteString("\x1b[1;30;43m")
+			byteBuffer.WriteString("\x1b[1;30;43m")
 		case logger.EmergencyLevel:
-			builder.WriteString("\x1b[1;37;41m")
+			byteBuffer.WriteString("\x1b[1;37;41m")
 		}
 	}
 
-	builder.WriteString("<")
-	builder.WriteString(entry.Level.String())
-	builder.WriteString(">")
+	byteBuffer.WriteString(`<`)
+	byteBuffer.WriteString(entry.Level.String())
+	byteBuffer.WriteString(`>`)
 	if colored {
-		builder.WriteString("\x1b[m")
+		byteBuffer.WriteString("\x1b[m")
 	}
 	if entry.Message != "" {
-		builder.WriteString(" ")
-		builder.WriteString(entry.Message)
+		byteBuffer.WriteString(` `)
+		byteBuffer.WriteString(entry.Message)
 	}
 	if entry.Context != nil && n.displayContext(entry) {
-		builder.WriteString(" ")
-		ContextToJSON(entry.Context, builder)
+		byteBuffer.WriteString(` `)
+		ContextToJSON(entry.Context, byteBuffer)
 	}
-	return builder.String()
-}
-
-func (n *DefaultFormatter) init() {
-	if n.colored == nil {
-		n.colored = falseCondition
-	}
-	if n.displayContext == nil {
-		n.displayContext = falseCondition
-	}
+	return byteBuffer.String()
 }
 
 // NewDefaultFormatter will create a new DefaultFormatter
 func NewDefaultFormatter(options ...Option) *DefaultFormatter {
-	f := &DefaultFormatter{}
+	f := &DefaultFormatter{
+		colored: falseCondition,
+		displayContext: falseCondition,
+	}
 	for _, option := range options {
 		option(f)
 	}

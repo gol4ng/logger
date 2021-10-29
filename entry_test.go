@@ -1,7 +1,7 @@
 package logger_test
 
 import (
-	"strings"
+	"github.com/valyala/bytebufferpool"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -43,10 +43,12 @@ func TestEntryToString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			builder := &strings.Builder{}
-			logger.EntryToString(tt.entry, builder)
+			byteBuffer := bytebufferpool.Get()
+			defer bytebufferpool.Put(byteBuffer)
+
+			logger.EntryToString(tt.entry, byteBuffer)
 			for _, s := range tt.strings {
-				assert.Contains(t, builder.String(), s)
+				assert.Contains(t, byteBuffer.String(), s)
 			}
 		})
 	}

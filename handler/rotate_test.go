@@ -110,13 +110,13 @@ func TestNewLogRotateFileStream_Handle(t *testing.T) {
 		return 99, nil
 	})
 
-	file := os.File{}
+	file := &os.File{}
 
 	patch.ApplyFunc(os.OpenFile, func(name string, flag int, perm os.FileMode) (*os.File, error) {
 		assert.Equal(t, "fake_format_test", name)
 		assert.Equal(t, os.O_CREATE|os.O_APPEND|os.O_WRONLY, flag)
 		assert.Equal(t, os.FileMode(0666), perm)
-		return &file, nil
+		return file, nil
 	})
 
 	patch.ApplyFunc(os.Rename, func(oldpath, newpath string) error {

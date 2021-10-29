@@ -13,18 +13,22 @@ import (
 )
 
 func TestContext_Handle(t *testing.T) {
+	called := false
 	mockHandler := func(entry logger.Entry) error {
+		called = true
 		assert.Equal(t, "my_log_message", entry.Message)
 		assert.Equal(t, logger.DebugLevel, entry.Level)
 		contextStr := entry.Context.String()
 		assert.Contains(t, contextStr, "<my_key:my_overwritten_value>")
 		assert.Contains(t, contextStr, "<my_entry_key:my_entry_value>")
+		assert.Contains(t, contextStr, "<my_default_key:my_default_value>")
 
 		return nil
 	}
 
 	defaultContext := logger.Context(map[string]logger.Field{
-		"my_key": {Value: "my_value"},
+		"my_key":         {Value: "my_value"},
+		"my_default_key": {Value: "my_default_value"},
 	})
 
 	context := middleware.Context(&defaultContext)
@@ -39,6 +43,7 @@ func TestContext_Handle(t *testing.T) {
 		Context: &entryContext,
 	}
 	assert.Nil(t, context(mockHandler)(logEntry))
+	assert.True(t, called)
 }
 
 // =====================================================================================================================

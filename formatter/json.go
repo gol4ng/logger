@@ -1,10 +1,9 @@
 package formatter
 
 import (
-	"strconv"
-	"strings"
-
 	"github.com/gol4ng/logger"
+	"github.com/valyala/bytebufferpool"
+	"strconv"
 )
 
 // JSON formatter will transform a logger entry into JSON
@@ -33,51 +32,44 @@ func NewJSON(encode func(logger.Entry) ([]byte, error)) *JSON {
 }
 
 // ContextToJSON will marshall the logger context into json
-func ContextToJSON(context *logger.Context, builder *strings.Builder) {
+func ContextToJSON(context *logger.Context, byteBuffer *bytebufferpool.ByteBuffer) {
 	if context == nil || len(*context) == 0 {
-		builder.WriteString("null")
+		byteBuffer.WriteString("null")
 	} else {
-		builder.WriteString("{")
-		i := 0
+		byteBuffer.WriteString(`{`)
+		first := true
 		for name, field := range *context {
-			if i != 0 {
-				builder.WriteRune(',')
+			if !first {
+				byteBuffer.WriteString(`,`)
 			}
-			builder.WriteRune('"')
-			builder.WriteString(name)
-			builder.WriteString("\":")
+			byteBuffer.WriteString(`"`)
+			byteBuffer.WriteString(name)
+			byteBuffer.WriteString(`":`)
 			d, _ := field.MarshalJSON()
-			builder.Write(d)
-			i++
+			byteBuffer.Write(d)
+			first = false
 		}
-		builder.WriteString("}")
+		byteBuffer.WriteString(`}`)
 	}
 }
 
 // EntryToJSON will marshall the logger Entry into json
-func EntryToJSON(entry logger.Entry, builder *strings.Builder) {
-	builder.WriteRune('{')
-
-	builder.WriteString("\"Message\":\"")
-	builder.WriteString(entry.Message)
-	builder.WriteString("\"")
-
-	builder.WriteRune(',')
-	builder.WriteString("\"Level\":")
-	builder.WriteString(strconv.Itoa(int(entry.Level)))
-
-	builder.WriteRune(',')
-	builder.WriteString("\"Context\":")
-
-	ContextToJSON(entry.Context, builder)
-
-	builder.WriteRune('}')
+func EntryToJSON(entry logger.Entry, byteBuffer *bytebufferpool.ByteBuffer) {
+	byteBuffer.WriteString(`{"Message":"`)
+	byteBuffer.WriteString(entry.Message)
+	byteBuffer.WriteString(`","Level":`)
+	byteBuffer.WriteString(strconv.Itoa(int(entry.Level)))
+	byteBuffer.WriteString(`,"Context":`)
+	ContextToJSON(entry.Context, byteBuffer)
+	byteBuffer.WriteString(`}`)
 }
 
 // JSONEncoder will return Entry to json string
 func JSONEncoder(entry logger.Entry) ([]byte, error) {
-	builder := &strings.Builder{}
-	EntryToJSON(entry, builder)
+	byteBuffer := bytebufferpool.Get()
+	defer bytebufferpool.Put(byteBuffer)
 
-	return []byte(builder.String()), nil
+	EntryToJSON(entry, byteBuffer)
+
+	return byteBuffer.Bytes(), nil
 }

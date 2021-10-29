@@ -2,6 +2,7 @@ package formatter
 
 import (
 	"encoding/json"
+	"github.com/valyala/bytebufferpool"
 	"os"
 	"strconv"
 	"strings"
@@ -23,40 +24,41 @@ type Gelf struct {
 
 // Format will return Entry as gelf
 func (g *Gelf) Format(entry logger.Entry) string {
-	builder := &strings.Builder{}
+	byteBuffer := bytebufferpool.Get()
+	defer bytebufferpool.Put(byteBuffer)
 
-	builder.WriteString(`{"version":"`)
-	builder.WriteString(g.version)
+	byteBuffer.WriteString(`{"version":"`)
+	byteBuffer.WriteString(g.version)
 
-	builder.WriteString(`","host":"`)
-	builder.WriteString(g.hostname)
+	byteBuffer.WriteString(`","host":"`)
+	byteBuffer.WriteString(g.hostname)
 
-	builder.WriteString(`","level":`)
-	builder.WriteString(strconv.Itoa(int(entry.Level)))
+	byteBuffer.WriteString(`","level":`)
+	byteBuffer.WriteString(strconv.Itoa(int(entry.Level)))
 
-	builder.WriteString(`,"timestamp":`)
-	builder.WriteString(strconv.FormatFloat(float64(time.Now().UnixNano())/1e9, 'f', 3, 64))
+	byteBuffer.WriteString(`,"timestamp":`)
+	byteBuffer.WriteString(strconv.FormatFloat(float64(time.Now().UnixNano())/1e9, 'f', 3, 64))
 
-	builder.WriteString(`,"short_message":"`)
-	builder.WriteString(entry.Message)
+	byteBuffer.WriteString(`,"short_message":"`)
+	byteBuffer.WriteString(entry.Message)
 
-	builder.WriteString(`","full_message":"`)
-	logger.EntryToString(entry, builder)
-	builder.WriteString(`"`)
+	byteBuffer.WriteString(`","full_message":"`)
+	logger.EntryToString(entry, byteBuffer)
+	byteBuffer.WriteString(`"`)
 
 	if entry.Context != nil {
 		for name, field := range *entry.Context {
-			builder.WriteString(`,"_`)
-			builder.WriteString(strings.Replace(name, " ", "_", -1))
-			builder.WriteString(`":`)
+			byteBuffer.WriteString(`,"_`)
+			byteBuffer.WriteString(strings.Replace(name, " ", "_", -1))
+			byteBuffer.WriteString(`":`)
 			d, _ := json.Marshal(field.Value)
-			builder.Write(d)
+			byteBuffer.Write(d)
 		}
 	}
 
-	builder.WriteString("}")
+	byteBuffer.WriteString("}")
 
-	return builder.String()
+	return byteBuffer.String()
 }
 
 // NewGelf will create a new Gelf formatter
