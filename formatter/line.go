@@ -6,6 +6,12 @@ import (
 	"github.com/gol4ng/logger"
 )
 
+const (
+	LineFormatDefault = "%s %s %s"             // test message warning <my_key:my_value>
+	LineFormatLevelInt = "%s %d %s"            // test message 4 <my_key:my_value>
+	LineFormatLevelFirst = "%[2]s %[1]s %[3]s" // warning test message <my_key:my_value>
+)
+
 // Line formatter will transform log Entry into string
 type Line struct {
 	format string

@@ -1,6 +1,8 @@
 package logger
 
-import "strings"
+import (
+	"strings"
+)
 
 // Entry represents a log in its entirety
 // it is composed of a level, a message and a context

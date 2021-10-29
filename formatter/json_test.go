@@ -7,10 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestJson_Format(t *testing.T) {
@@ -95,7 +94,7 @@ func ExampleJsonFormatter() {
 	fmt.Println(jsonFormatter.Format(
 		logger.Entry{
 			Message: "My log message",
-			Level: logger.InfoLevel,
+			Level:   logger.InfoLevel,
 			Context: logger.NewContext().Add("my_key", "my_value"),
 		},
 	))
