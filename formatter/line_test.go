@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/gol4ng/logger"
 	"github.com/gol4ng/logger/formatter"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLine_Format(t *testing.T) {
@@ -18,17 +17,17 @@ func TestLine_Format(t *testing.T) {
 	}{
 		{
 			name:     "test simple format 1",
-			format:   "%s %s %s",
+			format:   formatter.LineFormatDefault,
 			expected: "test message warning <my_key:my_value>",
 		},
 		{
 			name:     "test simple format 2",
-			format:   "%s %d %s",
+			format:   formatter.LineFormatLevelInt,
 			expected: "test message 4 <my_key:my_value>",
 		},
 		{
 			name:     "test simple format",
-			format:   "%[2]s %[1]s %[3]s",
+			format:   formatter.LineFormatLevelFirst,
 			expected: "warning test message <my_key:my_value>",
 		},
 	}
@@ -52,7 +51,7 @@ func ExampleLineFormatter() {
 	fmt.Println(lineFormatter.Format(
 		logger.Entry{
 			Message: "My log message",
-			Level: logger.InfoLevel,
+			Level:   logger.InfoLevel,
 			Context: logger.NewContext().Add("my_key", "my_value"),
 		},
 	))
