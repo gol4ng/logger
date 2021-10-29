@@ -5,13 +5,11 @@ import (
 	"strings"
 	"testing"
 
-	"bou.ke/monkey"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-
+	"github.com/agiledragon/gomonkey/v2"
 	"github.com/gol4ng/logger/mocks"
 	"github.com/gol4ng/logger/writer"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestNewGelfChunkWriter_Simple(t *testing.T) {
@@ -24,6 +22,8 @@ func TestNewGelfChunkWriter_Simple(t *testing.T) {
 	})).Return(33, nil)
 
 	i, err := writer.NewGelfChunkWriter(writerMock).Write(fakeData)
+
+	writerMock.AssertExpectations(t)
 	assert.Equal(t, 33, i)
 	assert.Nil(t, err)
 }
@@ -58,15 +58,16 @@ func TestNewGelfChunkWriter_Multiple(t *testing.T) {
 		return true
 	})).Return(33, nil)
 
-	monkey.Patch(io.ReadFull, func(reader io.Reader, buf []byte) (int, error) {
+	patch := gomonkey.NewPatches()
+	patch.ApplyFunc(io.ReadFull, func(reader io.Reader, buf []byte) (int, error) {
 		copy(buf, fakeMessageId)
 		return len(fakeMessageId), nil
 	})
-	defer monkey.UnpatchAll()
+	defer patch.Reset()
 
 	w := writer.NewGelfChunkWriter(writerMock)
-
 	i, err := w.Write(fakeData)
+
 	assert.Equal(t, 33*chunkedNb, i)
 	assert.Nil(t, err)
 }

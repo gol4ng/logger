@@ -7,24 +7,23 @@ import (
 	"testing"
 	"time"
 
-	"bou.ke/monkey"
-
-	"github.com/stretchr/testify/assert"
-
+	"github.com/agiledragon/gomonkey/v2"
 	"github.com/gol4ng/logger/mocks"
 	"github.com/gol4ng/logger/writer"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTimeRotateWriter_StartWithError(t *testing.T) {
 	tickerChan := make(chan time.Time, 1)
-	monkey.Patch(time.NewTicker, func(d time.Duration) *time.Ticker {
+	patch := gomonkey.NewPatches()
+	patch.ApplyFunc(time.NewTicker, func(d time.Duration) *time.Ticker {
 		assert.Equal(t, 50*time.Millisecond, d)
 
 		return &time.Ticker{
 			C: tickerChan,
 		}
 	})
-	defer monkey.UnpatchAll()
+	defer patch.Reset()
 
 	mockRotateWriter := mocks.RotateWriter{}
 	mockRotateWriter.On("Rotate").Return(func() error { return errors.New("fake_rotate_error") })

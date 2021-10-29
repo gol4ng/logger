@@ -7,21 +7,20 @@ import (
 	"testing"
 	"time"
 
-	"bou.ke/monkey"
-
-	"github.com/stretchr/testify/assert"
-
+	"github.com/agiledragon/gomonkey/v2"
 	"github.com/gol4ng/logger/writer/provider"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLogFileProvider_RenameWithError(t *testing.T) {
-	monkey.Patch(os.Rename, func(oldpath, newpath string) error {
+	patch := gomonkey.NewPatches()
+	patch.ApplyFunc(os.Rename, func(oldpath, newpath string) error {
 		assert.Equal(t, "fake_format_fake_name", oldpath)
 		assert.Equal(t, "fake_format_Thu Jan  1 1970 00", newpath)
 		return errors.New("fake_rename_error")
 	})
-	monkey.Patch(time.Now, func() time.Time {return time.Unix(0, 0)})
-	defer monkey.UnpatchAll()
+	patch.ApplyFunc(time.Now, func() time.Time {return time.Unix(0, 0)})
+	defer patch.Reset()
 
 	fileProvider := provider.LogFileProvider("fake_name", "fake_format_%s", "Mon Jan _2 2006 05")
 	newFile, err := fileProvider(&os.File{})
@@ -31,16 +30,17 @@ func TestLogFileProvider_RenameWithError(t *testing.T) {
 
 func TestLogFileProvider_CloseWithError(t *testing.T) {
 	var f *os.File
-	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Close", func(_ *os.File) error {
+	patch := gomonkey.NewPatches()
+	patch.ApplyMethod(reflect.TypeOf(f), "Close", func(_ *os.File) error {
 		return errors.New("fake_file_close_error")
 	})
-	monkey.Patch(os.Rename, func(oldpath, newpath string) error {
+	patch.ApplyFunc(os.Rename, func(oldpath, newpath string) error {
 		assert.Equal(t, "fake_format_fake_name", oldpath)
 		assert.Equal(t, "fake_format_Thu Jan  1 1970 00", newpath)
 		return nil
 	})
-	monkey.Patch(time.Now, func() time.Time { return time.Unix(0, 0) })
-	defer monkey.UnpatchAll()
+	patch.ApplyFunc(time.Now, func() time.Time { return time.Unix(0, 0) })
+	defer patch.Reset()
 
 	w := provider.LogFileProvider("fake_name", "fake_format_%s", "Mon Jan _2 2006 05")
 	newFile, err := w(&os.File{})
@@ -52,23 +52,24 @@ func TestLogFileProvider(t *testing.T) {
 	var f *os.File
 	createdFile := os.File{}
 	existingFile := os.File{}
-	monkey.PatchInstanceMethod(reflect.TypeOf(f), "Close", func(f *os.File) error {
+	patch := gomonkey.NewPatches()
+	patch.ApplyMethod(reflect.TypeOf(f), "Close", func(f *os.File) error {
 		assert.Equal(t, &existingFile, f)
 		return nil
 	})
-	monkey.Patch(os.Rename, func(oldpath, newpath string) error {
+	patch.ApplyFunc(os.Rename, func(oldpath, newpath string) error {
 		assert.Equal(t, "fake_format_fake_name", oldpath)
 		assert.Equal(t, "fake_format_Thu Jan  1 1970 00", newpath)
 		return nil
 	})
-	monkey.Patch(os.OpenFile, func(name string, flag int, perm os.FileMode) (*os.File, error) {
+	patch.ApplyFunc(os.OpenFile, func(name string, flag int, perm os.FileMode) (*os.File, error) {
 		assert.Equal(t, "fake_format_fake_name", name)
 		assert.Equal(t, os.O_CREATE|os.O_APPEND|os.O_WRONLY, flag)
 		assert.Equal(t, os.FileMode(0666), perm)
 		return &createdFile, nil
 	})
-	monkey.Patch(time.Now, func() time.Time { return time.Unix(0, 0) })
-	defer monkey.UnpatchAll()
+	patch.ApplyFunc(time.Now, func() time.Time { return time.Unix(0, 0) })
+	defer patch.Reset()
 
 	w := provider.LogFileProvider("fake_name", "fake_format_%s", "Mon Jan _2 2006 05")
 	newFile, err := w(&existingFile)
