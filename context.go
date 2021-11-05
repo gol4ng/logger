@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"strings"
+	"github.com/valyala/bytebufferpool"
 )
 
 // Context contain all contextual log data
@@ -59,22 +59,22 @@ func (c *Context) ByteString(name string, value []byte) *Context {
 	return c.SetField(ByteString(name, value))
 }
 
-func (c *Context) stringTo(builder *strings.Builder) *Context {
+func (c *Context) StringTo(byteBuffer *bytebufferpool.ByteBuffer) *Context {
 	if len(*c) == 0 {
-		builder.WriteString("nil")
+		byteBuffer.WriteString("<nil>")
 		return c
 	}
-	i := 0
+	first := true
 	for name, field := range *c {
-		if i != 0 {
-			builder.WriteString(" ")
+		if !first {
+			byteBuffer.WriteString(" ")
 		}
-		builder.WriteString("<")
-		builder.WriteString(name)
-		builder.WriteString(":")
-		builder.WriteString(field.String())
-		builder.WriteString(">")
-		i++
+		byteBuffer.WriteString("<")
+		byteBuffer.WriteString(name)
+		byteBuffer.WriteString(":")
+		byteBuffer.WriteString(field.String())
+		byteBuffer.WriteString(">")
+		first = false
 	}
 	return c
 }
@@ -93,19 +93,22 @@ func (c *Context) String() string {
 	if c == nil || len(*c) == 0 {
 		return "<nil>"
 	}
-	builder := &strings.Builder{}
-	c.stringTo(builder)
-	return builder.String()
+	byteBuffer := bytebufferpool.Get()
+	defer bytebufferpool.Put(byteBuffer)
+	c.StringTo(byteBuffer)
+	return byteBuffer.String()
 }
 
 // GoString was called by fmt.Printf("%#v", context)
 // fmt GoStringer interface
 func (c *Context) GoString() string {
-	builder := &strings.Builder{}
-	builder.WriteString("logger.context[")
-	c.stringTo(builder)
-	builder.WriteString("]")
-	return builder.String()
+	byteBuffer := bytebufferpool.Get()
+	defer bytebufferpool.Put(byteBuffer)
+
+	byteBuffer.WriteString("logger.context[")
+	c.StringTo(byteBuffer)
+	byteBuffer.WriteString("]")
+	return byteBuffer.String()
 }
 
 // Ctx will create a new context with given value

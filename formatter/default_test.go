@@ -16,7 +16,6 @@ func TestDefaultFormatter_Format(t *testing.T) {
 		entry     logger.Entry
 		expected  string
 	}{
-		{name: "test default formatter struct", formatter: &formatter.DefaultFormatter{}, entry: logger.Entry{}, expected: "<emergency>"},
 		{name: "test NewDefaultFormatter()", formatter: formatter.NewDefaultFormatter(), entry: logger.Entry{}, expected: "<emergency>"},
 		{
 			name:      "test NewDefaultFormatter(formatter.WithContext(true)",

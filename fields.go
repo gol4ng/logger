@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"strings"
+	"github.com/valyala/bytebufferpool"
 )
 
 // Fields was slice format of Fields
@@ -33,42 +33,45 @@ func (f *Fields) ByteString(name string, value []byte) *Fields {
 	return f.SetField(ByteString(name, value))
 }
 
-func (f *Fields) stringTo(builder *strings.Builder) *Fields {
+func (f *Fields) StringTo(byteBuffer *bytebufferpool.ByteBuffer) {
 	if len(*f) == 0 {
-		builder.WriteString(" ")
-		return f
+		byteBuffer.WriteString(" ")
+		return
 	}
-	i := 0
+	first := true
 	for _, field := range *f {
-		if i != 0 {
-			builder.WriteString(" ")
+		if !first {
+			byteBuffer.WriteString(" ")
 		}
-		builder.WriteString("<")
-		builder.WriteString(field.Name)
-		builder.WriteString(":")
-		builder.WriteString(field.String())
-		builder.WriteString(">")
-		i++
+		byteBuffer.WriteString("<")
+		byteBuffer.WriteString(field.Name)
+		byteBuffer.WriteString(":")
+		byteBuffer.WriteString(field.String())
+		byteBuffer.WriteString(">")
+		first = false
 	}
-	return f
-
+	return
 }
 
 // String will return Fields as string
 func (f *Fields) String() string {
-	builder := &strings.Builder{}
-	f.stringTo(builder)
-	return builder.String()
+	byteBuffer := bytebufferpool.Get()
+	defer bytebufferpool.Put(byteBuffer)
+
+	f.StringTo(byteBuffer)
+	return byteBuffer.String()
 }
 
 // GoString was called by fmt.Printf("%#v", Fields)
 // fmt GoStringer interface
 func (f *Fields) GoString() string {
-	builder := &strings.Builder{}
-	builder.WriteString("logger.Fields[")
-	f.stringTo(builder)
-	builder.WriteString("]")
-	return builder.String()
+	byteBuffer := bytebufferpool.Get()
+	defer bytebufferpool.Put(byteBuffer)
+
+	byteBuffer.WriteString("logger.Fields[")
+	f.StringTo(byteBuffer)
+	byteBuffer.WriteString("]")
+	return byteBuffer.String()
 }
 
 // NewFields will create a Fields collection with initial value

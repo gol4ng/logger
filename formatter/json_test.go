@@ -3,7 +3,7 @@ package formatter_test
 import (
 	"errors"
 	"fmt"
-	"strings"
+	"github.com/valyala/bytebufferpool"
 	"testing"
 	"time"
 
@@ -74,9 +74,11 @@ func TestMarshalContextTo(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			builder := &strings.Builder{}
-			formatter.ContextToJSON(tt.context, builder)
-			str := builder.String()
+			byteBuffer := bytebufferpool.Get()
+			defer bytebufferpool.Put(byteBuffer)
+
+			formatter.ContextToJSON(tt.context, byteBuffer)
+			str := byteBuffer.String()
 			for _, s := range tt.expectedStrings {
 				assert.Contains(t, str, s)
 			}

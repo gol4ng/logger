@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"github.com/valyala/bytebufferpool"
 	"strings"
 )
 
@@ -63,4 +64,14 @@ func (l Level) String() string {
 		return v
 	}
 	return fmt.Sprintf("level(%d)", l)
+}
+
+// StringTo will return Level as string
+func (l Level) StringTo(byteBuffer *bytebufferpool.ByteBuffer) {
+	if v, ok := levelToString[l]; ok {
+		byteBuffer.WriteString(v)
+		return
+	}
+	fmt.Fprintf(byteBuffer, "level(%d)", l)
+	return
 }
