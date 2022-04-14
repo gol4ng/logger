@@ -7,6 +7,7 @@ import (
 	"log"
 	"log/syslog"
 	"os"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -249,6 +250,41 @@ func TestNewLogger_WrapNew(t *testing.T) {
 	l2.Debug("l message")
 	assert.True(t, mockHandlerCalled)
 	assert.Equal(t, 4, i)
+}
+
+func TestNewLogger_WrapNewErrorHandler(t *testing.T) {
+	mockHandlerCalled := false
+	mockHandler := func(entry logger.Entry) error {
+		mockHandlerCalled = true
+		assert.Equal(t, "l message", entry.Message)
+		assert.Equal(t, logger.DebugLevel, entry.Level)
+		assert.Equal(t, logger.Context{}, *entry.Context)
+
+		return errors.New("my handler error")
+	}
+	errorHandlerCalled := false
+	l := logger.NewLogger(mockHandler)
+	l.ErrorHandler = func(err error, entry logger.Entry) {
+		errorHandlerCalled = true
+		assert.EqualError(t, err, "my handler error")
+	}
+
+	l2 := l.WrapNew()
+
+	ptr1 := reflect.ValueOf(l.ErrorHandler).Pointer()
+	ptr2 := reflect.ValueOf(l2.(*logger.Logger).ErrorHandler).Pointer()
+	assert.Equal(t, ptr1, ptr2)
+
+	l.Debug("l message")
+	assert.True(t, mockHandlerCalled)
+	assert.True(t, errorHandlerCalled)
+
+	mockHandlerCalled = false
+	errorHandlerCalled = false
+
+	l2.Debug("l message")
+	assert.True(t, mockHandlerCalled)
+	assert.True(t, errorHandlerCalled)
 }
 
 // =====================================================================================================================

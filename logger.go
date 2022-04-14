@@ -115,12 +115,12 @@ func (l *Logger) WrapNew(middlewares ...MiddlewareInterface) LoggerInterface {
 	for _, middleware := range middlewares {
 		handler = middleware(handler)
 	}
-	return &Logger{handler: handler}
+	return &Logger{handler: handler, ErrorHandler: l.ErrorHandler}
 }
 
 // NewNopLogger will create a new no operating logger that log nowhere
 func NewNopLogger() *Logger {
-	return &Logger{handler: NopHandler}
+	return NewLogger(NopHandler)
 }
 
 // NewLogger will return a new logger
