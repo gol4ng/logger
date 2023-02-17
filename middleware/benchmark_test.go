@@ -55,6 +55,16 @@ func getEntries() []logger.Entry {
 				Add("my_key4", "my_value4").
 				Add("my_key5", "my_value5"),
 		},
+		{
+			Message: "test message",
+			Level:   logger.WarningLevel,
+			Context: logger.NewContext().
+				Add("my_key", "my_value").
+				Add("my_key2", "my_value2").
+				Add("my_key3", "my_value3").
+				Add("my_key4", "my_value4").
+				Add("my_key5", "my_value5"),
+		},
 	}
 }
 

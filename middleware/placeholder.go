@@ -10,7 +10,7 @@ import (
 func Placeholder() logger.MiddlewareInterface {
 	return func(handler logger.HandlerInterface) logger.HandlerInterface {
 		return func(entry logger.Entry) error {
-			if entry.Context != nil {
+			if entry.Context != nil && strings.Contains(entry.Message, "%") {
 				msg := entry.Message
 				for n, f := range *entry.Context {
 					msg = strings.Replace(msg, "%"+n+"%", f.String(), -1)
