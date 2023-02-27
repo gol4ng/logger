@@ -54,6 +54,9 @@ type Field struct {
 
 // String will return Field as string
 func (f *Field) String() string {
+	if f.Value == nil {
+		return "<nil>"
+	}
 	switch f.Type {
 	case SkipType:
 		return "<skipped>"
@@ -112,6 +115,9 @@ func (f *Field) String() string {
 func (f *Field) MarshalJSON() ([]byte, error) {
 	if marshallable, ok := f.Value.(json.Marshaler); ok {
 		return marshallable.MarshalJSON()
+	}
+	if f.Type == ErrorType && f.Value == nil {
+		return []byte("null"), nil
 	}
 	switch f.Type {
 	case BoolType, Int8Type, Int16Type, Int32Type, Int64Type, Uint8Type, Uint16Type, Uint32Type, Uint64Type, UintptrType, Float32Type, Float64Type:
